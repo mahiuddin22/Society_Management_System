@@ -22,7 +22,7 @@
             <a class="nav-item {{ request()->routeIs('admin.home') ? 'active' : '' }}" href="{{ route('admin.home') }}"><i class="bi bi-grid-1x2"></i> Dashboard</a>
         </div>
 
-        <!-- <div class="nav-group">
+        <div class="nav-group">
             <div class="nav-group-label">People</div>
             <a class="nav-item" href="units.html" data-panel="units">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -109,7 +109,7 @@
                 </svg>
                 Events
             </a>
-        </div> -->
+        </div>
 
         @if (hasPermission('activities') || hasPermission('roles') || hasPermission('permissions'))
         <div class="nav-group">
