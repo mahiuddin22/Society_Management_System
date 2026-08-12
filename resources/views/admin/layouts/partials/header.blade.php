@@ -49,21 +49,20 @@ $user = auth()->user();
 
         <ul class="dropdown-menu shadow">
             <li>
-                <a class="dropdown-item" href="{{ route('admin.profile') }}">
+                <a class="nav-item text-dark py-2" href="{{ route('admin.profile') }}">
                     <i class="bi bi-person-circle me-2"></i>
                     Profile
                 </a>
             </li>
 
             <li>
-                <hr class="dropdown-divider">
+                <hr class="dropdown-divider" style="margin: 0 !important;">
             </li>
 
             <li>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-
-                    <button type="submit" class="dropdown-item text-danger">
+                    <button type="submit" class="text-danger py-2" style="background:none; border:none; cursor:pointer;">
                         <i class="bi bi-box-arrow-right me-2"></i> Logout
                     </button>
                 </form>
