@@ -66,5 +66,4 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
         Route::get('get', 'getUserPermissions')->name('get');
         Route::post('update', 'update')->name('update');
     });
-    
 });

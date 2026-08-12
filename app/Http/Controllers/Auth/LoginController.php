@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends Controller
 {
+
     /*
     |--------------------------------------------------------------------------
     | Login Controller
@@ -25,6 +26,7 @@ class LoginController extends Controller
      *
      * @var string
      */
+
     protected $redirectTo = 'admin/dashboard';
 
     /**
@@ -32,9 +34,11 @@ class LoginController extends Controller
      *
      * @return void
      */
+
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
         $this->middleware('auth')->only('logout');
     }
+
 }
