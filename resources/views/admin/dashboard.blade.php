@@ -3,7 +3,6 @@
 @section('content')
 <!-- ============ DASHBOARD ============ -->
 <section class="panel active" id="panel-dashboard">
-
   <div class="section-row grid grid-5">
     <div class="stat-card">
       <div class="label">Today's Collection</div>
@@ -104,7 +103,7 @@
           <tbody>
             <tr>
               <td class="num">23 Jul</td>
-              <td>B‑A / 4B</td>
+              <td>B-A / 4B</td>
               <td>Kamal Hossain</td>
               <td>Subscription</td>
               <td>bKash</td>
@@ -114,7 +113,7 @@
             </tr>
             <tr>
               <td class="num">23 Jul</td>
-              <td>B‑C / 2A</td>
+              <td>B-C / 2A</td>
               <td>Nasrin Akter</td>
               <td>Picnic Fee</td>
               <td>Cash</td>
@@ -124,7 +123,7 @@
             </tr>
             <tr>
               <td class="num">22 Jul</td>
-              <td>B‑B / 6C</td>
+              <td>B-B / 6C</td>
               <td>Shahidul Islam</td>
               <td>Subscription</td>
               <td>Bank</td>
@@ -134,7 +133,7 @@
             </tr>
             <tr>
               <td class="num">22 Jul</td>
-              <td>B‑A / 1A</td>
+              <td>B-A / 1A</td>
               <td>Fahmida Begum</td>
               <td>Subscription</td>
               <td>—</td>
@@ -144,7 +143,7 @@
             </tr>
             <tr>
               <td class="num">21 Jul</td>
-              <td>B‑D / 3B</td>
+              <td>B-D / 3B</td>
               <td>Delwar Hossain</td>
               <td>Late Fee</td>
               <td>Cash</td>
@@ -154,7 +153,7 @@
             </tr>
             <tr>
               <td class="num">21 Jul</td>
-              <td>B‑C / 5A</td>
+              <td>B-C / 5A</td>
               <td>Ruma Chowdhury</td>
               <td>Subscription</td>
               <td>Nagad</td>
@@ -313,19 +312,19 @@
       <div class="card-head">
         <h3>Building A</h3><span class="badge green">32 units</span>
       </div>
-      <div class="s hint">Holding no. UTS3‑A · Subscription ৳2,500/unit</div>
+      <div class="s hint">Holding no. UTS3-A · Subscription ৳2,500/unit</div>
     </div>
     <div class="card">
       <div class="card-head">
         <h3>Building B</h3><span class="badge green">28 units</span>
       </div>
-      <div class="s hint">Holding no. UTS3‑B · Subscription ৳2,300/unit</div>
+      <div class="s hint">Holding no. UTS3-B · Subscription ৳2,300/unit</div>
     </div>
     <div class="card">
       <div class="card-head">
         <h3>Building C</h3><span class="badge green">36 units</span>
       </div>
-      <div class="s hint">Holding no. UTS3‑C · Subscription ৳2,500/unit</div>
+      <div class="s hint">Holding no. UTS3-C · Subscription ৳2,500/unit</div>
     </div>
   </div>
 
@@ -348,7 +347,7 @@
       </thead>
       <tbody>
         <tr>
-          <td>UTS3‑A‑04B</td>
+          <td>UTS3-A-04B</td>
           <td>Building A</td>
           <td>4B</td>
           <td>Apartment</td>
@@ -358,7 +357,7 @@
           <td><button class="btn btn-ghost btn-sm">Edit</button></td>
         </tr>
         <tr>
-          <td>UTS3‑A‑01A</td>
+          <td>UTS3-A-01A</td>
           <td>Building A</td>
           <td>1A</td>
           <td>Apartment</td>
@@ -368,7 +367,7 @@
           <td><button class="btn btn-ghost btn-sm">Edit</button></td>
         </tr>
         <tr>
-          <td>UTS3‑B‑06C</td>
+          <td>UTS3-B-06C</td>
           <td>Building B</td>
           <td>6C</td>
           <td>Apartment</td>
@@ -378,7 +377,7 @@
           <td><button class="btn btn-ghost btn-sm">Edit</button></td>
         </tr>
         <tr>
-          <td>UTS3‑D‑03B</td>
+          <td>UTS3-D-03B</td>
           <td>Building D</td>
           <td>3B</td>
           <td>Land (Plot)</td>
@@ -420,8 +419,8 @@
       <tbody>
         <tr>
           <td><span class="avatar-sm">KH</span>Kamal Hossain</td>
-          <td>A‑04B</td>
-          <td>01711‑223344</td>
+          <td>A-04B</td>
+          <td>01711-223344</td>
           <td><span class="badge neutral">3 files</span></td>
           <td><span class="badge gold">Yes</span></td>
           <td><span class="badge green">Active</span></td>
@@ -429,8 +428,8 @@
         </tr>
         <tr>
           <td><span class="avatar-sm">FB</span>Fahmida Begum</td>
-          <td>A‑01A</td>
-          <td>01822‑556677</td>
+          <td>A-01A</td>
+          <td>01822-556677</td>
           <td><span class="badge neutral">2 files</span></td>
           <td><span class="badge neutral">No</span></td>
           <td><span class="badge green">Active</span></td>
@@ -438,8 +437,8 @@
         </tr>
         <tr>
           <td><span class="avatar-sm">SI</span>Shahidul Islam</td>
-          <td>B‑06C, B‑07C</td>
-          <td>01933‑889900</td>
+          <td>B-06C, B-07C</td>
+          <td>01933-889900</td>
           <td><span class="badge neutral">4 files</span></td>
           <td><span class="badge gold">Yes</span></td>
           <td><span class="badge green">Active</span></td>
@@ -471,15 +470,15 @@
           <th>Tenant</th>
           <th>Unit</th>
           <th>Owner</th>
-          <th>Move‑in</th>
-          <th>Move‑out</th>
+          <th>Move-in</th>
+          <th>Move-out</th>
           <th>Status</th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td><span class="avatar-sm">TR</span>Tariqul Rahman</td>
-          <td>C‑05A</td>
+          <td>C-05A</td>
           <td>Ruma Chowdhury</td>
           <td>01 Jan 2025</td>
           <td>—</td>
@@ -487,7 +486,7 @@
         </tr>
         <tr>
           <td><span class="avatar-sm">NA</span>Nadia Ahmed</td>
-          <td>B‑02B</td>
+          <td>B-02B</td>
           <td>Shahidul Islam</td>
           <td>15 Mar 2024</td>
           <td>30 Jun 2026</td>
@@ -510,7 +509,7 @@
       <div class="value">5</div>
     </div>
     <div class="stat-card">
-      <div class="label">Life Member Fee (one‑time)</div>
+      <div class="label">Life Member Fee (one-time)</div>
       <div class="value"><span class="sym">৳</span>15,000</div>
     </div>
   </div>
@@ -522,25 +521,25 @@
     <div class="kanban-col">
       <h4>New Applications <span>3</span></h4>
       <div class="kanban-card">
-        <div class="t">Jamal Uddin — Unit A‑11B</div>
+        <div class="t">Jamal Uddin — Unit A-11B</div>
         <div class="m"><span>Submitted 20 Jul</span><span class="badge neutral">Docs pending</span></div>
       </div>
       <div class="kanban-card">
-        <div class="t">Selina Parvin — Unit C‑09A</div>
+        <div class="t">Selina Parvin — Unit C-09A</div>
         <div class="m"><span>Submitted 21 Jul</span><span class="badge neutral">Docs pending</span></div>
       </div>
     </div>
     <div class="kanban-col">
       <h4>Under Review <span>2</span></h4>
       <div class="kanban-card">
-        <div class="t">Habibur Rahman — Unit D‑02C</div>
+        <div class="t">Habibur Rahman — Unit D-02C</div>
         <div class="m"><span>Committee review</span><span class="badge gold">In progress</span></div>
       </div>
     </div>
     <div class="kanban-col">
       <h4>Approved <span>2</span></h4>
       <div class="kanban-card">
-        <div class="t">Kamal Hossain — Unit A‑04B</div>
+        <div class="t">Kamal Hossain — Unit A-04B</div>
         <div class="m"><span>Fee collected</span><span class="badge green">Approved</span></div>
       </div>
     </div>
@@ -564,7 +563,7 @@
       <tbody>
         <tr>
           <td>Kamal Hossain</td>
-          <td>A‑04B</td>
+          <td>A-04B</td>
           <td class="num">৳15,000</td>
           <td>Bank</td>
           <td>05 Jul 2026</td>
@@ -572,7 +571,7 @@
         </tr>
         <tr>
           <td>Shahidul Islam</td>
-          <td>B‑06C</td>
+          <td>B-06C</td>
           <td class="num">৳15,000</td>
           <td>Cash</td>
           <td>18 Jun 2026</td>
@@ -635,7 +634,7 @@
   </div>
   <div class="card">
     <div class="card-head">
-      <h3>Recent Invoices</h3><span class="hint">Auto‑generated on the 1st of each month</span>
+      <h3>Recent Invoices</h3><span class="hint">Auto-generated on the 1st of each month</span>
     </div>
     <table class="ledger">
       <thead>
@@ -650,16 +649,16 @@
       </thead>
       <tbody>
         <tr>
-          <td>INV‑2607‑041</td>
-          <td>A‑04B</td>
+          <td>INV-2607-041</td>
+          <td>A-04B</td>
           <td>Jul 2026</td>
           <td class="num">৳2,500</td>
           <td><span class="badge green">Paid</span></td>
           <td><button class="btn btn-ghost btn-sm">Download</button></td>
         </tr>
         <tr>
-          <td>INV‑2607‑012</td>
-          <td>A‑01A</td>
+          <td>INV-2607-012</td>
+          <td>A-01A</td>
           <td>Jul 2026</td>
           <td class="num">৳2,500</td>
           <td><span class="badge red">Due</span></td>
@@ -709,7 +708,7 @@
       <tbody>
         <tr>
           <td class="num">23 Jul</td>
-          <td>A‑04B</td>
+          <td>A-04B</td>
           <td>Kamal Hossain</td>
           <td>bKash</td>
           <td>Md. Anwar</td>
@@ -719,7 +718,7 @@
         </tr>
         <tr>
           <td class="num">21 Jul</td>
-          <td>C‑05A</td>
+          <td>C-05A</td>
           <td>Ruma Chowdhury</td>
           <td>Nagad</td>
           <td>Sumon Mia</td>
@@ -820,14 +819,14 @@
           <td>Plastic chairs</td>
           <td class="num">120</td>
           <td class="num">+50</td>
-          <td class="num">‑10</td>
+          <td class="num">-10</td>
           <td><span class="badge green">Sufficient</span></td>
         </tr>
         <tr>
           <td>Tube lights</td>
           <td class="num">8</td>
           <td class="num">+20</td>
-          <td class="num">‑24</td>
+          <td class="num">-24</td>
           <td><span class="badge red">Low stock</span></td>
         </tr>
       </tbody>
@@ -843,7 +842,7 @@
   <div class="grid grid-3">
     <div class="card"><span class="badge red" style="margin-bottom:8px;">Urgent</span>
       <h3 style="font-family:var(--font-display);margin:6px 0;">Water line maintenance</h3>
-      <p class="hint">Building C water supply will be off 25 Jul, 10 AM–1 PM.</p>
+      <p class="hint">Building C water supply will be off 25 Jul, 10 AM-1 PM.</p>
     </div>
     <div class="card"><span class="badge gold" style="margin-bottom:8px;">Reminder</span>
       <h3 style="font-family:var(--font-display);margin:6px 0;">July subscription due</h3>
@@ -926,7 +925,7 @@
   <div class="grid grid-2-even">
     <div class="card">
       <h3 style="font-family:var(--font-display);">Collection Report</h3>
-      <p class="hint">Unit‑wise, by date range</p><button class="btn btn-primary btn-sm">Generate</button>
+      <p class="hint">Unit-wise, by date range</p><button class="btn btn-primary btn-sm">Generate</button>
     </div>
     <div class="card">
       <h3 style="font-family:var(--font-display);">Due Report</h3>
