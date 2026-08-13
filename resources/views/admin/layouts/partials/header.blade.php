@@ -22,7 +22,7 @@ $user = auth()->user();
         </select>
         <div class="divider"></div>
         <input type="date" value="{{ now()->startOfMonth()->toDateString() }}" id="rangeFrom">
-        <span class="sep">–</span>
+        <span class="sep">-</span>
         <input type="date" value="{{ now()->toDateString() }}" id="rangeTo">
         <button class="btn btn-primary btn-sm" id="applyRange" type="button">Apply</button>
     </div>
