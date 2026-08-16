@@ -4,6 +4,7 @@ use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PermissionsController;
 use App\Http\Controllers\PlotAndUnitController;
+use App\Http\Controllers\PlotTypeController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\UserPermissionController;
@@ -73,6 +74,16 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
         Route::get('create', 'create')->name('create');
         Route::post('store', 'store')->name('store');
         Route::get('view/{id}', 'view')->name('view');
+        Route::get('{id}/edit', 'edit')->name('edit');
+        Route::put('{id}', 'update')->name('update');
+        Route::delete('{id}/destroy', 'destroy')->name('destroy');
+    });
+
+    // Site Settings
+    Route::controller(PlotTypeController::class)->prefix('type')->name('type.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/create', 'create')->name('create');
+        Route::post('store', 'store')->name('store');
         Route::get('{id}/edit', 'edit')->name('edit');
         Route::put('{id}', 'update')->name('update');
         Route::delete('{id}/destroy', 'destroy')->name('destroy');

@@ -24,7 +24,7 @@
 
         <div class="nav-group">
             <div class="nav-group-label">People</div>
-            <a class="nav-item" href="{{ route('admin.plot-and-units.index') }}" data-panel="units">
+            <a class="nav-item {{ request()->routeIs('admin.plot-and-units.*') ? 'active' : '' }}" href="{{ route('admin.plot-and-units.index') }}" data-panel="units">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M3 21V9l9-6 9 6v12" /> <path d="M9 21v-8h6v8" />
                 </svg>
@@ -135,10 +135,8 @@
         @endif
 
         <div class="nav-group">
-            <div class="nav-group-label">Account</div>
-            @if (hasPermission('my_profile'))
-            <a class="nav-item {{ request()->routeIs('admin.profile') ? 'active' : '' }}" href="{{ route('admin.profile') }}"><i class="bi bi-person-circle"></i> My Profile</a>
-            @endif
+            <div class="nav-group-label">Settings</div>
+            <a class="nav-item {{ request()->routeIs('admin.type.*') ? 'active' : '' }}" href="{{ route('admin.type.index') }}"><i class="bi bi-person-circle"></i> Plot Types</a>
         </div>
     </nav>
 
