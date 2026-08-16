@@ -33,43 +33,43 @@
 
             <div class="row g-3">
 
-                {{-- Road --}}
+                <!-- {{-- Road --}} -->
                 <div class="col-md-4">
                     <label for="road" class="form-label">Road <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" id="road" name="road" value="{{ old('road') }}" placeholder="e.g. 1/A" required>
                 </div>
 
-                {{-- Holding No --}}
+                <!-- {{-- Holding No --}} -->
                 <div class="col-md-4">
                     <label for="holding_no" class="form-label">Holding No. <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" id="holding_no" name="holding_no" value="{{ old('holding_no') }}" placeholder="e.g. 2" required>
                 </div>
 
-                {{-- Building Type --}}
+                <!-- {{-- Building Type --}} -->
                 <div class="col-md-4">
                     <label for="building_type" class="form-label">Building Type <span class="text-danger">*</span></label>
                     <select class="form-select" id="building_type" name="building_type" required>
                         <option value="">Select Building Type</option>
-                        <option value="Apartment" {{ old('building_type') == 'Apartment' ? 'selected' : '' }}>Apartment</option>
-                        <option value="Commercial" {{ old('building_type') == 'Commercial' ? 'selected' : '' }}>Commercial</option>
-                        <option value="Residential" {{ old('building_type') == 'Residential' ? 'selected' : '' }}>Residential</option>
-                        <option value="Mixed" {{ old('building_type') == 'Mixed' ? 'selected' : '' }}>Mixed</option>
+                        <option value="apartment" {{ old('building_type') == 'apartment' ? 'selected' : '' }}>Apartment</option>
+                        <option value="commercial" {{ old('building_type') == 'commercial' ? 'selected' : '' }}>Commercial</option>
+                        <option value="residential" {{ old('building_type') == 'residential' ? 'selected' : '' }}>Residential</option>
+                        <option value="mixed" {{ old('building_type') == 'mixed' ? 'selected' : '' }}>Mixed</option>
                     </select>
                 </div>
 
-                {{-- Total Flat --}}
+                <!-- {{-- Total Flat --}} -->
                 <div class="col-md-4">
                     <label for="total_flat" class="form-label">Total Flat <span class="text-danger">*</span></label>
                     <input type="number" class="form-control" id="total_flat" name="total_flat" value="{{ old('total_flat') }}" min="0" placeholder="e.g. 12" required>
                 </div>
 
-                {{-- Occupied Flat --}}
+                <!-- {{-- Occupied Flat --}} -->
                 <div class="col-md-4">
                     <label for="occupied_flat" class="form-label">Occupied Flat <span class="text-danger">*</span></label>
                     <input type="number" class="form-control" id="occupied_flat" name="occupied_flat" value="{{ old('occupied_flat') }}" min="0" placeholder="e.g. 10" required>
                 </div>
 
-                {{-- Collection Type --}}
+                <!-- {{-- Collection Type --}} -->
                 <div class="col-md-4">
                     <label for="collection_type" class="form-label">Collection Type <span class="text-danger">*</span></label>
                     <select class="form-select" id="collection_type" name="collection_type" required>
@@ -79,13 +79,13 @@
                     </select>
                 </div>
 
-                {{-- Contact Person --}}
+                <!-- {{-- Contact Person --}} -->
                 <div class="col-md-4">
                     <label for="contact_person" class="form-label">Contact Person</label>
                     <input type="number" class="form-control" id="contact_person" name="contact_person" value="{{ old('contact_person') }}" min="0" placeholder="Number of contact persons">
                 </div>
 
-                {{-- Collection Rate --}}
+                <!-- {{-- Collection Rate --}} -->
                 <div class="col-md-4">
                     <label for="collection_rate" class="form-label">Collection Rate <span class="text-danger">*</span></label>
                     <div class="input-group">
@@ -94,7 +94,7 @@
                     </div>
                 </div>
 
-                {{-- Collection Amount --}}
+                <!-- {{-- Collection Amount --}} -->
                 <div class="col-md-4">
                     <label for="collection_amount" class="form-label">Collection Amount <span class="text-danger">*</span></label>
                     <div class="input-group">
@@ -103,7 +103,7 @@
                     </div>
                 </div>
 
-                {{-- Discount --}}
+                <!-- {{-- Discount --}} -->
                 <div class="col-md-4">
                     <label for="discount" class="form-label">Discount</label>
                     <div class="input-group">
@@ -112,7 +112,7 @@
                     </div>
                 </div>
 
-                {{-- Dynamic Contact Persons --}}
+                <!-- {{-- Dynamic Contact Persons --}} -->
                 <div class="col-12">
                     <div id="contactPersonsContainer"></div>
                 </div>
@@ -133,7 +133,33 @@
 @endsection
 
 @push('scripts')
+<script>
+    document.getElementById('building_type').addEventListener('change', function() {
 
+        const rates = {
+            apartment: 250,
+            commercial: 500,
+            residential: 300,
+            mixed: 200
+        };
+
+        const rate = rates[this.value] || 0;
+
+        document.getElementById('collection_rate').value = rate;
+
+        const occupiedFlat = parseInt(document.getElementById('occupied_flat').value) || 0;
+
+        document.getElementById('collection_amount').value = rate * occupiedFlat;
+    });
+
+    document.getElementById('occupied_flat').addEventListener('input', function() {
+
+        const rate = parseFloat(document.getElementById('collection_rate').value) || 0;
+        const occupiedFlat = parseInt(this.value) || 0;
+
+        document.getElementById('collection_amount').value = rate * occupiedFlat;
+    });
+</script>
 <script>
     document.getElementById('contact_person').addEventListener('input', function() {
 

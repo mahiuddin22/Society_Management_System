@@ -10,14 +10,13 @@ use App\Http\Controllers\UserPermissionController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-
-Route::get('/', function () {
-    return redirect()->route('login');
-});
-
 Auth::routes();
 
 Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
+
+    Route::get('/', function () {
+        return redirect()->route('admin.home');
+    });
 
     // Dashboard
     Route::controller(HomeController::class)->group(function () {
@@ -77,5 +76,4 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
         Route::put('{id}', 'update')->name('update');
         Route::delete('{id}/destroy', 'destroy')->name('destroy');
     });
-
 });
