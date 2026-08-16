@@ -24,11 +24,11 @@
 
         <div class="nav-group">
             <div class="nav-group-label">People</div>
-            <a class="nav-item" href="units.html" data-panel="units">
+            <a class="nav-item" href="{{ route('admin.plot-and-units.index') }}" data-panel="units">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M3 21V9l9-6 9 6v12" /> <path d="M9 21v-8h6v8" />
                 </svg>
-                Buildings &amp; Units
+                Plot &amp; Units
             </a>
             <a class="nav-item" href="owners.html" data-panel="owners">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

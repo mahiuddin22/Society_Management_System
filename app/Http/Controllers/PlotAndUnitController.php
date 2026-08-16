@@ -10,6 +10,11 @@ class PlotAndUnitController extends Controller
     public function index()
     {
         $plotAndUnits = PlotAndUnit::all();
-        return view('plot_and_units.index', compact('plotAndUnits'));
+        return view('admin.plot_and_units.index', compact('plotAndUnits'));
+    }
+    
+    public function create()
+    {
+        return view('admin.plot_and_units.create');
     }
 }

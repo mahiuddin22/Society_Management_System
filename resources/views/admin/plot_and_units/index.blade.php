@@ -1,8 +1,7 @@
 @extends('admin.layouts.app')
 
 @section('content')
-<!-- ============ BUILDINGS & UNITS ============ -->
-<section class="panel" id="panel-units">
+<section class="panel active" id="panel-units">
   <div class="filter-bar">
     <div class="search"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6d7469" stroke-width="2">
         <circle cx="11" cy="11" r="7" />
@@ -21,7 +20,9 @@
       <option>Occupied — Tenant</option>
       <option>Vacant</option>
     </select>
-    <button class="btn btn-primary" style="margin-left:auto;">+ Add Building</button>
+    <a href="{{route('admin.plot-and-units.create')}}" class="btn btn-primary" style="margin-left:auto;">
+      + Add Building
+    </a>
   </div>
 
   <div class="grid grid-3 section-row">
@@ -49,62 +50,53 @@
     <div class="card-head">
       <h3>Unit Register</h3><span class="hint">96 of 148 units shown</span>
     </div>
-    <table class="ledger">
-      <thead>
-        <tr>
-          <th>Holding No.</th>
-          <th>Building</th>
-          <th>Unit</th>
-          <th>Type</th>
-          <th>Owner</th>
-          <th class="num">Sub. Rate</th>
-          <th>Status</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>UTS3-A-04B</td>
-          <td>Building A</td>
-          <td>4B</td>
-          <td>Apartment</td>
-          <td>Kamal Hossain</td>
-          <td class="num">৳2,500</td>
-          <td><span class="badge green">Occupied</span></td>
-          <td><button class="btn btn-ghost btn-sm">Edit</button></td>
-        </tr>
-        <tr>
-          <td>UTS3-A-01A</td>
-          <td>Building A</td>
-          <td>1A</td>
-          <td>Apartment</td>
-          <td>Fahmida Begum</td>
-          <td class="num">৳2,500</td>
-          <td><span class="badge red">Due</span></td>
-          <td><button class="btn btn-ghost btn-sm">Edit</button></td>
-        </tr>
-        <tr>
-          <td>UTS3-B-06C</td>
-          <td>Building B</td>
-          <td>6C</td>
-          <td>Apartment</td>
-          <td>Shahidul Islam</td>
-          <td class="num">৳2,300</td>
-          <td><span class="badge green">Occupied</span></td>
-          <td><button class="btn btn-ghost btn-sm">Edit</button></td>
-        </tr>
-        <tr>
-          <td>UTS3-D-03B</td>
-          <td>Building D</td>
-          <td>3B</td>
-          <td>Land (Plot)</td>
-          <td>Delwar Hossain</td>
-          <td class="num">৳1,800</td>
-          <td><span class="badge neutral">Vacant</span></td>
-          <td><button class="btn btn-ghost btn-sm">Edit</button></td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-wrap">
+      <table class="ledger">
+        <thead>
+          <tr>
+            <th>SL</th>
+            <th>Road</th>
+            <th>Holding No.</th>
+            <th>Building Type</th>
+            <th>Total Flat</th>
+            <th>Occupied Flat</th>
+            <th>Collection Type</th>
+            <th>Contact person</th>
+            <th class="num">Collection Rate</th>
+            <th class="num">Collection Amount</th>
+            <th>Discount</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          @forelse($plotAndUnits as $plotAndUnit)
+          <tr>
+            <td>{{ $loop->iteration }}</td>
+            <td>{{ $plotAndUnit->road }}</td>
+            <td>{{ $plotAndUnit->holding_no }}</td>
+            <td>{{ $plotAndUnit->building_type }}</td>
+            <td>{{ $plotAndUnit->total_flat }}</td>
+            <td>{{ $plotAndUnit->occupied_flat }}</td>
+            <td>{{ $plotAndUnit->collection_type }}</td>
+            <td>{{ $plotAndUnit->contact_person }}</td>
+            <td>৳{{ number_format($plotAndUnit->collection_rate, 2) }}</td>
+            <td>৳{{ number_format($plotAndUnit->collection_amount, 2) }}</td>
+            <td>৳{{ number_format($plotAndUnit->discount, 2) }}</td>
+            <td>
+              <button class="btn btn-info btn-sm" title="View"><i class="bi bi-eye"></i></button>
+              <button class="btn btn-warning btn-sm" title="Edit"><i class="bi bi-pencil"></i></button>
+              <button class="btn btn-danger btn-sm" title="Delete"><i class="bi bi-trash"></i></button>
+            </td>
+          </tr>
+          @empty
+          <tr>
+            <td colspan="12" class="text-center">No plot or unit data available.</td>
+          </tr>
+          @endforelse
+        </tbody>
+      </table>
+      
+    </div>
   </div>
 </section>
 @endsection

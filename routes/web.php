@@ -71,6 +71,7 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
     // Plot and Units
     Route::controller(PlotAndUnitController::class)->prefix('plot-and-units')->name('plot-and-units.')->group(function () {
         Route::get('/', 'index')->name('index');
+        Route::get('create', 'create')->name('create');
         Route::post('store', 'store')->name('store');
         Route::get('{id}/edit', 'edit')->name('edit');
         Route::put('{id}', 'update')->name('update');
