@@ -41,9 +41,10 @@ class PermissionsController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'      => 'required|string|max:255',
-            'menu_type' => 'required',
-            'menu_key'  => 'required_if:menu_type,sub_menu|nullable|string|unique:permissions,menu_key',
+            'name'          => 'required|string|max:255',
+            'menu_type'     => 'required',
+            'menu_key'      => 'required_if:menu_type,sub_menu|nullable|string|unique:permissions,menu_key',
+            'activities'    => 'required',
         ]);
 
         Permission::create([
@@ -70,8 +71,9 @@ class PermissionsController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name'      => 'required|string|max:255',
-            'menu_type' => 'required',
+            'name'          => 'required|string|max:255',
+            'menu_type'     => 'required',
+            'activities'    => 'required'
         ]);
 
         $permission = Permission::findOrFail($id);

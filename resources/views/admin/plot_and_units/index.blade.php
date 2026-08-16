@@ -62,9 +62,9 @@
             <th>Occupied Flat</th>
             <th>Collection Type</th>
             <th>Contact person</th>
-            <th class="num">Collection Rate</th>
-            <th class="num">Collection Amount</th>
+            <th>Collection Rate</th>
             <th>Discount</th>
+            <th>Collection Amount</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -80,12 +80,16 @@
             <td>{{ $plotAndUnit->collection_type }}</td>
             <td>{{ $plotAndUnit->contact_person }}</td>
             <td>৳{{ number_format($plotAndUnit->collection_rate, 2) }}</td>
-            <td>৳{{ number_format($plotAndUnit->collection_amount, 2) }}</td>
             <td>৳{{ number_format($plotAndUnit->discount, 2) }}</td>
+            <td>৳{{ number_format($plotAndUnit->collection_amount, 2) }}</td>
             <td>
-              <button class="btn btn-info btn-sm" title="View"><i class="bi bi-eye"></i></button>
-              <button class="btn btn-warning btn-sm" title="Edit"><i class="bi bi-pencil"></i></button>
-              <button class="btn btn-danger btn-sm" title="Delete"><i class="bi bi-trash"></i></button>
+              <a href="{{ route('admin.plot-and-units.view', $plotAndUnit->id) }}" class="btn btn-info btn-sm" title="View"><i class="bi bi-eye"></i></a>
+              <a href="{{ route('admin.plot-and-units.edit', $plotAndUnit->id) }}" class="btn btn-warning btn-sm" title="Edit"><i class="bi bi-pencil"></i></a>
+              <form action="{{ route('admin.plot-and-units.destroy', $plotAndUnit->id) }}" method="POST" style="display: inline;">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-danger btn-sm" title="Delete" onclick="return confirm('Are you sure you want to delete this plot or unit?')"><i class="bi bi-trash"></i></button>
+              </form>
             </td>
           </tr>
           @empty

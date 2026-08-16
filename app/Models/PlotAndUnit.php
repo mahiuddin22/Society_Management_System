@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class PlotAndUnit extends Model
 {
     use HasFactory;
+
+    public function members()
+    {
+        return $this->hasMany(Member::class, 'plot_and_unit_id');
+    }
+    
 }

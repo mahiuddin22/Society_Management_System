@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('menu_type');
             $table->string('menu_key')->unique();
             $table->string('order_no');
+            $table->string('activity_id');
             $table->timestamps();
         });
     }

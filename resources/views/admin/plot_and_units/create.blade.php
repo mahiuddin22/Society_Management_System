@@ -50,10 +50,11 @@
                     <label for="building_type" class="form-label">Building Type <span class="text-danger">*</span></label>
                     <select class="form-select" id="building_type" name="building_type" required>
                         <option value="">Select Building Type</option>
-                        <option value="apartment" {{ old('building_type') == 'apartment' ? 'selected' : '' }}>Apartment</option>
-                        <option value="commercial" {{ old('building_type') == 'commercial' ? 'selected' : '' }}>Commercial</option>
-                        <option value="residential" {{ old('building_type') == 'residential' ? 'selected' : '' }}>Residential</option>
-                        <option value="mixed" {{ old('building_type') == 'mixed' ? 'selected' : '' }}>Mixed</option>
+                        <option value="emptyplot" {{ old('building_type')           == 'emptyplot' ? 'selected' : '' }}>Empty Plot</option>
+                        <option value="apartment" {{ old('building_type')           == 'apartment' ? 'selected' : '' }}>Apartment</option>
+                        <option value="underconstruction" {{ old('building_type')   == 'underconstruction' ? 'selected' : '' }}>Under Construction</option>
+                        <option value="ownermadebuilding" {{ old('building_type')   == 'ownermadebuilding' ? 'selected' : '' }}>Owner Made Building</option>
+                        <option value="commercialbuilding" {{ old('building_type')  == 'commercialbuilding' ? 'selected' : '' }}>Commercial Building</option>
                     </select>
                 </div>
 
@@ -81,7 +82,7 @@
 
                 <!-- {{-- Contact Person --}} -->
                 <div class="col-md-4">
-                    <label for="contact_person" class="form-label">Contact Person</label>
+                    <label for="contact_person" class="form-label">Contact Person<span class="text-danger">*</span></label>
                     <input type="number" class="form-control" id="contact_person" name="contact_person" value="{{ old('contact_person') }}" min="0" placeholder="Number of contact persons">
                 </div>
 
@@ -94,21 +95,21 @@
                     </div>
                 </div>
 
-                <!-- {{-- Collection Amount --}} -->
-                <div class="col-md-4">
-                    <label for="collection_amount" class="form-label">Collection Amount <span class="text-danger">*</span></label>
-                    <div class="input-group">
-                        <span class="input-group-text">৳</span>
-                        <input type="number" class="form-control" id="collection_amount" name="collection_amount" value="{{ old('collection_amount') }}" min="0" step="0.01" placeholder="2500" required>
-                    </div>
-                </div>
-
                 <!-- {{-- Discount --}} -->
                 <div class="col-md-4">
                     <label for="discount" class="form-label">Discount</label>
                     <div class="input-group">
                         <span class="input-group-text">৳</span>
                         <input type="number" class="form-control" id="discount" name="discount" value="{{ old('discount', 0) }}" min="0" step="0.01" placeholder="500">
+                    </div>
+                </div>
+
+                <!-- {{-- Collection Amount --}} -->
+                <div class="col-md-4">
+                    <label for="collection_amount" class="form-label">Collection Amount <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                        <span class="input-group-text">৳</span>
+                        <input type="number" class="form-control" id="collection_amount" name="collection_amount" value="{{ old('collection_amount') }}" min="0" step="0.01" placeholder="2500" required>
                     </div>
                 </div>
 
@@ -134,32 +135,44 @@
 
 @push('scripts')
 <script>
-    document.getElementById('building_type').addEventListener('change', function() {
+    const rates = {
+        emptyplot: 100,
+        apartment: 250,
+        underconstruction: 500,
+        ownermadebuilding: 250,
+        commercialbuilding: 300,
+        mixed: 200
+    };
 
-        const rates = {
-            apartment: 250,
-            commercial: 500,
-            residential: 300,
-            mixed: 200
-        };
+    const buildingType = document.getElementById('building_type');
+    const collectionRate = document.getElementById('collection_rate');
+    const occupiedFlat = document.getElementById('occupied_flat');
+    const discount = document.getElementById('discount');
+    const collectionAmount = document.getElementById('collection_amount');
 
-        const rate = rates[this.value] || 0;
+    function calculateCollectionAmount() {
+        const rate = parseFloat(collectionRate.value) || 0;
+        const occupied = parseInt(occupiedFlat.value) || 0;
+        const discountValue = parseFloat(discount.value) || 0;
 
-        document.getElementById('collection_rate').value = rate;
+        collectionAmount.value = (rate * occupied) - discountValue;
+    }
 
-        const occupiedFlat = parseInt(document.getElementById('occupied_flat').value) || 0;
-
-        document.getElementById('collection_amount').value = rate * occupiedFlat;
+    buildingType.addEventListener('change', function() {
+        collectionRate.value = rates[this.value] || 0;
+        calculateCollectionAmount();
     });
 
-    document.getElementById('occupied_flat').addEventListener('input', function() {
+    occupiedFlat.addEventListener('input', function() {
+        calculateCollectionAmount();
+    });
 
-        const rate = parseFloat(document.getElementById('collection_rate').value) || 0;
-        const occupiedFlat = parseInt(this.value) || 0;
-
-        document.getElementById('collection_amount').value = rate * occupiedFlat;
+    discount.addEventListener('input', function() {
+        calculateCollectionAmount();
     });
 </script>
+
+
 <script>
     document.getElementById('contact_person').addEventListener('input', function() {
 
