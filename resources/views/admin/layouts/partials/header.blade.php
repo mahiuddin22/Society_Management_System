@@ -12,22 +12,6 @@ $user = auth()->user();
         <div class="page-title">{{ $pageTitle }}</div>
     </div>
 
-    <div class="daterange" id="dateRangeControl">
-        <select class="select" id="rangePreset" style="border:none;">
-            <option>Today</option>
-            <option>This Week</option>
-            <option selected>This Month</option>
-            <option>This Year</option>
-            <option value="custom">Custom range</option>
-        </select>
-        <div class="divider"></div>
-        <input type="date" value="{{ now()->startOfMonth()->toDateString() }}" id="rangeFrom">
-        <span class="sep">-</span>
-        <input type="date" value="{{ now()->toDateString() }}" id="rangeTo">
-        <button class="btn btn-primary btn-sm" id="applyRange" type="button">Apply</button>
-    </div>
-
-    <button class="btn btn-sm" type="button"><i class="bi bi-download"></i> Export</button>
     <button class="icon-btn" title="Notifications" type="button"><i class="bi bi-bell"></i><span class="badge">3</span></button>
 
     <div class="dropdown user-dropdown">
