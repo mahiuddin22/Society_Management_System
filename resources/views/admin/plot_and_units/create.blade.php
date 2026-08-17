@@ -36,38 +36,36 @@
                 <!-- {{-- Road --}} -->
                 <div class="col-md-4">
                     <label for="road" class="form-label">Road <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="road" name="road" value="{{ old('road') }}" placeholder="e.g. 1/A" required>
+                    <input type="text" class="form-control" id="road" name="road" placeholder="e.g. 1/A" required>
                 </div>
 
                 <!-- {{-- Holding No --}} -->
                 <div class="col-md-4">
                     <label for="holding_no" class="form-label">Holding No. <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="holding_no" name="holding_no" value="{{ old('holding_no') }}" placeholder="e.g. 2" required>
+                    <input type="text" class="form-control" id="holding_no" name="holding_no" placeholder="e.g. 2" required>
                 </div>
 
                 <!-- {{-- Building Type --}} -->
                 <div class="col-md-4">
                     <label for="building_type" class="form-label">Building Type <span class="text-danger">*</span></label>
                     <select class="form-select" id="building_type" name="building_type" required>
-                        <option value="">Select Building Type</option>
-                        <option value="emptyplot" {{ old('building_type')           == 'emptyplot' ? 'selected' : '' }}>Empty Plot</option>
-                        <option value="apartment" {{ old('building_type')           == 'apartment' ? 'selected' : '' }}>Apartment</option>
-                        <option value="underconstruction" {{ old('building_type')   == 'underconstruction' ? 'selected' : '' }}>Under Construction</option>
-                        <option value="ownermadebuilding" {{ old('building_type')   == 'ownermadebuilding' ? 'selected' : '' }}>Owner Made Building</option>
-                        <option value="commercialbuilding" {{ old('building_type')  == 'commercialbuilding' ? 'selected' : '' }}>Commercial Building</option>
+                        <option value="" selected disabled>Select Building Type</option>
+                        @foreach($plot_types as $type)
+                        <option value="{{$type->id}}">{{$type->name}}</option>
+                        @endforeach
                     </select>
                 </div>
 
                 <!-- {{-- Total Flat --}} -->
                 <div class="col-md-4">
                     <label for="total_flat" class="form-label">Total Flat <span class="text-danger">*</span></label>
-                    <input type="number" class="form-control" id="total_flat" name="total_flat" value="{{ old('total_flat') }}" min="0" placeholder="e.g. 12" required>
+                    <input type="number" class="form-control" id="total_flat" name="total_flat" min="0" placeholder="e.g. 12" required>
                 </div>
 
                 <!-- {{-- Occupied Flat --}} -->
                 <div class="col-md-4">
                     <label for="occupied_flat" class="form-label">Occupied Flat <span class="text-danger">*</span></label>
-                    <input type="number" class="form-control" id="occupied_flat" name="occupied_flat" value="{{ old('occupied_flat') }}" min="0" placeholder="e.g. 10" required>
+                    <input type="number" class="form-control" id="occupied_flat" name="occupied_flat" min="0" placeholder="e.g. 10" required>
                 </div>
 
                 <!-- {{-- Collection Type --}} -->
@@ -83,7 +81,7 @@
                 <!-- {{-- Contact Person --}} -->
                 <div class="col-md-4">
                     <label for="contact_person" class="form-label">Contact Person<span class="text-danger">*</span></label>
-                    <input type="number" class="form-control" id="contact_person" name="contact_person" value="{{ old('contact_person') }}" min="0" placeholder="Number of contact persons">
+                    <input type="number" class="form-control" id="contact_person" name="contact_person" min="0" placeholder="Number of contact persons">
                 </div>
 
                 <!-- {{-- Collection Rate --}} -->
@@ -91,7 +89,7 @@
                     <label for="collection_rate" class="form-label">Collection Rate <span class="text-danger">*</span></label>
                     <div class="input-group">
                         <span class="input-group-text">৳</span>
-                        <input type="number" class="form-control" id="collection_rate" name="collection_rate" value="{{ old('collection_rate') }}" min="0" step="0.01" placeholder="250" required>
+                        <input type="number" class="form-control" id="collection_rate" name="collection_rate" min="0" step="0.01" placeholder="250" required>
                     </div>
                 </div>
 
@@ -100,7 +98,7 @@
                     <label for="discount" class="form-label">Discount</label>
                     <div class="input-group">
                         <span class="input-group-text">৳</span>
-                        <input type="number" class="form-control" id="discount" name="discount" value="{{ old('discount', 0) }}" min="0" step="0.01" placeholder="500">
+                        <input type="number" class="form-control" id="discount" name="discount" min="0" step="0.01" placeholder="500">
                     </div>
                 </div>
 
@@ -109,7 +107,7 @@
                     <label for="collection_amount" class="form-label">Collection Amount <span class="text-danger">*</span></label>
                     <div class="input-group">
                         <span class="input-group-text">৳</span>
-                        <input type="number" class="form-control" id="collection_amount" name="collection_amount" value="{{ old('collection_amount') }}" min="0" step="0.01" placeholder="2500" required>
+                        <input type="number" class="form-control" id="collection_amount" name="collection_amount" min="0" step="0.01" placeholder="2500" required>
                     </div>
                 </div>
 
@@ -135,14 +133,7 @@
 
 @push('scripts')
 <script>
-    const rates = {
-        emptyplot: 100,
-        apartment: 250,
-        underconstruction: 500,
-        ownermadebuilding: 250,
-        commercialbuilding: 300,
-        mixed: 200
-    };
+    const rates = @json($rates);
 
     const buildingType = document.getElementById('building_type');
     const collectionRate = document.getElementById('collection_rate');
@@ -155,21 +146,20 @@
         const occupied = parseInt(occupiedFlat.value) || 0;
         const discountValue = parseFloat(discount.value) || 0;
 
-        collectionAmount.value = (rate * occupied) - discountValue;
+        const amount = (rate * occupied) - discountValue;
+
+        collectionAmount.value = Math.max(amount, 0);
     }
 
-    buildingType.addEventListener('change', function() {
+    buildingType.addEventListener('change', function () {
         collectionRate.value = rates[this.value] || 0;
+
         calculateCollectionAmount();
     });
 
-    occupiedFlat.addEventListener('input', function() {
-        calculateCollectionAmount();
-    });
+    occupiedFlat.addEventListener('input', calculateCollectionAmount);
 
-    discount.addEventListener('input', function() {
-        calculateCollectionAmount();
-    });
+    discount.addEventListener('input', calculateCollectionAmount);
 </script>
 
 <script>

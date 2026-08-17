@@ -83,7 +83,7 @@
             <td>৳{{ number_format($plotAndUnit->discount, 2) }}</td>
             <td>৳{{ number_format($plotAndUnit->collection_amount, 2) }}</td>
             <td>
-              <a href="{{ route('admin.plot-and-units.view', $plotAndUnit->id) }}" class="btn btn-info btn-sm" title="View"><i class="bi bi-eye"></i></a>
+              <a href="{{ route('admin.plot-and-units.view', $plotAndUnit->id) }}" target="__blank" class="btn btn-info btn-sm" title="View"><i class="bi bi-eye"></i></a>
               <a href="{{ route('admin.plot-and-units.edit', $plotAndUnit->id) }}" class="btn btn-warning btn-sm" title="Edit"><i class="bi bi-pencil"></i></a>
               <form action="{{ route('admin.plot-and-units.destroy', $plotAndUnit->id) }}" method="POST" style="display: inline;">
                 @csrf

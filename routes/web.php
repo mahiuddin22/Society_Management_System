@@ -12,12 +12,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Auth::routes();
+Route::get('/', function () {
+    return redirect()->route('login');
+});
 
 Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
 
-    Route::get('/', function () {
-        return redirect()->route('admin.home');
-    });
 
     // Dashboard
     Route::controller(HomeController::class)->group(function () {

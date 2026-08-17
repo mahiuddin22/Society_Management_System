@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PlotAndUnit;
 use App\Models\Member;
+use App\Models\PlotType;
 use Illuminate\Http\Request;
 
 class PlotAndUnitController extends Controller
@@ -11,12 +12,15 @@ class PlotAndUnitController extends Controller
     public function index()
     {
         $plotAndUnits = PlotAndUnit::all();
-        return view('admin.plot_and_units.index', compact('plotAndUnits'));
+        $plot_types = PlotType::where('status', true)->get();
+        return view('admin.plot_and_units.index', compact('plotAndUnits', 'plot_types'));
     }
 
     public function create()
     {
-        return view('admin.plot_and_units.create');
+        $plot_types = PlotType::where('status', true)->get();
+        $rates      = $plot_types->pluck('amount', 'id')->toArray();
+        return view('admin.plot_and_units.create', compact('plot_types', 'rates'));
     }
 
     public function store(Request $request)
@@ -68,10 +72,17 @@ class PlotAndUnitController extends Controller
             ->with('success', 'Plot and Unit created successfully.');
     }
 
+    public function edit($id)
+    {
+        $data = PlotAndUnit::findOrFail($id);
+        $plot_types = PlotType::where('status', true)->get();
+        $rates = $plot_types->pluck('amount', 'id')->toArray();
+        return view('admin.plot_and_units.edit', compact('data','plot_types','rates' ));
+    }
+
     public function view($id)
     {
         $plotAndUnit = PlotAndUnit::with('members')->findOrFail($id);
         return view('admin.plot_and_units.view', compact('plotAndUnit'));
     }
-
 }

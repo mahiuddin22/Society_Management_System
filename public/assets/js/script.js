@@ -1,15 +1,7 @@
 // ---------- Sidebar navigation ----------
 // Every view is now its own HTML page. The sidebar anchors in each template
 // point to the corresponding file, so the same script stays reusable.
-const navItems = document.querySelectorAll(".nav-item");
-const currentPanel = document
-    .querySelector(".panel.active")
-    ?.id?.replace("panel-", "");
-if (currentPanel) {
-    navItems.forEach((item) =>
-        item.classList.toggle("active", item.dataset.panel === currentPanel),
-    );
-}
+
 
 // On phones, the top bar is truly fixed. Measure it so the content always
 // starts directly below it, including after fonts or the viewport changes.
