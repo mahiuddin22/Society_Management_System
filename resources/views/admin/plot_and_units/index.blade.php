@@ -2,28 +2,41 @@
 
 @section('content')
 <section class="panel active" id="panel-units">
-  <div class="filter-bar">
-    <div class="search"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6d7469" stroke-width="2">
-        <circle cx="11" cy="11" r="7" />
-        <path d="m21 21-4.3-4.3" />
-      </svg><input class="input" placeholder="Search unit / holding no."></div>
-    <select class="select">
-      <option>All buildings</option>
-      <option>Building A</option>
-      <option>Building B</option>
-      <option>Building C</option>
-      <option>Building D</option>
-    </select>
-    <select class="select">
-      <option>All statuses</option>
-      <option>Occupied — Owner</option>
-      <option>Occupied — Tenant</option>
-      <option>Vacant</option>
-    </select>
-    <a href="{{route('admin.plot-and-units.create')}}" class="btn btn-primary" style="margin-left:auto;">
-      + Add Building
-    </a>
+  <div class="filter-bar d-flex align-items-center justify-content-between">
+
+    <form action="" method="GET" class="d-flex align-items-center gap-2">
+
+      <div class="search">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+          stroke="#6d7469" stroke-width="2"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" />
+        </svg>
+
+        <input class="input" name="holding_no" value="{{ request('holding_no') }}" placeholder="Search unit / holding no.">
+      </div>
+
+      <select class="select" name="building_type">
+        <option value="">-select building type-</option>
+        @foreach ($plot_types as $type)
+        <option value="{{ $type->id }}" {{ request('building_type') == $type->id ? 'selected' : '' }}>{{ $type->name }}</option>
+        @endforeach
+      </select>
+
+      <select class="select" name="collection_type">
+        <option value="">-select collection type-</option>
+        <option value="Group" {{ request('collection_type') == 'Group' ? 'selected' : '' }}>Group</option>
+        <option value="Individual" {{ request('collection_type') == 'Individual' ? 'selected' : '' }}>Individual</option>
+      </select>
+
+      <button type="submit" class="btn btn-primary">Filter</button>
+      <a href="{{ route('admin.plot-and-units.index') }}" class="btn btn-secondary">Reset</a>
+
+    </form>
+
+    <a href="{{ route('admin.plot-and-units.create') }}" class="btn btn-primary">+ Add Building</a>
+
   </div>
+
+  <hr class="my-3">
 
   <div class="grid grid-3 section-row">
     <div class="card">
@@ -98,6 +111,7 @@
           </tr>
           @endforelse
         </tbody>
+        {{ $plotAndUnits->links('pagination::bootstrap-5') }}
       </table>
 
     </div>
