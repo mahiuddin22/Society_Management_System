@@ -170,68 +170,95 @@
 
 
 <script>
-    const existingContactPersons = @json($data - > contact_persons ?? []);
+    const existingContactPersons = @json($members);
 
     const contactPersonInput = document.getElementById('contact_person');
     const contactPersonsContainer = document.getElementById('contactPersonsContainer');
 
-
     function generateContactPersons(count, existingPersons = []) {
         contactPersonsContainer.innerHTML = '';
+
         for (let i = 0; i < count; i++) {
             const person = existingPersons[i] || {};
+
             contactPersonsContainer.insertAdjacentHTML('beforeend', `
                 <div class="contact-person-group border rounded p-3 mb-3">
                     <h6 class="mb-3">Contact Person ${i + 1}</h6>
+
                     <div class="row g-3">
+
                         <div class="col-md-3">
                             <label class="form-label">Name</label>
-                            <input type="text" class="form-control" name="contact_persons[${i}][name]" value="${person.name ?? ''}" placeholder="Name">
+                            <input
+                                type="text"
+                                class="form-control"
+                                name="contact_persons[${i}][name]"
+                                value="${person.name ?? ''}"
+                                placeholder="Name"
+                            >
                         </div>
+
                         <div class="col-md-3">
                             <label class="form-label">Number</label>
-                            <input type="text" class="form-control" name="contact_persons[${i}][number]" value="${person.number ?? ''}" placeholder="Number">
+                            <input
+                                type="text"
+                                class="form-control"
+                                name="contact_persons[${i}][number]"
+                                value="${person.number ?? ''}"
+                                placeholder="Number"
+                            >
                         </div>
+
                         <div class="col-md-3">
                             <label class="form-label">Email</label>
-                            <input type="email" class="form-control" name="contact_persons[${i}][email]" value="${person.email ?? ''}" placeholder="Email">
+                            <input
+                                type="email"
+                                class="form-control"
+                                name="contact_persons[${i}][email]"
+                                value="${person.email ?? ''}"
+                                placeholder="Email"
+                            >
                         </div>
+
                         <div class="col-md-3">
                             <label class="form-label">Amount</label>
+
                             <div class="input-group">
                                 <span class="input-group-text">৳</span>
-                                <input type="number" class="form-control" name="contact_persons[${i}][amount]" value="${person.amount ?? ''}" placeholder="Amount" min="0" step="0.01">
+
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    name="contact_persons[${i}][amount]"
+                                    value="${person.amount ?? ''}"
+                                    placeholder="Amount"
+                                    min="0"
+                                    step="0.01"
+                                >
                             </div>
                         </div>
+
                     </div>
                 </div>
             `);
         }
     }
 
-
     contactPersonInput.addEventListener('input', function() {
-
         const count = parseInt(this.value) || 0;
 
-        generateContactPersons(count);
-
+        generateContactPersons(count, existingContactPersons);
     });
 
-
     document.addEventListener('DOMContentLoaded', function() {
-
         const count = parseInt(contactPersonInput.value) || 0;
 
         if (count > 0) {
-
             generateContactPersons(
                 count,
                 existingContactPersons
             );
-
         }
-
     });
 </script>
 

@@ -74,7 +74,7 @@
             <td>{{ $loop->iteration }}</td>
             <td>{{ $plotAndUnit->road }}</td>
             <td>{{ $plotAndUnit->holding_no }}</td>
-            <td>{{ $plotAndUnit->building_type }}</td>
+            <td>{{ $plotAndUnit->plot_type->name }}</td>
             <td>{{ $plotAndUnit->total_flat }}</td>
             <td>{{ $plotAndUnit->occupied_flat }}</td>
             <td>{{ $plotAndUnit->collection_type }}</td>
@@ -85,10 +85,10 @@
             <td>
               <a href="{{ route('admin.plot-and-units.view', $plotAndUnit->id) }}" target="__blank" class="btn btn-info btn-sm" title="View"><i class="bi bi-eye"></i></a>
               <a href="{{ route('admin.plot-and-units.edit', $plotAndUnit->id) }}" class="btn btn-warning btn-sm" title="Edit"><i class="bi bi-pencil"></i></a>
-              <form action="{{ route('admin.plot-and-units.destroy', $plotAndUnit->id) }}" method="POST" style="display: inline;">
+              <form action="{{ route('admin.plot-and-units.destroy', $plotAndUnit->id) }}" method="POST" id="delete-form" style="display: inline;">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="btn btn-danger btn-sm" title="Delete" onclick="return confirm('Are you sure you want to delete this plot or unit?')"><i class="bi bi-trash"></i></button>
+                <button type="submit" class="btn btn-danger btn-sm" title="Delete"><i class="bi bi-trash"></i></button>
               </form>
             </td>
           </tr>
@@ -99,7 +99,7 @@
           @endforelse
         </tbody>
       </table>
-      
+
     </div>
   </div>
 </section>

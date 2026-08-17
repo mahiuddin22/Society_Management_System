@@ -13,5 +13,10 @@ class PlotAndUnit extends Model
     {
         return $this->hasMany(Member::class, 'plot_and_unit_id');
     }
+
+    public function plot_type()
+    {
+        return $this->belongsTo(PlotType::class, 'building_type');
+    }
     
 }

@@ -35,7 +35,7 @@
                     <tr>
                         <th>Building Type</th>
                         <td class="text-capitalize">
-                            {{ $plotAndUnit->building_type }}
+                            {{ $plotAndUnit->plot_type->name }}
                         </td>
 
                         <th>Total Flat</th>
