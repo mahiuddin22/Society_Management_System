@@ -11,7 +11,7 @@
           <circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" />
         </svg>
 
-        <input class="input" name="filter_data" value="{{ request('filter_data') }}" placeholder="Search holding no / nam / number / amount">
+        <input class="input" name="filter_data" value="{{ request('filter_data') }}" placeholder="Search name / number / amount">
 
         <select class="select" name="filter_status">
           <option value="" disabled selected>-select status-</option>

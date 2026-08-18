@@ -383,7 +383,7 @@ table.ledger tbody td:first-child, table.ledger thead th:first-child{
 }
 .input:focus, select.select:focus{border-color:var(--forest-600);}
 .search{position:relative;}
-.search input{padding-left:32px; width:220px;}
+.search input{padding-left:32px; width:250px;}
 .search svg{position:absolute; left:10px; top:9px; opacity:.5;}
 
 .tabs-inline{display:flex; gap:4px; background:var(--paper-100); padding:4px; border-radius:var(--radius-m); width:max-content;}
