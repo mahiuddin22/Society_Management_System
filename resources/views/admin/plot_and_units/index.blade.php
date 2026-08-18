@@ -87,7 +87,7 @@
             <td>{{ $loop->iteration }}</td>
             <td>{{ $plotAndUnit->road }}</td>
             <td>{{ $plotAndUnit->holding_no }}</td>
-            <td>{{ $plotAndUnit->plot_type->name }}</td>
+            <td>{{ $plotAndUnit->plot_type->name ?? 'N/A' }}</td>
             <td>{{ $plotAndUnit->total_flat }}</td>
             <td>{{ $plotAndUnit->occupied_flat }}</td>
             <td>{{ $plotAndUnit->collection_type }}</td>

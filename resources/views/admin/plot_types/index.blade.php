@@ -46,10 +46,10 @@
             </td>
             <td>
               <a href="{{ route('admin.type.edit', $type->id) }}" class="btn btn-warning btn-sm" title="Edit"><i class="bi bi-pencil"></i></a>
-              <form action="{{ route('admin.type.destroy', $type->id) }}" method="POST" style="display: inline;">
+              <form action="{{ route('admin.type.destroy', $type->id) }}" method="POST" id="delete-form" style="display: inline;">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="btn btn-danger btn-sm" title="Delete" onclick="return confirm('Are you sure you want to delete this plot or unit?')"><i class="bi bi-trash"></i></button>
+                <button type="submit" class="btn btn-danger btn-sm" title="Delete"><i class="bi bi-trash"></i></button>
               </form>
             </td>
           </tr>

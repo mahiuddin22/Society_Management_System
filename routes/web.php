@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PermissionsController;
 use App\Http\Controllers\PlotAndUnitController;
@@ -79,8 +80,18 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
         Route::delete('{id}/destroy', 'destroy')->name('destroy');
     });
 
-    // Site Settings
+    // Plote Types
     Route::controller(PlotTypeController::class)->prefix('type')->name('type.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/create', 'create')->name('create');
+        Route::post('store', 'store')->name('store');
+        Route::get('{id}/edit', 'edit')->name('edit');
+        Route::put('{id}', 'update')->name('update');
+        Route::delete('{id}/destroy', 'destroy')->name('destroy');
+    });
+
+    // Collections
+    Route::controller(CollectionController::class)->prefix('collection')->name('collection.')->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('/create', 'create')->name('create');
         Route::post('store', 'store')->name('store');

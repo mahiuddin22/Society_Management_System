@@ -43,8 +43,7 @@ class PlotTypeController extends Controller
     }
 
     public function destroy($id){
-
-        $plot_type = PlotType::where('id', $id)->first()->delete();
+        PlotType::where('id', $id)->first()->delete();
         return redirect()->route('admin.type.index')->with('success','Data Deleted Successfully');
     }
 
