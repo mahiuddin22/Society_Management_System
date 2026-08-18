@@ -39,7 +39,7 @@
         <thead>
           <tr>
             <th>SL</th>
-            <th>Holding No</th>
+            <!-- <th>Holding No</th> -->
             <th>Name</th>
             <th>Number</th>
             <th>Email</th>
@@ -52,7 +52,7 @@
           @forelse($data as $member)
           <tr>
             <td>{{ $loop->iteration }}</td>
-            <td>{{ $member->plot->holding_no }}</td>
+            <!-- <td>{{ $member->plot->holding_no }}</td> -->
             <td>{{ $member->name }}</td>
             <td>{{ $member->number }}</td>
             <td>{{ $member->email }}</td>
