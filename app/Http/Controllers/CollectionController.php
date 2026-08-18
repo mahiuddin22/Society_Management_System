@@ -12,7 +12,7 @@ class CollectionController extends Controller
         $filter_data   = $request->filter_data;
         $filter_status = $request->filter_status;
 
-        $data = Member::orderBy('id', 'desc')->with('plot');
+        $data = Member::orderBy('id', 'desc');
 
         if (!empty($filter_data)) {
             $data->where('name', 'LIKE', '%' . $filter_data . '%')
