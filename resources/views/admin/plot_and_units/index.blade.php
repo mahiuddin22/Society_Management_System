@@ -8,7 +8,9 @@
 
       <div class="search">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-          stroke="#6d7469" stroke-width="2"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" />
+          stroke="#6d7469" stroke-width="2">
+          <circle cx="11" cy="11" r="7" />
+          <path d="m21 21-4.3-4.3" />
         </svg>
 
         <input class="input" name="holding_no" value="{{ request('holding_no') }}" placeholder="Search unit / holding no.">
@@ -32,31 +34,28 @@
 
     </form>
 
+    @if (hasPermission('plot_and_units', 'create'))
     <a href="{{ route('admin.plot-and-units.create') }}" class="btn btn-primary">+ Add Building</a>
+    @endif
 
   </div>
 
   <hr class="my-3">
 
   <div class="grid grid-3 section-row">
+
+    @foreach($plot_types->random(min(3, $plot_types->count())) as $type)
+    @php
+    $unites_count = \App\Models\PlotAndUnit::where('building_type', $type->id)->count();
+    @endphp
     <div class="card">
       <div class="card-head">
-        <h3>Building A</h3><span class="badge green">32 units</span>
+        <h3>{{$type->name ?? N/A}}</h3><span class="badge green">{{$unites_count}}</span>
       </div>
-      <div class="s hint">Holding no. UTS3-A · Subscription ৳2,500/unit</div>
+      <div class="s hint">Collection Amount ৳{{$type->amount}}/unit</div>
     </div>
-    <div class="card">
-      <div class="card-head">
-        <h3>Building B</h3><span class="badge green">28 units</span>
-      </div>
-      <div class="s hint">Holding no. UTS3-B · Subscription ৳2,300/unit</div>
-    </div>
-    <div class="card">
-      <div class="card-head">
-        <h3>Building C</h3><span class="badge green">36 units</span>
-      </div>
-      <div class="s hint">Holding no. UTS3-C · Subscription ৳2,500/unit</div>
-    </div>
+    @endforeach
+
   </div>
 
   <div class="card">
@@ -96,13 +95,19 @@
             <td>৳{{ number_format($plotAndUnit->discount, 2) }}</td>
             <td>৳{{ number_format($plotAndUnit->collection_amount, 2) }}</td>
             <td>
+              @if (hasPermission('plot_and_units', 'view'))
               <a href="{{ route('admin.plot-and-units.view', $plotAndUnit->id) }}" target="__blank" class="btn btn-info btn-sm" title="View"><i class="bi bi-eye"></i></a>
+              @endif
+              @if (hasPermission('plot_and_units', 'edit'))
               <a href="{{ route('admin.plot-and-units.edit', $plotAndUnit->id) }}" class="btn btn-warning btn-sm" title="Edit"><i class="bi bi-pencil"></i></a>
-              <form action="{{ route('admin.plot-and-units.destroy', $plotAndUnit->id) }}" method="POST" id="delete-form" style="display: inline;">
+              @endif
+              @if (hasPermission('plot_and_units', 'delete'))
+              <form action="{{ route('admin.plot-and-units.destroy', $plotAndUnit->id) }}" method="POST" id="delete-form-{{ $plotAndUnit->id }}" style="display: inline;">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="btn btn-danger btn-sm" title="Delete"><i class="bi bi-trash"></i></button>
               </form>
+              @endif
             </td>
           </tr>
           @empty

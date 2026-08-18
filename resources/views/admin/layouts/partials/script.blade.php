@@ -69,24 +69,47 @@
     });
 </script>
 <script>
-    document.getElementById('delete-form').addEventListener('submit', function(e) {
-        e.preventDefault();
+    document.querySelectorAll('[id^="delete-form-"]').forEach(function(form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
 
-        const form = this;
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'This plot/unit and all related member data will be deleted.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+</script>
 
-        Swal.fire({
-            title: 'Are you sure?',
-            text: 'This plot/unit and all related member data will be deleted.',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'Cancel'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                form.submit();
-            }
+<script>
+    document.querySelectorAll('[id^="change-status-"]').forEach(function(form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'The status will be changed.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#198754',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, change it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
         });
     });
 </script>

@@ -3,17 +3,31 @@
 @section('content')
 <section class="panel active" id="panel-units">
   <div class="filter-bar">
-    <form action="" method="get" autocomplete="off">
-      <div class="search"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6d7469" stroke-width="2">
-          <circle cx="11" cy="11" r="7" />
-          <path d="m21 21-4.3-4.3" />
+    <form action="" method="GET" class="d-flex align-items-center gap-2">
+
+      <div class="search">
+        
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6d7469" stroke-width="2">
+          <circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" />
         </svg>
-        <input class="input" name="name" placeholder="Search type name.">
+
+        <input class="input" name="filter_data" value="{{ request('filter_data') }}" placeholder="Search holding no / nam / number / amount">
+
+        <select class="select" name="filter_status">
+          <option value="" disabled selected>-select status-</option>
+          <option value="0" {{ request('filter_status') == 0 ? 'selected' : '' }}>Inactive</option>
+          <option value="1" {{ request('filter_status') == 1 ? 'selected' : '' }}>Active</option>
+        </select>
+
       </div>
+
+      <button type="submit" class="btn btn-primary">Filter</button>
+      <a href="{{ route('admin.collection.index') }}" class="btn btn-secondary">Reset</a>
+
     </form>
-    <a href="{{route('admin.type.create')}}" class="btn btn-primary" style="margin-left:auto;">
-      + Add Plot Type
-    </a>
+    <!-- <a href="" class="btn btn-primary" style="margin-left:auto;">
+      + Add Collection
+    </a> -->
   </div>
 
   <div class="card">
@@ -25,32 +39,51 @@
         <thead>
           <tr>
             <th>SL</th>
+            <th>Holding No</th>
             <th>Name</th>
+            <th>Number</th>
+            <th>Email</th>
             <th>Amount</th>
             <th>Status</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody>
-          @forelse($plot_types as $type)
+          @forelse($data as $member)
           <tr>
             <td>{{ $loop->iteration }}</td>
-            <td>{{ $type->name }}</td>
-            <td>{{ $type->amount }}</td>
+            <td>{{ $member->plot->holding_no }}</td>
+            <td>{{ $member->name }}</td>
+            <td>{{ $member->number }}</td>
+            <td>{{ $member->email }}</td>
+            <td>{{ $member->amount }}</td>
             <td>
-              @if($type->status == 1)
-              <span class="badge green"><i class="dot"></i>Active</span>
+              @if($member->payment_status == 1)
+              <span class="badge green"><i class="dot"></i>Paid</span>
               @else
-              <span class="badge red"><i class="dot"></i>Inactive</span>
+              <span class="badge red"><i class="dot"></i>Unpaid</span>
               @endif
             </td>
             <td>
-              <a href="{{ route('admin.type.edit', $type->id) }}" class="btn btn-warning btn-sm" title="Edit"><i class="bi bi-pencil"></i></a>
-              <form action="{{ route('admin.type.destroy', $type->id) }}" method="POST" style="display: inline;">
+              @if (hasPermission('collections', 'edit'))
+              <a href="{{ route('admin.collection.edit', $member->id) }}" class="btn btn-warning btn-sm" title="Edit"><i class="bi bi-pencil"></i></a>
+              @endif
+              @if (hasPermission('collections', 'change_status'))
+              <form id="change-status-{{ $member->id }}" action="{{ route('admin.collection.change.status', $member->id) }}" method="POST" class="d-inline">
+                @csrf
+                @method('PATCH')
+                <button type="submit" class="btn btn-success btn-sm" title="Change Payment Status" onclick="changePaymentStatus()">
+                  <i class="bi bi-{{ $member->payment_status == 1 ? 'toggle-on' : 'toggle-off' }}"></i>
+                </button>
+              </form>
+              @endif
+              @if (hasPermission('collections', 'delete'))
+              <form action="{{ route('admin.collection.destroy', $member->id) }}" method="POST" id="delete-form-{{ $member->id }}" style="display: inline;">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="btn btn-danger btn-sm" title="Delete" onclick="return confirm('Are you sure you want to delete this plot or unit?')"><i class="bi bi-trash"></i></button>
+                <button type="submit" class="btn btn-danger btn-sm" title="Delete"><i class="bi bi-trash"></i></button>
               </form>
+              @endif
             </td>
           </tr>
           @empty

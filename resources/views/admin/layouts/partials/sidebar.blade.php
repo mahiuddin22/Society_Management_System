@@ -24,13 +24,15 @@
         <!-- People -->
         <div class="nav-group">
             <div class="nav-group-label">People</div>
-            
+            @if (hasPermission('plot_and_units'))
             <a class="nav-item {{ request()->routeIs('admin.plot-and-units.*') ? 'active' : '' }}" href="{{ route('admin.plot-and-units.index') }}" data-panel="units">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M3 21V9l9-6 9 6v12" /> <path d="M9 21v-8h6v8" />
+                    <path d="M3 21V9l9-6 9 6v12" />
+                    <path d="M9 21v-8h6v8" />
                 </svg>
                 Plot &amp; Units
             </a>
+            @endif
 
             <!-- <a class="nav-item" href="owners.html" data-panel="owners">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -65,13 +67,13 @@
                 </svg>
                 Subscription &amp; Billing
             </a> -->
-            <a class="nav-item" href="payments.html" data-panel="payments">
+            <a class="nav-item {{ request()->routeIs('admin.collection.*') ? 'active' : '' }}" href="{{ route('admin.collection.index') }}" data-panel="payments">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="2" y="6" width="20" height="13" rx="2" />
                     <path d="M2 10h20" />
                     <path d="M6 15h4" />
                 </svg>
-                Payments &amp; Collecttions
+                Collecttions
             </a>
             <!-- <a class="nav-item" href="expense.html" data-panel="expense">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
