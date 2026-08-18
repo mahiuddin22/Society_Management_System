@@ -116,8 +116,8 @@
           </tr>
           @endforelse
         </tbody>
-        {{ $plotAndUnits->links('pagination::bootstrap-5') }}
       </table>
+      {{ $plotAndUnits->links('pagination::bootstrap-5') }}
 
     </div>
   </div>

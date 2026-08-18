@@ -6,9 +6,10 @@
     <form action="" method="GET" class="d-flex align-items-center gap-2">
 
       <div class="search">
-        
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6d7469" stroke-width="2">
-          <circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" />
+
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6d7469" stroke-width="2">
+          <circle cx="11" cy="11" r="7" />
+          <path d="m21 21-4.3-4.3" />
         </svg>
 
         <input class="input" name="filter_data" value="{{ request('filter_data') }}" placeholder="Search name / number / amount">
@@ -93,7 +94,7 @@
           @endforelse
         </tbody>
       </table>
-
+      {{ $data->links('pagination::bootstrap-5') }}
     </div>
   </div>
 </section>
