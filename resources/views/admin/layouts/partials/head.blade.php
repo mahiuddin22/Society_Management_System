@@ -19,5 +19,8 @@
 <link rel="stylesheet" href="{{ asset('assets/css/lightgallery-bundle.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('assets/css/swiper-bundle.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 @stack('styles')
 <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>

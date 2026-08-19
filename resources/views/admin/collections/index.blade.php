@@ -12,12 +12,14 @@
           <path d="m21 21-4.3-4.3" />
         </svg>
 
+        <input class="input" name="filter_holding_no" value="{{ request('filter_data') }}" placeholder="Search by holding number">
+        <input class="input" name="filter_road" value="{{ request('filter_data') }}" placeholder="Search road number">
         <input class="input" name="filter_data" value="{{ request('filter_data') }}" placeholder="Search name / number / amount">
 
         <select class="select" name="filter_status">
-          <option value="" disabled selected>-select status-</option>
-          <option value="0" {{ request('filter_status') == 0 ? 'selected' : '' }}>Inactive</option>
-          <option value="1" {{ request('filter_status') == 1 ? 'selected' : '' }}>Active</option>
+          <option value="" disabled {{ request()->has('filter_status') ? '' : 'selected' }}>-select status-</option>
+          <option value="0" {{ request('filter_status') == '0' ? 'selected' : '' }}>Unpaid</option>
+          <option value="1" {{ request('filter_status') == '1' ? 'selected' : '' }}>Paid</option>
         </select>
 
       </div>
@@ -40,7 +42,8 @@
         <thead>
           <tr>
             <th>SL</th>
-            <!-- <th>Holding No</th> -->
+            <th>Holding No</th>
+            <th>Road No</th>
             <th>Name</th>
             <th>Number</th>
             <th>Email</th>
@@ -53,7 +56,8 @@
           @forelse($data as $member)
           <tr>
             <td>{{ $loop->iteration }}</td>
-            <!-- <td>{{ $member->plot->holding_no }}</td> -->
+            <td>{{ $member->plot->holding_no }}</td>
+            <td>{{ $member->plot->road }}</td>
             <td>{{ $member->name }}</td>
             <td>{{ $member->number }}</td>
             <td>{{ $member->email }}</td>
@@ -66,6 +70,11 @@
               @endif
             </td>
             <td>
+              @if (hasPermission('collections', 'download'))
+              @if($member->payment_status == 1)
+              <a href="{{ route('admin.collection.receipt', $member->id) }}" target="_blank" class="btn btn-info btn-sm" title="Money Receipt"><i class="bi bi-receipt"></i></a>
+              @endif
+              @endif
               @if (hasPermission('collections', 'edit'))
               <a href="{{ route('admin.collection.edit', $member->id) }}" class="btn btn-warning btn-sm" title="Edit"><i class="bi bi-pencil"></i></a>
               @endif

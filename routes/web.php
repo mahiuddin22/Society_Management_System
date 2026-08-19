@@ -8,6 +8,7 @@ use App\Http\Controllers\PlotAndUnitController;
 use App\Http\Controllers\PlotTypeController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RolePermissionController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserPermissionController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -94,11 +95,20 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
     // Collections
     Route::controller(CollectionController::class)->prefix('collection')->name('collection.')->group(function () {
         Route::get('/', 'index')->name('index');
+        Route::get('/receipt/{id}', 'receipt')->name('receipt');
         // Route::get('/create', 'create')->name('create');
         // Route::post('store', 'store')->name('store');
         Route::get('{id}/edit', 'edit')->name('edit');
         Route::put('{id}', 'update')->name('update');
         Route::patch('change-status/{id}', 'changeStatus')->name('change.status');
+        Route::delete('{id}/destroy', 'destroy')->name('destroy');
+    });
+
+    // Settings
+    Route::controller(SettingController::class)->prefix('setting')->name('setting.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('{id}/edit', 'edit')->name('edit');
+        Route::put('{id}', 'update')->name('update');
         Route::delete('{id}/destroy', 'destroy')->name('destroy');
     });
 

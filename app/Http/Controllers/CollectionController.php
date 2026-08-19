@@ -9,16 +9,32 @@ class CollectionController extends Controller
 {
     public function index(Request $request)
     {
-        $filter_data   = $request->filter_data;
-        $filter_status = $request->filter_status;
+        $filter_data        = $request->filter_data;
+        $filter_status      = $request->filter_status;
+        $filter_holding_no  = $request->filter_holding_no;
+        $filter_road        = $request->filter_road;
 
-        $data = Member::orderBy('id', 'desc');
+        $data = Member::with('plot')->orderBy('id', 'desc');
 
         if (!empty($filter_data)) {
-            $data->where('name', 'LIKE', '%' . $filter_data . '%')
-                ->orWhere('number', $filter_data)
-                ->orWhere('email', $filter_data)
-                ->orWhere('amount', $filter_data);
+            $data->where(function ($query) use ($filter_data) {
+                $query->where('name', 'LIKE', '%' . $filter_data . '%')
+                    ->orWhere('number', $filter_data)
+                    ->orWhere('email', $filter_data)
+                    ->orWhere('amount', $filter_data);
+            });
+        }
+
+        if (!empty($filter_holding_no)) {
+            $data->whereHas('plot', function ($holding_no) use ($filter_holding_no) {
+                $holding_no->where('holding_no', 'LIKE', '%' . $filter_holding_no . '%');
+            });
+        }
+
+        if (!empty($filter_road)) {
+            $data->whereHas('plot', function ($road) use ($filter_road) {
+                $road->where('road', 'LIKE', '%' . $filter_road . '%');
+            });
         }
 
         if ($filter_status !== null && $filter_status !== '') {
@@ -26,7 +42,15 @@ class CollectionController extends Controller
         }
 
         $data = $data->paginate(30);
+
         return view('admin.collections.index', compact('data'));
+    }
+
+    public function receipt($id)
+    {
+        $member = Member::with('plot')->findOrFail($id);
+
+        return view('admin.collections.receipt', compact('member'));
     }
 
     // public function create()

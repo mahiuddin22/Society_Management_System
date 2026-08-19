@@ -60,11 +60,7 @@ class PermissionsController extends Controller
     public function edit($id)
     {
         $permission = Permission::findOrFail($id);
-        if($permission->activity_id) {
-            $activities = Activity::whereIn('id', explode(',', $permission->activity_id))->get();
-        } else {
-            $activities = Activity::all();
-        }
+        $activities = Activity::all();
         return view('admin.permissions.edit', compact('permission', 'activities'));
     }
 
