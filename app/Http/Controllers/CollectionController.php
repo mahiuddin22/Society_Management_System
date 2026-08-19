@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Member;
+use App\Models\Settings;
 use Illuminate\Http\Request;
 
 class CollectionController extends Controller
@@ -49,8 +50,9 @@ class CollectionController extends Controller
     public function receipt($id)
     {
         $member = Member::with('plot')->findOrFail($id);
-
-        return view('admin.collections.receipt', compact('member'));
+        $settings = Settings::latest()->first();
+        $invoiceNo = 'MR-' . date('Y') . '-' . str_pad($member->id, 6, '0', STR_PAD_LEFT);
+        return view('admin.collections.receipt', compact('member','settings','invoiceNo'));
     }
 
     // public function create()

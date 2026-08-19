@@ -105,11 +105,11 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
     });
 
     // Settings
-    Route::controller(SettingController::class)->prefix('setting')->name('setting.')->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::get('{id}/edit', 'edit')->name('edit');
-        Route::put('{id}', 'update')->name('update');
-        Route::delete('{id}/destroy', 'destroy')->name('destroy');
+    Route::controller(SettingController::class)->prefix('settings')->name('settings.')->group(function () {
+        Route::get('edit', 'edit')->name('edit');
+        Route::put('basic-update', 'basicUpdate')->name('basic.update');
+        Route::put('email-update', 'emailUpdate')->name('email.update');
+        Route::put('password-update', 'passwordUpdate')->name('password.update');
     });
 
 });

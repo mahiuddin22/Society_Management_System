@@ -16,13 +16,13 @@ class SettingController extends Controller
     /*
    Show Pages
    */
-    public function index()
+    public function edit()
     {
-        $content = Settings::all()->first();
-        return View('admin.setting.index', compact('content'));
+        $settings = Settings::all()->first();
+        return View('admin.settings.edit', compact('settings'));
     }
 
-    public function update(Request $request, $id)
+    public function basicUpdate(Request $request)
     {
         $this->validate($request, [
             'name'              => 'required',
@@ -32,7 +32,7 @@ class SettingController extends Controller
         ]);
 
         // Get existing record (IMPORTANT: no truncate)
-        $content = Settings::findOrFail($id);
+        $content = Settings::latest()->first();
 
         // Logo upload
         if (!empty($request->logo)) {
@@ -62,79 +62,7 @@ class SettingController extends Controller
         $content->email             = $request->email;
         $content->save();
 
-        return redirect()->back()->with('message', 'Settings updated successfully');
+        return redirect()->back()->with('success', 'Settings updated successfully');
     }
-
-    // public function viewProfile()
-    // {
-    //     $admin = auth()->user();
-    //     return view('admin.setting.view_profile', compact('admin'));
-    // }
-
-    // public function profileSettings()
-    // {
-    //     $admin = auth()->user();
-    //     return view('admin.setting.profile_setting', compact('admin'));
-    // }
-
-
-    // public function updateProfileSettings(Request $request)
-    // {
-    //     $admin = User::where('id', auth()->id())->first();
-
-    //     // Validation
-    //     $request->validate([
-    //         'first_name' => 'required|string|max:255',
-    //         'email'      => 'required|email|unique:users,email,' . $admin->id,
-    //         'phone'      => 'nullable|string|max:20',
-    //         'address'    => 'nullable|string',
-    //         'avatar'     => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-    //     ]);
-
-    //     $admin->first_name = $request->first_name;
-    //     $admin->email = $request->email;
-    //     $admin->phone = $request->phone;
-    //     $admin->address = $request->address;
-
-    //     if ($request->hasFile('avatar')) {
-
-    //         if ($admin->avatar && File::exists(public_path('admin/images/' . $admin->avatar))) {
-    //             File::delete(public_path('admin/images/' . $admin->avatar));
-    //         }
-
-    //         $file = $request->file('avatar');
-    //         $filename = time() . '.' . $file->getClientOriginalExtension();
-    //         $file->move(public_path('admin/images/'), $filename);
-
-    //         $admin->avatar = $filename;
-    //     }
-
-    //     $admin->save();
-
-    //     return redirect()->route('admin.view.profile')->with('success', 'Profile updated successfully!');
-    // }
-
-    // public function updatePassword(Request $request)
-    // {
-    //     $admin = User::where('id', auth()->id())->first();
-
-    //     // Validation
-    //     $request->validate([
-    //         'current_password' => 'required',
-    //         'new_password'     => 'required|min:6|confirmed',
-    //     ]);
-
-    //     // Check current password
-    //     if (!Hash::check($request->current_password, $admin->password)) {
-    //         return redirect()->back()->withErrors([
-    //             'current_password' => 'Current password is incorrect'
-    //         ]);
-    //     }
-
-    //     $admin->password = Hash::make($request->new_password);
-    //     $admin->save();
-
-    //     return redirect()->back()->with('success', 'Password updated successfully!');
-    // }
 
 }

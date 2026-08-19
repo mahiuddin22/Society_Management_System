@@ -143,7 +143,7 @@
         <div class="nav-group">
             <div class="nav-group-label">Settings</div>
             <a class="nav-item {{ request()->routeIs('admin.type.*') ? 'active' : '' }}" href="{{ route('admin.type.index') }}"><i class="bi bi-person-circle"></i> Plot Types</a>
-            <a class="nav-item {{ request()->routeIs('admin.type.*') ? 'active' : '' }}" href="{{ route('admin.type.index') }}"><i class="bi bi-person-circle"></i> Site Settings</a>
+            <a class="nav-item {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}" href="{{ route('admin.settings.edit') }}"><i class="bi bi-person-circle"></i> Site Settings</a>
         </div>
     </nav>
 

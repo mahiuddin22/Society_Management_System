@@ -10,8 +10,7 @@
         margin: 0;
         padding: 0;
         background: #f2f2f2;
-        font-family: Helvetica, Arial, sans-serif;
-        font-family: "Kindly Rewind", sans-serif;
+        font-family: "Kindly Rewind", Helvetica, Arial, sans-serif;
         color: #222;
         font-size: 13px;
     }
@@ -44,8 +43,23 @@
         margin-bottom: 20px;
     }
 
-    .company-info {
+    .company-brand {
         width: 60%;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .company-brand>img {
+        width: 75px;
+        height: 75px;
+        object-fit: contain;
+        flex-shrink: 0;
+    }
+
+    .company-info {
+        width: auto;
+        flex: 1;
     }
 
     .company-info h2 {
@@ -315,23 +329,38 @@
         body {
             width: 100%;
             height: auto;
-            margin: 0;
-            padding: 0;
+            margin: 0 !important;
+            padding: 0 !important;
             background: #fff !important;
-            font-family: Helvetica, Arial, sans-serif;
+        }
+
+        body * {
+            visibility: hidden !important;
+        }
+
+        .receipt,
+        .receipt * {
+            visibility: visible !important;
         }
 
         .receipt-wrapper {
+            position: absolute;
+            left: 0;
+            top: 0;
             width: 100%;
             max-width: none;
-            margin: 0;
+            margin: 0 !important;
+            padding: 0 !important;
         }
 
         .receipt {
+            position: relative;
             width: 100%;
-            padding: 10px;
-            border: none;
-            box-shadow: none;
+            margin: 0 !important;
+            padding: 10px !important;
+            border: none !important;
+            box-shadow: none !important;
+            background: #fff !important;
         }
 
         .print-btn {
@@ -377,13 +406,42 @@
             gap: 15px;
         }
 
-        .company-info,
+        .company-brand {
+            width: 60%;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .company-brand>img {
+            width: 75px;
+            height: 75px;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+
+        .company-info h2 {
+            margin: 0 0 6px;
+            font-size: 24px;
+            line-height: 1.2;
+            font-weight: 700;
+            color: #111;
+        }
+
+        .company-info p {
+            margin: 2px 0;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #555;
+        }
+
+        .company-brand,
         .receipt-title {
             width: 100%;
         }
 
-        .receipt-title {
-            text-align: left;
+        .company-brand {
+            align-items: flex-start;
         }
 
         .receipt-meta {
@@ -413,6 +471,7 @@
     }
 </style>
 @endpush
+
 @section('content')
 
 <div class="receipt-wrapper">
@@ -426,29 +485,36 @@
 
     <div class="receipt">
 
-        {{-- Header --}}
+        <!-- {{-- Header --}} -->
         <div class="receipt-header">
+            <div class="company-brand">
 
-            <div class="company-info">
-                <h2>Your Organization Name</h2>
-                <p>Your Organization Address</p>
-                <p>Phone: 01XXXXXXXXX</p>
-                <p>Email: example@email.com</p>
+                @if($settings->logo)
+                <img src="{{ asset('uploads/settings/'.$settings->logo) }}" alt="{{ $settings->name }}">
+                @else
+                <img src="{{ asset('uploads/settings/default.png') }}" alt="{{ $settings->name }}">
+                @endif
+
+                <div class="company-info">
+                    <h2>{!! $settings->name !!}</h2>
+                    <p>{!! $settings->address !!}</p>
+                    <p>Phone: {!! $settings->contact !!}</p>
+                    <p>Email: {!! $settings->email !!}</p>
+                </div>
             </div>
 
             <div class="receipt-title">
                 <h1>Money Receipt</h1>
                 <p>Official Payment Receipt</p>
             </div>
-
         </div>
 
-        {{-- Receipt Information --}}
+        <!-- {{-- Receipt Information --}} -->
         <div class="receipt-meta">
 
             <div class="meta-item">
                 <strong>Receipt No:</strong>
-                MR-{{ str_pad($member->id, 6, '0', STR_PAD_LEFT) }}
+                {{$invoiceNo}}
             </div>
 
             <div class="meta-item">
@@ -458,7 +524,7 @@
 
         </div>
 
-        {{-- Customer Information --}}
+        <!-- {{-- Customer Information --}} -->
         <div class="section-title">
             Customer Information
         </div>
@@ -486,7 +552,7 @@
             </tr>
         </table>
 
-        {{-- Payment Information --}}
+        <!-- {{-- Payment Information --}} -->
         <div class="section-title">Payment Information</div>
 
         <table class="payment-table">
@@ -540,10 +606,10 @@
 
         </table>
 
-        {{-- Amount in Words --}}
+        <!-- {{-- Amount in Words --}} -->
         <div class="amount-words">
             <strong>Amount in Words:</strong>
-            {{ $amountInWords ?? 'Amount in words will appear here.' }}
+            {{ amountInWords($member->amount) }}
         </div>
 
         {{-- Signature --}}
