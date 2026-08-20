@@ -83,6 +83,9 @@ class PlotAndUnitController extends Controller
         foreach ($validatedData['contact_persons'] ?? [] as $contact) {
             $member = new Member();
             $member->plot_and_unit_id   = $plotAndUnit->id;
+            $member->unique_id          = 'UT03'.$validatedData['road'].$validatedData['holding_no'].$validatedData['total_flat'];
+            $member->road               = $validatedData['road'];
+            $member->holding_no         = $validatedData['holding_no'];
             $member->name               = $contact['name'];
             $member->number             = $contact['number'];
             $member->email              = $contact['email'] ?? null;
@@ -145,6 +148,9 @@ class PlotAndUnitController extends Controller
         foreach ($validatedData['contact_persons'] ?? [] as $contact) {
             $member = new Member();
             $member->plot_and_unit_id   = $plotAndUnit->id;
+            // $member->unique_id          = 'UT03'.$validatedData['road'].$validatedData['holding_no'].$validatedData['total_flat'];
+            $member->road               = $validatedData['road'];
+            $member->holding_no         = $validatedData['holding_no'];
             $member->name               = $contact['name'];
             $member->number             = $contact['number'];
             $member->email              = $contact['email'] ?? null;

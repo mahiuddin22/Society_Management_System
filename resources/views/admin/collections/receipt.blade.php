@@ -1,6 +1,11 @@
 @extends('admin.layouts.app')
 
 @push('styles')
+<!-- Google Fonts: Courier Prime for typewriter/monospaced aesthetic -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
 <style>
     * {
         box-sizing: border-box;
@@ -9,464 +14,231 @@
     body {
         margin: 0;
         padding: 0;
-        background: #f2f2f2;
-        font-family: "Kindly Rewind", Helvetica, Arial, sans-serif;
-        color: #222;
-        font-size: 13px;
+        background: #f4f4f4;
+        font-family: 'Courier Prime', 'Courier New', Courier, monospace;
+        color: #000;
+        font-size: 11px;
+        /* Scaled down for compact thermal paper */
+        line-height: 1.3;
     }
 
+    /* POS thermal width (80mm standard = ~300px printable width) */
     .receipt-wrapper {
         width: 100%;
-        max-width: 850px;
-        margin: 30px auto;
+        max-width: 300px;
+        margin: 15px auto;
+        padding: 0;
     }
 
     .receipt {
         width: 100%;
-        background: #fff;
-        padding: 35px 40px;
-        border: 1px solid #d5d5d5;
-        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-        font-family: Helvetica, Arial, sans-serif;
+        background: #ffffff;
+        padding: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        font-family: 'Courier Prime', 'Courier New', Courier, monospace;
     }
 
     /* =========================
        HEADER
     ========================== */
 
-    .receipt-header {
+    .receipt-brand-bar {
         display: flex;
         justify-content: space-between;
-        align-items: flex-start;
-        padding-bottom: 18px;
-        border-bottom: 2px solid #222;
-        margin-bottom: 20px;
-    }
-
-    .company-brand {
-        width: 60%;
-        display: flex;
         align-items: center;
-        gap: 15px;
+        margin-bottom: 10px;
     }
 
-    .company-brand>img {
-        width: 75px;
-        height: 75px;
+    .brand-left img {
+        max-height: 30px;
+        max-width: 80px;
         object-fit: contain;
-        flex-shrink: 0;
     }
 
-    .company-info {
-        width: auto;
-        flex: 1;
-    }
-
-    .company-info h2 {
-        margin: 0 0 6px;
-        font-size: 24px;
-        line-height: 1.2;
+    .brand-right h2 {
+        margin: 0;
+        font-size: 14px;
         font-weight: 700;
         color: #111;
+        font-family: Arial, Helvetica, sans-serif;
     }
 
-    .company-info p {
-        margin: 2px 0;
-        font-size: 12px;
-        line-height: 1.5;
-        color: #555;
-    }
-
-    .receipt-title {
-        width: 40%;
-        text-align: right;
-    }
-
-    .receipt-title h1 {
-        margin: 0;
-        font-size: 24px;
-        line-height: 1.2;
+    .receipt-main-title {
+        text-align: center;
+        font-size: 16px;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 1px;
-        color: #111;
-    }
-
-    .receipt-title p {
-        margin: 5px 0 0;
-        font-size: 11px;
-        color: #666;
-    }
-
-    /* =========================
-       RECEIPT META
-    ========================== */
-
-    .receipt-meta {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-        font-size: 13px;
-    }
-
-    .meta-item {
-        line-height: 1.5;
-    }
-
-    .meta-item strong {
-        font-weight: 700;
-        margin-right: 5px;
-    }
-
-    /* =========================
-       SECTION TITLE
-    ========================== */
-
-    .section-title {
-        background: #f5f5f5;
-        border: 1px solid #ccc;
-        padding: 8px 10px;
-        font-size: 13px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.3px;
-        color: #222;
-    }
-
-    /* =========================
-       CUSTOMER TABLE
-    ========================== */
-
-    .customer-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 20px;
-    }
-
-    .customer-table td {
-        border: 1px solid #ccc;
-        padding: 9px 10px;
-        font-size: 13px;
-        line-height: 1.4;
-        vertical-align: middle;
-    }
-
-    .customer-table td:nth-child(odd) {
-        width: 17%;
-        background: #fafafa;
-        font-weight: 700;
-        color: #333;
-    }
-
-    .customer-table td:nth-child(even) {
-        width: 33%;
-        color: #444;
-    }
-
-    /* =========================
-       PAYMENT TABLE
-    ========================== */
-
-    .payment-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 20px;
-    }
-
-    .payment-table th {
-        background: #f5f5f5;
-        border: 1px solid #ccc;
-        padding: 9px 10px;
-        font-size: 13px;
-        font-weight: 700;
-        text-align: left;
-        color: #222;
-    }
-
-    .payment-table td {
-        border: 1px solid #ccc;
-        padding: 10px;
-        font-size: 13px;
-        line-height: 1.4;
-        vertical-align: middle;
-    }
-
-    .payment-table .amount {
-        text-align: right;
-        font-weight: 700;
-        white-space: nowrap;
-    }
-
-    .payment-table .total-row td {
-        font-weight: 700;
-        font-size: 14px;
-    }
-
-    /* =========================
-       PAYMENT STATUS
-    ========================== */
-
-    .status-paid {
-        display: inline-block;
-        padding: 4px 12px;
-        border: 1px solid #198754;
-        color: #198754;
-        background: #f1faf5;
-        border-radius: 3px;
-        font-size: 11px;
-        font-weight: 700;
-        letter-spacing: 0.4px;
-    }
-
-    .status-unpaid {
-        display: inline-block;
-        padding: 4px 12px;
-        border: 1px solid #dc3545;
-        color: #dc3545;
-        background: #fff5f5;
-        border-radius: 3px;
-        font-size: 11px;
-        font-weight: 700;
-        letter-spacing: 0.4px;
-    }
-
-    /* =========================
-       AMOUNT IN WORDS
-    ========================== */
-
-    .amount-words {
-        border: 1px solid #ccc;
-        padding: 11px 12px;
-        margin-bottom: 55px;
-        font-size: 13px;
-        line-height: 1.5;
-    }
-
-    .amount-words strong {
-        font-weight: 700;
-    }
-
-    /* =========================
-       SIGNATURE
-    ========================== */
-
-    .signature-area {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-        margin-top: 60px;
-        margin-bottom: 30px;
-    }
-
-    .signature {
-        width: 200px;
-        text-align: center;
-    }
-
-    .signature-line {
-        width: 100%;
-        border-top: 1px solid #222;
-        margin-bottom: 7px;
-    }
-
-    .signature span {
-        display: block;
-        font-size: 12px;
-        color: #333;
-    }
-
-    /* =========================
-       FOOTER
-    ========================== */
-
-    .receipt-footer {
-        border-top: 1px solid #ccc;
-        padding-top: 10px;
-        text-align: center;
-        font-size: 10px;
-        color: #777;
-        line-height: 1.4;
-    }
-
-    /* =========================
-       PRINT BUTTON
-    ========================== */
-
-    .print-btn {
-        margin-bottom: 15px;
-        text-align: right;
-    }
-
-    .print-btn button {
-        font-family: Helvetica, Arial, sans-serif;
-        cursor: pointer;
-    }
-
-    /* =========================
-       STRAIGHT HR LINE
-    ========================== */
-
-    .receipt hr {
-        border: 0;
-        border-top: 1px solid #222;
-        height: 0;
         margin: 10px 0;
     }
 
     /* =========================
-       PRINT
+       DASHED DIVIDERS
     ========================== */
+
+    .dashed-line {
+        border: none;
+        border-top: 1px dashed #000;
+        margin: 8px 0;
+        width: 100%;
+    }
+
+    /* =========================
+       SECTION TITLES
+    ========================== */
+
+    .section-heading {
+        font-size: 12px;
+        font-weight: 700;
+        margin: 6px 0 4px 0;
+    }
+
+    /* =========================
+       TWO-COLUMN LISTS
+    ========================== */
+
+    .info-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        font-size: 11px;
+    }
+
+    .info-label {
+        font-weight: 400;
+        color: #000;
+        text-align: left;
+        padding-right: 5px;
+        white-space: nowrap;
+    }
+
+    .info-value {
+        font-weight: 700;
+        color: #000;
+        text-align: right;
+        word-break: break-word;
+    }
+
+    /* =========================
+       STAMP & FOOTER
+    ========================== */
+
+    .stamp-container {
+        display: flex;
+        justify-content: center;
+        margin: 15px 0 10px 0;
+    }
+
+    .paid-stamp {
+        width: 65px;
+        height: 65px;
+        border: 2px dashed #000;
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        transform: rotate(-8deg);
+        padding: 3px;
+    }
+
+    .paid-stamp .stamp-top,
+    .paid-stamp .stamp-bottom {
+        font-size: 6px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    .paid-stamp .stamp-middle {
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        line-height: 1;
+        margin: 2px 0;
+    }
+
+    .receipt-footer-note {
+        text-align: center;
+        font-size: 11px;
+        font-weight: 700;
+        margin-top: 10px;
+        line-height: 1.2;
+    }
+
+    /* =========================
+       POS THERMAL PRINT SETTINGS
+    ========================== */
+
+    .print-btn {
+        margin-bottom: 10px;
+        text-align: center;
+    }
+
+    .print-btn button {
+        font-family: system-ui, -apple-system, sans-serif;
+        cursor: pointer;
+    }
 
     @media print {
 
+        /* 1. Force the print media size to 80mm width with auto height */
         @page {
-            size: A4;
-            margin: 15mm;
+            size: 80mm auto;
+            margin: 0mm !important;
+            /* Removes browser header, footer, dates, & margins */
         }
 
+        /* 2. Reset document body dimensions to match printer roll width */
         html,
         body {
-            width: 100%;
-            height: auto;
+            width: 80mm !important;
             margin: 0 !important;
             padding: 0 !important;
-            background: #fff !important;
+            background: #ffffff !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
         }
 
+        /* 3. Hide all non-receipt wrapper elements */
         body * {
             visibility: hidden !important;
         }
 
-        .receipt,
-        .receipt * {
+        /* 4. Display the receipt centered and full width on the thermal paper */
+        .receipt-wrapper,
+        .receipt-wrapper * {
             visibility: visible !important;
         }
 
         .receipt-wrapper {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            max-width: none;
+            position: absolute !important;
+            left: 0 !important;
+            top: 0 !important;
+            width: 80mm !important;
+            max-width: 80mm !important;
             margin: 0 !important;
-            padding: 0 !important;
+            padding: 4mm !important;
+            /* Small padding so text doesn't touch paper edges */
         }
 
         .receipt {
-            position: relative;
-            width: 100%;
-            margin: 0 !important;
-            padding: 10px !important;
-            border: none !important;
+            width: 100% !important;
             box-shadow: none !important;
-            background: #fff !important;
+            border: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
         }
 
+        /* 5. Hide the print button on paper */
         .print-btn {
             display: none !important;
-        }
-
-        .receipt-header {
-            border-bottom: 2px solid #222;
-        }
-
-        .section-title,
-        .customer-table td,
-        .payment-table th,
-        .payment-table td {
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-        }
-
-        .status-paid,
-        .status-unpaid {
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-        }
-    }
-
-    /* =========================
-       MOBILE
-    ========================== */
-
-    @media screen and (max-width: 768px) {
-
-        .receipt-wrapper {
-            margin: 10px auto;
-            padding: 10px;
-        }
-
-        .receipt {
-            padding: 20px;
-        }
-
-        .receipt-header {
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .company-brand {
-            width: 60%;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .company-brand>img {
-            width: 75px;
-            height: 75px;
-            object-fit: contain;
-            flex-shrink: 0;
-        }
-
-        .company-info h2 {
-            margin: 0 0 6px;
-            font-size: 24px;
-            line-height: 1.2;
-            font-weight: 700;
-            color: #111;
-        }
-
-        .company-info p {
-            margin: 2px 0;
-            font-size: 12px;
-            line-height: 1.5;
-            color: #555;
-        }
-
-        .company-brand,
-        .receipt-title {
-            width: 100%;
-        }
-
-        .company-brand {
-            align-items: flex-start;
-        }
-
-        .receipt-meta {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 5px;
-        }
-
-        .customer-table,
-        .payment-table {
-            font-size: 12px;
-        }
-
-        .customer-table td,
-        .payment-table th,
-        .payment-table td {
-            padding: 7px;
-        }
-
-        .signature-area {
-            margin-top: 40px;
-        }
-
-        .signature {
-            width: 150px;
         }
     }
 </style>
@@ -476,161 +248,109 @@
 
 <div class="receipt-wrapper">
 
-    <div class="text-end print-btn">
+    <!-- Print Button -->
+    <div class="print-btn">
         <button type="button" class="btn btn-primary" onclick="window.print()">
-            <i class="bi bi-printer"></i>
-            Print Receipt
+            <i class="bi bi-printer"></i> Print Receipt
         </button>
     </div>
 
+    <!-- Receipt Container -->
     <div class="receipt">
 
-        <!-- {{-- Header --}} -->
-        <div class="receipt-header">
-            <div class="company-brand">
-
-                @if($settings->logo)
+        <!-- Top Branding -->
+        <div class="receipt-brand-bar">
+            <div class="brand-left">
+                @if(!empty($settings->logo))
                 <img src="{{ asset('uploads/settings/'.$settings->logo) }}" alt="{{ $settings->name }}">
                 @else
                 <img src="{{ asset('uploads/settings/default.png') }}" alt="{{ $settings->name }}">
                 @endif
-
-                <div class="company-info">
-                    <h2>{!! $settings->name !!}</h2>
-                    <p>{!! $settings->address !!}</p>
-                    <p>Phone: {!! $settings->contact !!}</p>
-                    <p>Email: {!! $settings->email !!}</p>
-                </div>
             </div>
-
-            <div class="receipt-title">
-                <h1>Money Receipt</h1>
-                <p>Official Payment Receipt</p>
+            <div class="brand-right">
+                <h2>{!! $settings->name !!}</h2>
             </div>
         </div>
 
-        <!-- {{-- Receipt Information --}} -->
-        <div class="receipt-meta">
+        <!-- Receipt Main Heading -->
+        <div class="receipt-main-title">RECEIPT</div>
 
-            <div class="meta-item">
-                <strong>Receipt No:</strong>
-                {{$invoiceNo}}
+        <!-- Customer Information Section -->
+        <hr class="dashed-line">
+        <div class="section-heading">Customer Information</div>
+        <hr class="dashed-line">
+
+        <div class="info-grid">
+            <div class="info-row">
+                <span class="info-value">Name</span>
+                <span class="info-value">{{ strtoupper($member->name) }}</span>
             </div>
-
-            <div class="meta-item">
-                <strong>Date:</strong>
-                {{ now()->format('d M Y') }}
+            <div class="info-row">
+                <span class="info-value">Member ID</span>
+                <span class="info-value">{{ strtoupper($member->unique_id) }}</span>
             </div>
-
+            <div class="info-row">
+                <span class="info-value">Holding No</span>
+                <span class="info-value">{{ $member->plot->holding_no ?? '-' }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-value">Road No</span>
+                <span class="info-value">{{ $member->plot->road ?? '-' }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-value">Mobile</span>
+                <span class="info-value">{{ $member->number }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-value">Email</span>
+                <span class="info-value">{{ $member->email ?? '-' }}</span>
+            </div>
         </div>
 
-        <!-- {{-- Customer Information --}} -->
-        <div class="section-title">
-            Customer Information
-        </div>
+        <!-- Payment Information Section -->
+        <hr class="dashed-line">
+        <div class="section-heading">Payment Information</div>
+        <hr class="dashed-line">
 
-        <table class="customer-table">
-            <tr>
-                <td>Holding No</td>
-                <td>{{ $member->plot->holding_no ?? '-' }}</td>
-
-                <td>Road No</td>
-                <td>{{ $member->plot->road ?? '-' }}</td>
-            </tr>
-
-            <tr>
-                <td>Name</td>
-                <td>{{ $member->name }}</td>
-
-                <td>Mobile</td>
-                <td>{{ $member->number }}</td>
-            </tr>
-
-            <tr>
-                <td>Email</td>
-                <td colspan="3">{{ $member->email ?? '-' }}</td>
-            </tr>
-        </table>
-
-        <!-- {{-- Payment Information --}} -->
-        <div class="section-title">Payment Information</div>
-
-        <table class="payment-table">
-
-            <thead>
-                <tr>
-                    <th width="10%">SL</th>
-                    <th>Description</th>
-                    <th width="25%">Amount</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                <tr>
-                    <td>01</td>
-
-                    <td>
-                        Collection / Payment
-                    </td>
-
-                    <td class="amount">
-                        ৳ {{ number_format($member->amount, 2) }}
-                    </td>
-                </tr>
-
-                <tr>
-                    <td colspan="2" class="amount">
-                        Total Amount
-                    </td>
-
-                    <td class="amount">
-                        ৳ {{ number_format($member->amount, 2) }}
-                    </td>
-                </tr>
-
-                <tr>
-                    <td colspan="2" class="amount">
-                        Payment Status
-                    </td>
-
-                    <td>
-                        @if($member->payment_status == 1)
-                        <span class="status-paid">PAID</span>
-                        @else
-                        <span class="status-unpaid">UNPAID</span>
-                        @endif
-                    </td>
-                </tr>
-
-            </tbody>
-
-        </table>
-
-        <!-- {{-- Amount in Words --}} -->
-        <div class="amount-words">
-            <strong>Amount in Words:</strong>
-            {{ amountInWords($member->amount) }}
-        </div>
-
-        {{-- Signature --}}
-        <div class="signature-area">
-
-            <div class="signature">
-                <div class="signature-line"></div>
-                <span>Customer Signature</span>
+        <div class="info-grid">
+            <div class="info-row">
+                <span class="info-value">Payment Date</span>
+                <span class="info-value">{{ now()->format('d F, Y') }}</span>
             </div>
-
-            <div class="signature">
-                <div class="signature-line"></div>
-                <span>Authorized Signature</span>
+            <div class="info-row">
+                <span class="info-value">Amount Paid</span>
+                <span class="info-value">BDT {{ number_format($member->amount, 2) }}</span>
             </div>
-
+            <div class="info-row">
+                <span class="info-value">Payment Status</span>
+                <span class="info-value">
+                    {{ $member->payment_status == 1 ? 'PAID' : 'UNPAID' }}
+                </span>
+            </div>
         </div>
 
-        {{-- Footer --}}
-        <div class="receipt-footer">
-            This is a computer-generated money receipt.
-            Thank you for your payment.
+        <!-- Amount in Words -->
+        <hr class="dashed-line">
+        <div class="info-grid">
+            <div class="info-row">
+                <span class="info-value">In Words:</span>
+                <span class="info-value" style="font-size: 12px;">{{ amountInWords($member->amount) }}</span>
+            </div>
+        </div>
+        <hr class="dashed-line">
+
+        <!-- Circular Stamp -->
+        <div class="stamp-container">
+            <div class="paid-stamp">
+                <span class="stamp-top">THANKYOU</span>
+                <span class="stamp-middle">PAID</span>
+                <span class="stamp-bottom">THANKYOU</span>
+            </div>
+        </div>
+
+        <!-- Footer Text -->
+        <div class="receipt-footer-note">
+            This receipt has been generated electronically
         </div>
 
     </div>

@@ -41,9 +41,9 @@
       <table class="ledger">
         <thead>
           <tr>
-            <th>SL</th>
-            <th>Holding No</th>
+            <th>Member ID</th>
             <th>Road No</th>
+            <th>Holding No</th>
             <th>Name</th>
             <th>Number</th>
             <th>Email</th>
@@ -55,9 +55,9 @@
         <tbody>
           @forelse($data as $member)
           <tr>
-            <td>{{ $loop->iteration }}</td>
-            <td>{{ $member->plot->holding_no }}</td>
-            <td>{{ $member->plot->road }}</td>
+            <td>{{ $member->unique_id }}</td>
+            <td>{{ $member->road }}</td>
+            <td>{{ $member->holding_no }}</td>
             <td>{{ $member->name }}</td>
             <td>{{ $member->number }}</td>
             <td>{{ $member->email }}</td>

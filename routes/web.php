@@ -20,7 +20,6 @@ Route::get('/', function () {
 
 Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
 
-
     // Dashboard
     Route::controller(HomeController::class)->group(function () {
         Route::get('dashboard', 'index')->name('home');

@@ -27,15 +27,11 @@ class CollectionController extends Controller
         }
 
         if (!empty($filter_holding_no)) {
-            $data->whereHas('plot', function ($holding_no) use ($filter_holding_no) {
-                $holding_no->where('holding_no', 'LIKE', '%' . $filter_holding_no . '%');
-            });
+            $data->where('holding_no', 'LIKE', '%' . $filter_holding_no . '%');
         }
 
         if (!empty($filter_road)) {
-            $data->whereHas('plot', function ($road) use ($filter_road) {
-                $road->where('road', 'LIKE', '%' . $filter_road . '%');
-            });
+            $data->where('road', 'LIKE', '%' . $filter_road . '%');
         }
 
         if ($filter_status !== null && $filter_status !== '') {
@@ -51,8 +47,7 @@ class CollectionController extends Controller
     {
         $member = Member::with('plot')->findOrFail($id);
         $settings = Settings::latest()->first();
-        $invoiceNo = 'MR-' . date('Y') . '-' . str_pad($member->id, 6, '0', STR_PAD_LEFT);
-        return view('admin.collections.receipt', compact('member','settings','invoiceNo'));
+        return view('admin.collections.receipt', compact('member','settings'));
     }
 
     // public function create()
