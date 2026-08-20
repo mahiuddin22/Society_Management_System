@@ -1,3 +1,4 @@
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="{{asset('assets/js/flatpickr.js')}}"></script>
 <script src="{{asset('assets/js/select2.min.js')}}"></script>
@@ -90,7 +91,6 @@
         });
     });
 </script>
-
 <script>
     document.querySelectorAll('[id^="change-status-"]').forEach(function(form) {
         form.addEventListener('submit', function(e) {
@@ -110,6 +110,15 @@
                     form.submit();
                 }
             });
+        });
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        $('#datepicker').datepicker({
+            dateFormat: 'dd-mm-yy',
+            changeMonth: true,
+            changeYear: true
         });
     });
 </script>

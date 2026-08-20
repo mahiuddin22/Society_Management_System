@@ -36,19 +36,19 @@
 
             <div class="row g-3">
 
-                {{-- Road --}}
+                <!-- {{-- Road --}} -->
                 <div class="col-md-4">
                     <label for="road" class="form-label">Road <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" id="road" name="road" value="{{ old('road', $data->road) }}" placeholder="e.g. 1/A" required>
                 </div>
 
-                {{-- Holding No --}}
+                <!-- {{-- Holding No --}} -->
                 <div class="col-md-4">
                     <label for="holding_no" class="form-label">Holding No. <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" id="holding_no" name="holding_no" value="{{ old('holding_no', $data->holding_no) }}" placeholder="e.g. 2" required>
                 </div>
 
-                {{-- Building Type --}}
+                <!-- {{-- Building Type --}} -->
                 <div class="col-md-4">
                     <label for="building_type" class="form-label">Building Type <span class="text-danger">*</span></label>
                     <select class="form-select" id="building_type" name="building_type" required>
@@ -59,19 +59,19 @@
                     </select>
                 </div>
 
-                {{-- Total Flat --}}
+                <!-- {{-- Total Flat --}} -->
                 <div class="col-md-4">
                     <label for="total_flat" class="form-label">Total Flat <span class="text-danger">*</span></label>
                     <input type="number" class="form-control" id="total_flat" name="total_flat" value="{{ old('total_flat', $data->total_flat) }}" min="0" placeholder="e.g. 12" required>
                 </div>
 
-                {{-- Occupied Flat --}}
+                <!-- {{-- Occupied Flat --}} -->
                 <div class="col-md-4">
                     <label for="occupied_flat" class="form-label">Occupied Flat <span class="text-danger">*</span></label>
                     <input type="number" class="form-control" id="occupied_flat" name="occupied_flat" value="{{ old('occupied_flat', $data->occupied_flat) }}" min="0" placeholder="e.g. 10" required>
                 </div>
 
-                {{-- Collection Type --}}
+                <!-- {{-- Collection Type --}} -->
                 <div class="col-md-4">
                     <label for="collection_type" class="form-label">Collection Type <span class="text-danger">*</span></label>
                     <select class="form-select" id="collection_type" name="collection_type" required>
@@ -81,13 +81,13 @@
                     </select>
                 </div>
 
-                {{-- Contact Person --}}
+                <!-- {{-- Contact Person --}} -->
                 <div class="col-md-4">
                     <label for="contact_person" class="form-label">Contact Person <span class="text-danger">*</span></label>
                     <input type="number" class="form-control" id="contact_person" name="contact_person" value="{{ old('contact_person', $data->contact_person) }}" min="0" placeholder="Number of contact persons">
                 </div>
 
-                {{-- Collection Rate --}}
+                <!-- {{-- Collection Rate --}} -->
                 <div class="col-md-4">
                     <label for="collection_rate" class="form-label">Collection Rate <span class="text-danger">*</span></label>
                     <div class="input-group">
@@ -96,7 +96,7 @@
                     </div>
                 </div>
 
-                {{-- Discount --}}
+                <!-- {{-- Discount --}} -->
                 <div class="col-md-4">
                     <label for="discount" class="form-label">Discount</label>
                     <div class="input-group">
@@ -105,7 +105,7 @@
                     </div>
                 </div>
 
-                {{-- Collection Amount --}}
+                <!-- {{-- Collection Amount --}} -->
                 <div class="col-md-4">
                     <label for="collection_amount" class="form-label">Collection Amount <span class="text-danger">*</span></label>
                     <div class="input-group">
@@ -114,7 +114,24 @@
                     </div>
                 </div>
 
-                {{-- Dynamic Contact Persons --}}
+                <div class="col-md-4">
+                    <label for="datepicker" class="form-label">Issue Date <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                        <span class="input-group-text">৳</span>
+                        <input type="text" class="form-control" id="datepicker" name="date" value="{{ old('date', $data->date) }}" placeholder="Select date" required>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
+                    <select class="form-select" id="status" name="status" required>
+                        <option value="">Select Status</option>
+                        <option value="1"{{$data->status == 1 ? 'selected':''}}>Active</option>
+                        <option value="0"{{$data->status == 0 ? 'selected':''}}>Expired</option>
+                    </select>
+                </div>
+
+                <!-- {{-- Dynamic Contact Persons --}} -->
                 <div class="col-12">
                     <div id="contactPersonsContainer"></div>
                 </div>

@@ -10,6 +10,7 @@ class CollectionController extends Controller
 {
     public function index(Request $request)
     {
+        $member_id          = $request->member_id;
         $filter_data        = $request->filter_data;
         $filter_status      = $request->filter_status;
         $filter_holding_no  = $request->filter_holding_no;
@@ -24,6 +25,10 @@ class CollectionController extends Controller
                     ->orWhere('email', $filter_data)
                     ->orWhere('amount', $filter_data);
             });
+        }
+
+        if (!empty($member_id)) {
+            $data->where('unique_id',$member_id);
         }
 
         if (!empty($filter_holding_no)) {

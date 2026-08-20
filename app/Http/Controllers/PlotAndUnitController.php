@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\PlotAndUnit;
 use App\Models\Member;
 use App\Models\PlotType;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class PlotAndUnitController extends Controller
@@ -33,16 +34,13 @@ class PlotAndUnitController extends Controller
 
         $plot_types = PlotType::where('status', true)->get();
 
-        return view(
-            'admin.plot_and_units.index',
-            compact('plotAndUnits', 'plot_types')
-        );
+        return view('admin.plot_and_units.index', compact('plotAndUnits', 'plot_types'));
     }
 
     public function create()
     {
         $plot_types = PlotType::where('status', true)->get();
-        $rates              = $plot_types->pluck('amount', 'id')->toArray();
+        $rates      = $plot_types->pluck('amount', 'id')->toArray();
         return view('admin.plot_and_units.create', compact('plot_types', 'rates'));
     }
 
@@ -59,6 +57,8 @@ class PlotAndUnitController extends Controller
             'collection_rate'   => 'required|numeric|min:0',
             'collection_amount' => 'required|numeric|min:0',
             'discount'          => 'nullable|numeric|min:0',
+            'date'              => 'required',
+            'status'            => 'required|numeric',
 
             'contact_persons'           => 'nullable|array',
             'contact_persons.*.name'    => 'required|string|max:255',
@@ -78,12 +78,14 @@ class PlotAndUnitController extends Controller
         $plotAndUnit->collection_rate   = $validatedData['collection_rate'];
         $plotAndUnit->collection_amount = $validatedData['collection_amount'];
         $plotAndUnit->discount          = $validatedData['discount'] ?? 0;
+        $plotAndUnit->date              = Carbon::createFromFormat('d-m-Y', $request->date)->format('Y-m-d');
+        $plotAndUnit->status            = $validatedData['status'];
         $plotAndUnit->save();
 
         foreach ($validatedData['contact_persons'] ?? [] as $contact) {
             $member = new Member();
             $member->plot_and_unit_id   = $plotAndUnit->id;
-            $member->unique_id          = 'UT03'.$validatedData['road'].$validatedData['holding_no'].$validatedData['total_flat'];
+            $member->unique_id          = 'UT03' . $validatedData['road'] . $validatedData['holding_no'] . $plotAndUnit->id . $validatedData['total_flat'];
             $member->road               = $validatedData['road'];
             $member->holding_no         = $validatedData['holding_no'];
             $member->name               = $contact['name'];
@@ -118,6 +120,8 @@ class PlotAndUnitController extends Controller
             'collection_rate'   => 'required|numeric|min:0',
             'collection_amount' => 'required|numeric|min:0',
             'discount'          => 'nullable|numeric|min:0',
+            'date'              => 'required',
+            'status'            => 'required|numeric',
 
             'contact_persons'           => 'nullable|array',
             'contact_persons.*.name'    => 'required|string|max:255',
@@ -139,22 +143,24 @@ class PlotAndUnitController extends Controller
         $plotAndUnit->collection_rate   = $validatedData['collection_rate'];
         $plotAndUnit->collection_amount = $validatedData['collection_amount'];
         $plotAndUnit->discount          = $validatedData['discount'] ?? 0;
+        $plotAndUnit->date              = Carbon::createFromFormat('d-m-Y', $request->date)->format('Y-m-d');
+        $plotAndUnit->status            = $validatedData['status'];
         $plotAndUnit->save();
 
         // Remove old members
-        Member::where('plot_and_unit_id', $plotAndUnit->id)->delete();
+        // Member::where('plot_and_unit_id', $plotAndUnit->id)->delete();
 
         // Create updated members
         foreach ($validatedData['contact_persons'] ?? [] as $contact) {
-            $member = new Member();
-            $member->plot_and_unit_id   = $plotAndUnit->id;
-            // $member->unique_id          = 'UT03'.$validatedData['road'].$validatedData['holding_no'].$validatedData['total_flat'];
-            $member->road               = $validatedData['road'];
-            $member->holding_no         = $validatedData['holding_no'];
-            $member->name               = $contact['name'];
-            $member->number             = $contact['number'];
-            $member->email              = $contact['email'] ?? null;
-            $member->amount             = $contact['amount'];
+            $member = Member::where('plot_and_unit_id', $plotAndUnit->id)->first();
+            $member->plot_and_unit_id = $plotAndUnit->id;
+            $member->unique_id        = 'UT03' . $validatedData['road'] . $validatedData['holding_no'] . $member->id . $validatedData['total_flat'];
+            $member->road             = $validatedData['road'];
+            $member->holding_no       = $validatedData['holding_no'];
+            $member->name             = $contact['name'];
+            $member->number           = $contact['number'];
+            $member->email            = $contact['email'] ?? null;
+            $member->amount           = $contact['amount'];
             $member->save();
         }
 
@@ -170,9 +176,7 @@ class PlotAndUnitController extends Controller
     public function destroy($id)
     {
         $plotAndUnit = PlotAndUnit::with('members')->findOrFail($id);
-        // Delete related members
         $plotAndUnit->members()->delete();
-        // Delete plot/unit
         $plotAndUnit->delete();
         return redirect()->route('admin.plot-and-units.index')->with('success', 'Data deleted successfully.');
     }

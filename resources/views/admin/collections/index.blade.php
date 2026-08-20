@@ -12,9 +12,10 @@
           <path d="m21 21-4.3-4.3" />
         </svg>
 
+        <input class="input" name="member_id" value="{{ request('member_id') }}" placeholder="Search by member id">
         <input class="input" name="filter_holding_no" value="{{ request('filter_data') }}" placeholder="Search by holding number">
-        <input class="input" name="filter_road" value="{{ request('filter_data') }}" placeholder="Search road number">
-        <input class="input" name="filter_data" value="{{ request('filter_data') }}" placeholder="Search name / number / amount">
+        <input class="input" name="filter_road" value="{{ request('filter_data') }}" placeholder="Search by road number">
+        <input class="input" name="filter_data" value="{{ request('filter_data') }}" placeholder="Search by name / number / amount">
 
         <select class="select" name="filter_status">
           <option value="" disabled {{ request()->has('filter_status') ? '' : 'selected' }}>-select status-</option>
@@ -98,7 +99,7 @@
           </tr>
           @empty
           <tr>
-            <td colspan="12" class="text-center">No plot or unit data available.</td>
+            <td colspan="12" class="text-center">No mermber data available.</td>
           </tr>
           @endforelse
         </tbody>

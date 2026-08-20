@@ -77,6 +77,8 @@
             <th>Collection Rate</th>
             <th>Discount</th>
             <th>Collection Amount</th>
+            <th>Issue Date</th>
+            <th>Status</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -94,6 +96,14 @@
             <td>৳{{ number_format($plotAndUnit->collection_rate, 2) }}</td>
             <td>৳{{ number_format($plotAndUnit->discount, 2) }}</td>
             <td>৳{{ number_format($plotAndUnit->collection_amount, 2) }}</td>
+            <td>{{ $plotAndUnit->date }}</td>
+            <td>
+              @if($plotAndUnit->status == 1)
+              <span class="badge green"><i class="dot"></i>Active</span>
+              @else
+              <span class="badge red"><i class="dot"></i>Expired</span>
+              @endif
+            </td>
             <td>
               @if (hasPermission('plot_and_units', 'view'))
               <a href="{{ route('admin.plot-and-units.view', $plotAndUnit->id) }}" target="__blank" class="btn btn-info btn-sm" title="View"><i class="bi bi-eye"></i></a>

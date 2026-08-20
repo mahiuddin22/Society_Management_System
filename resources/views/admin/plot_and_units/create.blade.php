@@ -111,6 +111,23 @@
                     </div>
                 </div>
 
+                <div class="col-md-4">
+                    <label for="datepicker" class="form-label">Issue Date <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                        <span class="input-group-text">৳</span>
+                        <input type="text" class="form-control" id="datepicker" name="date" placeholder="Select date" required>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
+                    <select class="form-select" id="status" name="status" required>
+                        <option value="">Select Status</option>
+                        <option value="1">Active</option>
+                        <option value="0">Expired</option>
+                    </select>
+                </div>
+
                 <!-- {{-- Dynamic Contact Persons --}} -->
                 <div class="col-12">
                     <div id="contactPersonsContainer"></div>
