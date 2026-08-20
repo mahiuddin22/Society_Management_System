@@ -196,22 +196,27 @@
 
                     <div class="row g-3">
 
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <label class="form-label"> Name </label>
                             <input type="text" class="form-control" name="contact_persons[${i}][name]" placeholder="Name">
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-2">
+                            <label class="form-label"> Flat no </label>
+                            <input type="text" class="form-control" name="contact_persons[${i}][flat_no]" placeholder="Flat number">
+                        </div>
+
+                        <div class="col-md-2">
                             <label class="form-label"> Number </label>
                             <input type="text" class="form-control" name="contact_persons[${i}][number]" placeholder="Number">
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label class="form-label"> Email </label>
                             <input type="email" class="form-control" name="contact_persons[${i}][email]" placeholder="Email">
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label class="form-label"> Amount </label>
                             <div class="input-group">
                                 <span class="input-group-text">৳</span>

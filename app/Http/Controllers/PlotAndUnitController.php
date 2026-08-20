@@ -62,6 +62,7 @@ class PlotAndUnitController extends Controller
 
             'contact_persons'           => 'nullable|array',
             'contact_persons.*.name'    => 'required|string|max:255',
+            'contact_persons.*.flat_no' => 'required|max:255',
             'contact_persons.*.number'  => 'required|string|max:255',
             'contact_persons.*.email'   => 'nullable|email|max:255',
             'contact_persons.*.amount'  => 'required|numeric|min:0',
@@ -89,6 +90,7 @@ class PlotAndUnitController extends Controller
             $member->road               = $validatedData['road'];
             $member->holding_no         = $validatedData['holding_no'];
             $member->name               = $contact['name'];
+            $member->flat_no            = $contact['flat_no'];
             $member->number             = $contact['number'];
             $member->email              = $contact['email'] ?? null;
             $member->amount             = $contact['amount'];
@@ -123,8 +125,9 @@ class PlotAndUnitController extends Controller
             'date'              => 'required',
             'status'            => 'required|numeric',
 
-            'contact_persons'           => 'nullable|array',
+            'contact_persons.*.id'      => 'nullable|integer',
             'contact_persons.*.name'    => 'required|string|max:255',
+            'contact_persons.*.flat_no' => 'required|string|max:255',
             'contact_persons.*.number'  => 'required|string|max:255',
             'contact_persons.*.email'   => 'nullable|email|max:255',
             'contact_persons.*.amount'  => 'required|numeric|min:0',
@@ -147,20 +150,24 @@ class PlotAndUnitController extends Controller
         $plotAndUnit->status            = $validatedData['status'];
         $plotAndUnit->save();
 
-        // Remove old members
-        // Member::where('plot_and_unit_id', $plotAndUnit->id)->delete();
-
-        // Create updated members
         foreach ($validatedData['contact_persons'] ?? [] as $contact) {
-            $member = Member::where('plot_and_unit_id', $plotAndUnit->id)->first();
-            $member->plot_and_unit_id = $plotAndUnit->id;
-            $member->unique_id        = 'UT03' . $validatedData['road'] . $validatedData['holding_no'] . $member->id . $validatedData['total_flat'];
-            $member->road             = $validatedData['road'];
-            $member->holding_no       = $validatedData['holding_no'];
-            $member->name             = $contact['name'];
-            $member->number           = $contact['number'];
-            $member->email            = $contact['email'] ?? null;
-            $member->amount           = $contact['amount'];
+
+            if (!empty($contact['id'])) {
+                $member = Member::where('id', $contact['id'])->where('plot_and_unit_id', $plotAndUnit->id)->firstOrFail();
+            } else {
+                $member = new Member();
+                $member->plot_and_unit_id = $plotAndUnit->id;
+            }
+
+            $member->unique_id  = 'UT03' . $validatedData['road'] . $validatedData['holding_no'] . $contact['flat_no'];
+            $member->road       = $validatedData['road'];
+            $member->holding_no = $validatedData['holding_no'];
+            $member->name       = $contact['name'];
+            $member->flat_no    = $contact['flat_no'];
+            $member->number     = $contact['number'];
+            $member->email      = $contact['email'] ?? null;
+            $member->amount     = $contact['amount'];
+
             $member->save();
         }
 

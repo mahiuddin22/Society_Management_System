@@ -118,7 +118,7 @@
                     <label for="datepicker" class="form-label">Issue Date <span class="text-danger">*</span></label>
                     <div class="input-group">
                         <span class="input-group-text">৳</span>
-                        <input type="text" class="form-control" id="datepicker" name="date" value="{{ old('date', $data->date) }}" placeholder="Select date" required>
+                        <input type="text" class="form-control" id="datepicker" name="date" value="{{ old('date', \Carbon\Carbon::parse($data->date)->format('d-m-Y')) }}" placeholder="Select date" required>
                     </div>
                 </div>
 
@@ -126,8 +126,8 @@
                     <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
                     <select class="form-select" id="status" name="status" required>
                         <option value="">Select Status</option>
-                        <option value="1"{{$data->status == 1 ? 'selected':''}}>Active</option>
-                        <option value="0"{{$data->status == 0 ? 'selected':''}}>Expired</option>
+                        <option value="1" {{$data->status == 1 ? 'selected':''}}>Active</option>
+                        <option value="0" {{$data->status == 0 ? 'selected':''}}>Expired</option>
                     </select>
                 </div>
 
@@ -197,61 +197,38 @@
 
         for (let i = 0; i < count; i++) {
             const person = existingPersons[i] || {};
-
+            const memberId = person.id ?? '';
             contactPersonsContainer.insertAdjacentHTML('beforeend', `
                 <div class="contact-person-group border rounded p-3 mb-3">
+                <input type="hidden" name="contact_persons[${i}][id]" value="${memberId}">
                     <h6 class="mb-3">Contact Person ${i + 1}</h6>
 
                     <div class="row g-3">
 
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <label class="form-label">Name</label>
-                            <input
-                                type="text"
-                                class="form-control"
-                                name="contact_persons[${i}][name]"
-                                value="${person.name ?? ''}"
-                                placeholder="Name"
-                            >
+                            <input type="text" class="form-control" name="contact_persons[${i}][name]" value="${person.name ?? ''}" placeholder="Name">
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-2">
+                            <label class="form-label"> Flat no </label>
+                            <input type="text" class="form-control" name="contact_persons[${i}][flat_no]" value="${person.flat_no ?? ''}" placeholder="Flat number">
+                        </div>
+
+                        <div class="col-md-2">
                             <label class="form-label">Number</label>
-                            <input
-                                type="text"
-                                class="form-control"
-                                name="contact_persons[${i}][number]"
-                                value="${person.number ?? ''}"
-                                placeholder="Number"
-                            >
+                            <input type="text" class="form-control" name="contact_persons[${i}][number]" value="${person.number ?? ''}" placeholder="Number">
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label class="form-label">Email</label>
-                            <input
-                                type="email"
-                                class="form-control"
-                                name="contact_persons[${i}][email]"
-                                value="${person.email ?? ''}"
-                                placeholder="Email"
-                            >
+                            <input type="email" class="form-control" name="contact_persons[${i}][email]" value="${person.email ?? ''}" placeholder="Email">
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label class="form-label">Amount</label>
-
-                            <div class="input-group">
-                                <span class="input-group-text">৳</span>
-
-                                <input
-                                    type="number"
-                                    class="form-control"
-                                    name="contact_persons[${i}][amount]"
-                                    value="${person.amount ?? ''}"
-                                    placeholder="Amount"
-                                    min="0"
-                                    step="0.01"
-                                >
+                            <div class="input-group"><span class="input-group-text">৳</span>
+                                <input type="number" class="form-control" name="contact_persons[${i}][amount]" value="${person.amount ?? ''}" placeholder="Amount" min="0" step="0.01">
                             </div>
                         </div>
 

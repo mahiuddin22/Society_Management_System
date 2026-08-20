@@ -11,17 +11,6 @@
         box-sizing: border-box;
     }
 
-    body {
-        margin: 0;
-        padding: 0;
-        background: #f4f4f4;
-        font-family: 'Courier Prime', 'Courier New', Courier, monospace;
-        color: #000;
-        font-size: 11px;
-        /* Scaled down for compact thermal paper */
-        line-height: 1.3;
-    }
-
     /* POS thermal width (80mm standard = ~300px printable width) */
     .receipt-wrapper {
         width: 100%;
