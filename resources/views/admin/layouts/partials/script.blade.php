@@ -28,6 +28,8 @@
 <script src="{{asset('assets/js/swiper_slider.js')}}"></script>
 <script src="{{asset('assets/js/script.js')}}"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+<!-- Permission Change menu Order -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         let sortable = new Sortable(document.getElementById('sortable-permissions'), {
@@ -61,6 +63,8 @@
 
     });
 </script>
+
+<!-- Summernote -->
 <script>
     // Summernote Text Editor
     $(document).ready(function() {
@@ -69,6 +73,8 @@
         });
     });
 </script>
+
+<!-- Delete Sweetalert -->
 <script>
     document.querySelectorAll('[id^="delete-form-"]').forEach(function(form) {
         form.addEventListener('submit', function(e) {
@@ -91,6 +97,8 @@
         });
     });
 </script>
+
+<!-- Change Status Sweetalert -->
 <script>
     document.querySelectorAll('[id^="change-status-"]').forEach(function(form) {
         form.addEventListener('submit', function(e) {
@@ -113,6 +121,8 @@
         });
     });
 </script>
+
+<!-- Datepicker -->
 <script>
     $(document).ready(function() {
         $('#datepicker').datepicker({
