@@ -50,6 +50,7 @@
             <th>Email</th>
             <th>Amount</th>
             <th>Issue Date</th>
+            <th>Payment Date</th>
             <th>Status</th>
             <th>Action</th>
           </tr>
@@ -65,6 +66,9 @@
             <td>{{ $member->email }}</td>
             <td>{{ $member->amount }}</td>
             <td>{{ \Carbon\Carbon::parse($member->plot->date)->format('d-M-Y') }}</td>
+            <td class="text-center">
+              {{ $member->payment_date ? \Carbon\Carbon::parse($member->payment_date)->format('d-M-Y') : '--' }}
+            </td>
             <td>
               @if($member->payment_status == 1)
               <span class="badge green"><i class="dot"></i>Paid</span>

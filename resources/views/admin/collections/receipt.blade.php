@@ -308,7 +308,7 @@
             </div>
             <div class="info-row">
                 <span class="info-value">Payment Date</span>
-                <span class="info-value">{{ now()->format('d F, Y') }}</span>
+                <span class="info-value">{{ \Carbon\Carbon::parse($member->payment_date)->format('d F, Y') }}</span>
             </div>
             <div class="info-row">
                 <span class="info-value">Amount Paid</span>

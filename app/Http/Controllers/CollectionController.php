@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Member;
 use App\Models\Settings;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class CollectionController extends Controller
@@ -20,15 +21,13 @@ class CollectionController extends Controller
 
         if (!empty($filter_data)) {
             $data->where(function ($query) use ($filter_data) {
-                $query->where('name', 'LIKE', '%' . $filter_data . '%')
-                    ->orWhere('number', $filter_data)
-                    ->orWhere('email', $filter_data)
-                    ->orWhere('amount', $filter_data);
+                $query->where('name', 'LIKE', '%' . $filter_data . '%')->orWhere('number', $filter_data)
+                    ->orWhere('email', $filter_data)->orWhere('amount', $filter_data);
             });
         }
 
         if (!empty($member_id)) {
-            $data->where('unique_id',$member_id);
+            $data->where('unique_id', $member_id);
         }
 
         if (!empty($filter_holding_no)) {
@@ -52,7 +51,7 @@ class CollectionController extends Controller
     {
         $member = Member::with('plot')->findOrFail($id);
         $settings = Settings::latest()->first();
-        return view('admin.collections.receipt', compact('member','settings'));
+        return view('admin.collections.receipt', compact('member', 'settings'));
     }
 
     // public function create()
@@ -86,6 +85,7 @@ class CollectionController extends Controller
         $data->email            = $request->email;
         $data->amount           = $request->amount;
         $data->payment_status   = $request->payment_status;
+        $data->payment_date     = Carbon::createFromFormat('d-m-Y', $request->payment_date)->format('Y-m-d');
         $data->save();
 
         return redirect()->route('admin.collection.index')->with('success', 'Data Updated Successfully');
@@ -96,6 +96,7 @@ class CollectionController extends Controller
         $data = Member::findOrFail($id);
         if ($data->payment_status == 0) {
             $data->payment_status = 1;
+            $data->payment_date == null ? now() : $data->payment_date;
         } else {
             $data->payment_status = 0;
         }

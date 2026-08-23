@@ -39,6 +39,11 @@
                     <input type="text" class="form-control" id="amount" name="amount" value="{{ $data->amount }}" placeholder="e.g. 2" required>
                 </div>
 
+                <div class="col-md-4">
+                    <label for="datepicker" class="form-label">Payment Date <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="datepicker" name="payment_date" value="{{ $data->payment_date }}" placeholder="e.g. 2" required>
+                </div>
+
                 <!-- {{-- Payment Status --}} -->
                 <div class="col-md-4">
                     <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
