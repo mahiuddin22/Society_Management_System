@@ -248,7 +248,7 @@
     <div class="receipt">
 
         <!-- Top Branding -->
-        <div class="receipt-brand-bar">
+        <div class="receipt-brand-bar justify-content-center">
             <div class="brand-left">
                 @if(!empty($settings->logo))
                 <img src="{{ asset('uploads/settings/'.$settings->logo) }}" alt="{{ $settings->name }}">
@@ -302,6 +302,10 @@
         <hr class="dashed-line">
 
         <div class="info-grid">
+            <div class="info-row">
+                <span class="info-value">Issue Date</span>
+                <span class="info-value">{{ \Carbon\Carbon::parse($member->plot->date)->format('d F, Y') }}</span>
+            </div>
             <div class="info-row">
                 <span class="info-value">Payment Date</span>
                 <span class="info-value">{{ now()->format('d F, Y') }}</span>

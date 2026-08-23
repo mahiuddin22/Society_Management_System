@@ -59,6 +59,19 @@
                             <strong>৳{{ number_format($plotAndUnit->collection_rate, 2) }}</strong>
                         </td>
                     </tr>
+                    <tr>
+                        <th>Issue Date</th>
+                        <td>{{ \Carbon\Carbon::parse($plotAndUnit->date)->format('d-M-Y') }}</td>
+
+                        <th>Current Status</th>
+                        <td>
+                            @if($plotAndUnit->status == 1)
+                            <span class="badge green"><i class="dot"></i>Active</span>
+                            @else
+                            <span class="badge red"><i class="dot"></i>Expired</span>
+                            @endif
+                        </td>
+                    </tr>
 
                     <tr>
                         <th>Discount</th>
@@ -139,7 +152,7 @@
                 @if($plotAndUnit->members->count())
                 <tfoot>
                     <tr class="table-light">
-                        <th colspan="4" class="text-end">
+                        <th colspan="5" class="text-end">
                             Total Contact Person Amount:
                         </th>
 
