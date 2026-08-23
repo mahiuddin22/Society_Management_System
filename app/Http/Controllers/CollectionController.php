@@ -96,7 +96,9 @@ class CollectionController extends Controller
         $data = Member::findOrFail($id);
         if ($data->payment_status == 0) {
             $data->payment_status = 1;
-            $data->payment_date == null ? now() : $data->payment_date;
+            if (is_null($data->payment_date)) {
+                $data->payment_date = now();
+            }
         } else {
             $data->payment_status = 0;
         }
