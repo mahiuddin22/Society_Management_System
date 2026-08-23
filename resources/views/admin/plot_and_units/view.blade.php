@@ -93,6 +93,7 @@
                     <tr>
                         <th class="text-center">SL</th>
                         <th>Name</th>
+                        <th>Flat no</th>
                         <th>Number</th>
                         <th>Email</th>
                         <th class="text-end">Amount</th>
@@ -108,6 +109,10 @@
 
                         <td>
                             {{ $member->name }}
+                        </td>
+
+                        <td>
+                            {{ $member->flat_no }}
                         </td>
 
                         <td>
