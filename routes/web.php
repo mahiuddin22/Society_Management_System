@@ -1,5 +1,4 @@
 <?php
-
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\HomeController;
