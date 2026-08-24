@@ -60,13 +60,13 @@
                 </div>
 
                 <!-- {{-- Total Flat --}} -->
-                <div class="col-md-4">
+                <div class="col-md-4" id="totalFlatGroup">
                     <label for="total_flat" class="form-label">Total Flat <span class="text-danger">*</span></label>
                     <input type="number" class="form-control" id="total_flat" name="total_flat" value="{{ old('total_flat', $data->total_flat) }}" min="0" placeholder="e.g. 12" required>
                 </div>
 
                 <!-- {{-- Occupied Flat --}} -->
-                <div class="col-md-4">
+                <div class="col-md-4" id="occupiedFlatGroup">
                     <label for="occupied_flat" class="form-label">Occupied Flat <span class="text-danger">*</span></label>
                     <input type="number" class="form-control" id="occupied_flat" name="occupied_flat" value="{{ old('occupied_flat', $data->occupied_flat) }}" min="0" placeholder="e.g. 10" required>
                 </div>
@@ -82,7 +82,7 @@
                 </div>
 
                 <!-- {{-- Contact Person --}} -->
-                <div class="col-md-4">
+                <div class="col-md-4" id="contactPersonGroup">
                     <label for="contact_person" class="form-label">Contact Person <span class="text-danger">*</span></label>
                     <input type="number" class="form-control" id="contact_person" name="contact_person" value="{{ old('contact_person', $data->contact_person) }}" min="0" placeholder="Number of contact persons">
                 </div>
@@ -253,6 +253,35 @@
                 existingContactPersons
             );
         }
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+
+        function toggleBuildingFields() {
+            if ($('#building_type').val() == '8') {
+                $('#totalFlatGroup, #occupiedFlatGroup, #contactPersonGroup').hide();
+
+                $('#total_flat, #occupied_flat, #contact_person')
+                    .prop('required', false)
+                    .val('');
+            } else {
+                $('#totalFlatGroup, #occupiedFlatGroup, #contactPersonGroup').show();
+
+                $('#total_flat, #occupied_flat, #contact_person')
+                    .prop('required', true);
+            }
+        }
+
+        // On page load
+        toggleBuildingFields();
+
+        // When building type changes
+        $('#building_type').on('change', function() {
+            toggleBuildingFields();
+        });
+
     });
 </script>
 
