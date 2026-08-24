@@ -162,9 +162,7 @@
         const rate = parseFloat(collectionRate.value) || 0;
         const occupied = parseInt(occupiedFlat.value) || 0;
         const discountValue = parseFloat(discount.value) || 0;
-
         const amount = (rate * occupied) - discountValue;
-
         collectionAmount.value = Math.max(amount, 0);
     }
 
