@@ -89,10 +89,10 @@
             <td>{{ $plotAndUnit->road }}</td>
             <td>{{ $plotAndUnit->holding_no }}</td>
             <td>{{ $plotAndUnit->plot_type->name ?? 'N/A' }}</td>
-            <td>{{ $plotAndUnit->total_flat }}</td>
-            <td>{{ $plotAndUnit->occupied_flat }}</td>
+            <td>{{ $plotAndUnit->total_flat ?? 'N/A' }}</td>
+            <td>{{ $plotAndUnit->occupied_flat ?? 'N/A' }}</td>
             <td>{{ $plotAndUnit->collection_type }}</td>
-            <td>{{ $plotAndUnit->contact_person }}</td>
+            <td>{{ $plotAndUnit->contact_person ?? 'N/A' }}</td>
             <td>৳{{ number_format($plotAndUnit->collection_rate, 2) }}</td>
             <td>৳{{ number_format($plotAndUnit->discount, 2) }}</td>
             <td>৳{{ number_format($plotAndUnit->collection_amount, 2) }}</td>
