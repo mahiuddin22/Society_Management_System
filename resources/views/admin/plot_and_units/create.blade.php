@@ -56,14 +56,14 @@
                     </select>
                 </div>
 
-                <!-- {{-- Total Flat --}} -->
-                <div class="col-md-4">
+                <!-- Total Flat -->
+                <div class="col-md-4" id="totalFlatGroup">
                     <label for="total_flat" class="form-label">Total Flat <span class="text-danger">*</span></label>
                     <input type="number" class="form-control" id="total_flat" name="total_flat" min="0" placeholder="e.g. 12" required>
                 </div>
 
-                <!-- {{-- Occupied Flat --}} -->
-                <div class="col-md-4">
+                <!-- Occupied Flat -->
+                <div class="col-md-4" id="occupiedFlatGroup">
                     <label for="occupied_flat" class="form-label">Occupied Flat <span class="text-danger">*</span></label>
                     <input type="number" class="form-control" id="occupied_flat" name="occupied_flat" min="0" placeholder="e.g. 10" required>
                 </div>
@@ -78,8 +78,8 @@
                     </select>
                 </div>
 
-                <!-- {{-- Contact Person --}} -->
-                <div class="col-md-4">
+                <!-- Contact Person -->
+                <div class="col-md-4" id="contactPersonGroup">
                     <label for="contact_person" class="form-label">Contact Person<span class="text-danger">*</span></label>
                     <input type="number" class="form-control" id="contact_person" name="contact_person" min="0" placeholder="Number of contact persons">
                 </div>
@@ -89,7 +89,7 @@
                     <label for="collection_rate" class="form-label">Collection Rate <span class="text-danger">*</span></label>
                     <div class="input-group">
                         <span class="input-group-text">৳</span>
-                        <input type="number" class="form-control" id="collection_rate" name="collection_rate" min="0" step="0.01" placeholder="250" required>
+                        <input type="number" class="form-control" id="collection_rate" name="collection_rate" min="0" step="0.01" placeholder="Enter collection rate" required>
                     </div>
                 </div>
 
@@ -98,7 +98,7 @@
                     <label for="discount" class="form-label">Discount</label>
                     <div class="input-group">
                         <span class="input-group-text">৳</span>
-                        <input type="number" class="form-control" id="discount" name="discount" min="0" step="0.01" placeholder="500">
+                        <input type="number" class="form-control" id="discount" name="discount" min="0" step="0.01" placeholder="Enter discount amount">
                     </div>
                 </div>
 
@@ -107,7 +107,7 @@
                     <label for="collection_amount" class="form-label">Collection Amount <span class="text-danger">*</span></label>
                     <div class="input-group">
                         <span class="input-group-text">৳</span>
-                        <input type="number" class="form-control" id="collection_amount" name="collection_amount" min="0" step="0.01" placeholder="2500" required>
+                        <input type="number" class="form-control" id="collection_amount" name="collection_amount" min="0" step="0.01" placeholder="Enter collection amount" required>
                     </div>
                 </div>
 
@@ -168,7 +168,7 @@
         collectionAmount.value = Math.max(amount, 0);
     }
 
-    buildingType.addEventListener('change', function () {
+    buildingType.addEventListener('change', function() {
         collectionRate.value = rates[this.value] || 0;
 
         calculateCollectionAmount();
@@ -239,6 +239,35 @@
         if (contactPerson && contactPerson.value) {
             contactPerson.dispatchEvent(new Event('input'));
         }
+
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+
+        function toggleBuildingFields() {
+            if ($('#building_type').val() == '8') {
+                $('#totalFlatGroup, #occupiedFlatGroup, #contactPersonGroup').hide();
+
+                $('#total_flat, #occupied_flat, #contact_person')
+                    .prop('required', false)
+                    .val('');
+            } else {
+                $('#totalFlatGroup, #occupiedFlatGroup, #contactPersonGroup').show();
+
+                $('#total_flat, #occupied_flat, #contact_person')
+                    .prop('required', true);
+            }
+        }
+
+        // On page load
+        toggleBuildingFields();
+
+        // When building type changes
+        $('#building_type').on('change', function() {
+            toggleBuildingFields();
+        });
 
     });
 </script>
