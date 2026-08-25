@@ -118,7 +118,6 @@
                                     <option value="smtp" {{ old('mail_mailer', $settings->mail_mailer ?? '') == 'smtp' ? 'selected' : '' }}>SMTP</option>
                                     <option value="sendmail" {{ old('mail_mailer', $settings->mail_mailer ?? '') == 'sendmail' ? 'selected' : '' }}>Sendmail</option>
                                 </select>
-
                                 @error('mail_mailer')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -126,41 +125,41 @@
 
                             <div class="col-md-6">
                                 <label for="mail_host" class="form-label">Mail Host</label>
-                                <input type="text" name="mail_host" id="mail_host" class="form-control" value="{{ old('mail_host', $settings->mail_host ?? '') }}" placeholder="smtp.example.com">
+                                <input type="text" name="mail_host" id="mail_host" class="form-control" value="{{ $settings->mail_host }}" placeholder="smtp.example.com">
                             </div>
 
                             <div class="col-md-4">
                                 <label for="mail_port" class="form-label">Mail Port</label>
-                                <input type="number" name="mail_port" id="mail_port" class="form-control" value="{{ old('mail_port', $settings->mail_port ?? '') }}" placeholder="587">
+                                <input type="number" name="mail_port" id="mail_port" class="form-control" value="{{ $settings->mail_port }}" placeholder="Enter port number">
                             </div>
 
                             <div class="col-md-4">
                                 <label for="mail_username" class="form-label">Mail Username</label>
-                                <input type="text" name="mail_username" id="mail_username" class="form-control" value="{{ old('mail_username', $settings->mail_username ?? '') }}" placeholder="username@example.com">
+                                <input type="text" name="mail_username" id="mail_username" class="form-control" value="{{ $settings->mail_username }}" placeholder="username@example.com">
                             </div>
 
                             <div class="col-md-4">
                                 <label for="mail_password" class="form-label">Mail Password</label>
-                                <input type="password" name="mail_password" id="mail_password" class="form-control" placeholder="Enter new password">
+                                <input type="password" name="mail_password" id="mail_password" class="form-control" value="{{ $settings->mail_password }}" placeholder="Enter new password">
                             </div>
 
                             <div class="col-md-6">
                                 <label for="mail_encryption" class="form-label">Encryption</label>
                                 <select name="mail_encryption" id="mail_encryption" class="form-select">
-                                    <option value="">None</option>
-                                    <option value="tls" {{ old('mail_encryption', $settings->mail_encryption ?? '') == 'tls' ? 'selected' : '' }}>TLS</option>
-                                    <option value="ssl" {{ old('mail_encryption', $settings->mail_encryption ?? '') == 'ssl' ? 'selected' : '' }}>SSL</option>
+                                    <option value="" disabled selected>None</option>
+                                    <option value="tls" {{ $settings->mail_encryption == 'tls' ? 'selected' : '' }}>TLS</option>
+                                    <option value="ssl" {{ $settings->mail_encryption == 'ssl' ? 'selected' : '' }}>SSL</option>
                                 </select>
                             </div>
 
                             <div class="col-md-6">
                                 <label for="mail_from_address" class="form-label">From Email</label>
-                                <input type="email" name="mail_from_address" id="mail_from_address" class="form-control" value="{{ old('mail_from_address', $settings->mail_from_address ?? '') }}" placeholder="noreply@example.com">
+                                <input type="email" name="mail_from_address" id="mail_from_address" class="form-control" value="{{ $settings->mail_from_address ?? '' }}" placeholder="noreply@example.com">
                             </div>
 
                             <div class="col-md-6">
                                 <label for="mail_from_name" class="form-label">From Name</label>
-                                <input type="text" name="mail_from_name" id="mail_from_name" class="form-control" value="{{ old('mail_from_name', $settings->mail_from_name ?? '') }}" placeholder="Your Company Name">
+                                <input type="text" name="mail_from_name" id="mail_from_name" class="form-control" value="{{ $settings->mail_from_name ?? '' }}" placeholder="Sender's Email">
                             </div>
 
                             <div class="col-12">

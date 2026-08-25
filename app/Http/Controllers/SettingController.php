@@ -18,7 +18,7 @@ class SettingController extends Controller
    */
     public function edit()
     {
-        $settings = Settings::all()->first();
+        $settings = Settings::latest()->first();
         return View('admin.settings.edit', compact('settings'));
     }
 
@@ -61,6 +61,68 @@ class SettingController extends Controller
         $content->contact           = $request->contact;
         $content->email             = $request->email;
         $content->save();
+
+        return redirect()->back()->with('success', 'Settings updated successfully');
+    }
+
+    public function emailUpdate(Request $request){
+        $this->validate($request, [
+            'mail_mailer' => 'required',
+            'mail_host' => 'required',
+            'mail_port' => 'required',
+            'mail_username' => 'required',
+            'mail_password' => 'required',
+            'mail_from_address' => 'required',
+            'mail_from_name' => 'required',
+            'mail_encryption' => 'required',
+        ]);
+
+        // Get existing record (IMPORTANT: no truncate)
+        $content = Settings::latest()->first();
+
+        // Logo upload
+        if (!empty($request->logo)) {
+
+            // Delete old logo if exists
+            if (!empty($content->logo)) {
+                $old_path = public_path('uploads/settings/' . $content->logo);
+
+                if (file_exists($old_path)) {
+                    unlink($old_path);
+                }
+            }
+
+            // Upload new logo
+            $file = $request->logo;
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads/settings'), $filename);
+
+            $content->logo = $filename;
+        }
+        $content->mail_driver       = $request->mail_mailer;
+        $content->mail_host         = $request->mail_host;
+        $content->mail_port         = $request->mail_port;
+        $content->mail_username     = $request->mail_username;
+        $content->mail_password     = $request->mail_password;
+        $content->mail_encryption   = $request->mail_encryption;
+        $content->mail_from_address = $request->mail_from_address;
+        $content->mail_from_name    = $request->mail_from_name;
+        $content->save();
+
+        // Update .env
+        setEnv('MAIL_MAILER', $request->mail_mailer);
+        setEnv('MAIL_HOST', $request->mail_host);
+        setEnv('MAIL_PORT', $request->mail_port);
+        setEnv('MAIL_USERNAME', $request->mail_username);
+        setEnv('MAIL_PASSWORD', $request->mail_password);
+        setEnv('MAIL_ENCRYPTION', $request->mail_encryption);
+
+        setEnv('MAIL_FROM_ADDRESS', $request->mail_from_address);
+        setEnv('MAIL_FROM_NAME', $request->mail_from_name);
+
+        // Clear cache
+        Artisan::call('config:clear');
+        Artisan::call('cache:clear');
 
         return redirect()->back()->with('success', 'Settings updated successfully');
     }
