@@ -9,7 +9,7 @@
             <h3>Edit Types</h3>
         </div>
 
-        <form action="{{ route('admin.collection.update', $data->id) }}" method="POST">
+        <form action="{{ route('admin.collection.update', $data->id) }}" method="POST" autocomplete="off">
             @csrf
             @method('PUT')
 

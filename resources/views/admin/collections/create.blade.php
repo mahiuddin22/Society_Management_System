@@ -9,7 +9,7 @@
             <h3>Add Types</h3>
         </div>
 
-        <form action="{{ route('admin.type.store') }}" method="POST">
+        <form action="{{ route('admin.type.store') }}" method="POST" autocomplete="off">
             @csrf
 
             <div class="row g-3">

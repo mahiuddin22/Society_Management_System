@@ -4,7 +4,7 @@
 <section class="panel active" id="panel-units">
   <div class="filter-bar d-flex align-items-center justify-content-between">
 
-    <form action="" method="GET" class="d-flex align-items-center gap-2">
+    <form action="" method="GET" class="d-flex align-items-center gap-2" autocomplete="off">
 
       <div class="search">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none"

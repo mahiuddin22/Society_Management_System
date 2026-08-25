@@ -30,7 +30,7 @@
             <h3>Edit Building / Unit</h3>
         </div>
 
-        <form action="{{ route('admin.plot-and-units.update', $data->id) }}" method="POST">
+        <form action="{{ route('admin.plot-and-units.update', $data->id) }}" method="POST" autocomplete="off">
             @csrf
             @method('PUT')
 

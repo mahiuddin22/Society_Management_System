@@ -44,7 +44,6 @@ class SettingController extends Controller
                 if (file_exists($old_path)) {
                     unlink($old_path);
                 }
-  
             }
 
             // Upload new logo
@@ -65,7 +64,8 @@ class SettingController extends Controller
         return redirect()->back()->with('success', 'Settings updated successfully');
     }
 
-    public function emailUpdate(Request $request){
+    public function emailUpdate(Request $request)
+    {
         $this->validate($request, [
             'mail_mailer' => 'required',
             'mail_host' => 'required',
@@ -127,4 +127,27 @@ class SettingController extends Controller
         return redirect()->back()->with('success', 'Settings updated successfully');
     }
 
+    public function passwordUpdate(Request $request)
+    {
+        $request->validate([
+            'current_password'      => 'required',
+            'new_password'          => 'required',
+            'password_confirmation' => 'required|same:new_password',
+        ]);
+
+        $user = User::find(auth()->id());
+
+        if (!$user) {
+            return redirect()->back()->with('error', 'No User Found');
+        }
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return redirect()->back()->with('error', 'Current Password Does not Match');
+        }
+
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return redirect()->back()->with('success', 'Password Updated Successfully');
+    }
 }

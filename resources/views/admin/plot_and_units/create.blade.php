@@ -28,7 +28,7 @@
             <h3>Add Building / Unit</h3>
         </div>
 
-        <form action="{{ route('admin.plot-and-units.store') }}" method="POST">
+        <form action="{{ route('admin.plot-and-units.store') }}" method="POST" autocomplete="off">
             @csrf
 
             <div class="row g-3">

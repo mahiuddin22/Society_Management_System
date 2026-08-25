@@ -182,7 +182,7 @@
 
                             <div class="col-md-6">
                                 <label for="current_password" class="form-label">Current Password <span class="text-danger">*</span></label>
-                                <input type="password" name="current_password" id="current_password" class="form-control @error('current_password') is-invalid @enderror" placeholder="Enter current password">
+                                <input type="password" name="current_password" id="current_password" class="form-control @error('current_password') is-invalid @enderror" placeholder="Enter current password" required>
 
                                 @error('current_password')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -193,7 +193,7 @@
 
                             <div class="col-md-6">
                                 <label for="password" class="form-label">New Password <span class="text-danger">*</span></label>
-                                <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror" placeholder="Enter new password">
+                                <input type="password" name="new_password" id="password" class="form-control @error('password') is-invalid @enderror" placeholder="Enter new password" required>
 
                                 @error('password')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -202,7 +202,7 @@
 
                             <div class="col-md-6">
                                 <label for="password_confirmation" class="form-label">Confirm New Password <span class="text-danger">*</span></label>
-                                <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" placeholder="Confirm new password">
+                                <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" placeholder="Confirm new password" required>
                             </div>
 
                             <div class="col-12">
