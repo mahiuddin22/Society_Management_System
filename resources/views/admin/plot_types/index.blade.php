@@ -2,7 +2,7 @@
 @section('content')
 <section class="panel active" id="panel-units">
   <div class="filter-bar">
-    <form action="" method="GET" class="d-flex align-items-center gap-2">
+    <form action="" method="GET" class="d-flex align-items-center gap-2" autocomplete="off">
 
       <div class="search">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6d7469" stroke-width="2">
@@ -64,7 +64,7 @@
               <a href="{{ route('admin.type.edit', $type->id) }}" class="btn btn-warning btn-sm" title="Edit"><i class="bi bi-pencil"></i></a>
               @endif
               @if (hasPermission('plot_types', 'change_status'))
-              <form id="change-status-{{ $type->id }}" action="{{ route('admin.type.change.status', $type->id) }}" method="POST" class="d-inline">
+              <form id="change-status-{{ $type->id }}" action="{{ route('admin.type.change.status', $type->id) }}" method="POST" class="d-inline" autocomplete="off">
                 @csrf
                 @method('PATCH')
                 <button type="submit" class="btn btn-success btn-sm" title="Change Payment Status" onclick="changePaymentStatus()">

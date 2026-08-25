@@ -9,7 +9,7 @@
             <h3>Edit Types</h3>
         </div>
 
-        <form action="{{ route('admin.type.update', $plot_type->id) }}" method="POST">
+        <form action="{{ route('admin.type.update', $plot_type->id) }}" method="POST" autocomplete="off">
             @csrf
             @method('PUT')
 
