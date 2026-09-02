@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\CollectionController;
+use App\Http\Controllers\collectorController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PermissionsController;
 use App\Http\Controllers\PlotAndUnitController;
@@ -84,6 +85,16 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('/create', 'create')->name('create');
         Route::post('store', 'store')->name('store');
+        Route::get('{id}/edit', 'edit')->name('edit');
+        Route::put('{id}', 'update')->name('update');
+        Route::patch('change-status/{id}', 'changeStatus')->name('change.status');
+        Route::delete('{id}/destroy', 'destroy')->name('destroy');
+    });
+
+    // Collectors
+    Route::controller(collectorController::class)->prefix('collectors')->name('collectors.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/receipt/{id}', 'receipt')->name('receipt');
         Route::get('{id}/edit', 'edit')->name('edit');
         Route::put('{id}', 'update')->name('update');
         Route::patch('change-status/{id}', 'changeStatus')->name('change.status');

@@ -21,7 +21,7 @@
             <div class="nav-group-label">Overview</div>
             <a class="nav-item {{ request()->routeIs('admin.home') ? 'active' : '' }}" href="{{ route('admin.home') }}"><i class="bi bi-grid-1x2"></i> Dashboard</a>
         </div>
-        <!-- People -->
+        <!-- Collection -->
         <div class="nav-group">
             <div class="nav-group-label">People</div>
             @if (hasPermission('plot_and_units'))
@@ -57,9 +57,9 @@
             </a> -->
         </div>
 
-        <!-- Finance -->
+        <!-- Collection Management -->
         <div class="nav-group">
-            <div class="nav-group-label">Finance</div>
+            <div class="nav-group-label">Collection Management</div>
             <!-- <a class="nav-item" href="subscriptions.html" data-panel="subscriptions">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="3" y="4" width="18" height="16" rx="2" />
@@ -73,22 +73,14 @@
                     <path d="M2 10h20" />
                     <path d="M6 15h4" />
                 </svg>
-                Collecttions
+                Collections
             </a>
-            <!-- <a class="nav-item" href="expense.html" data-panel="expense">
+            <a class="nav-item" href="owners.html" data-panel="owners">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M3 21V8l9-5 9 5v13" />
-                    <path d="M9 21v-6h6v6" />
-                    <path d="M3 21h18" />
+                    <circle cx="12" cy="8" r="4" /> <path d="M4 21c1-4 5-6 8-6s7 2 8 6" />
                 </svg>
-                Expense &amp; Inventory
-            </a> -->
-            <!-- <a class="nav-item" href="reports.html" data-panel="reports">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M4 20V10M12 20V4M20 20v-7" />
-                </svg>
-                Reports
-            </a> -->
+                Collectors
+            </a>
         </div>
 
         <!-- Operations -->
