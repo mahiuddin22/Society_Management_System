@@ -69,7 +69,7 @@ class PermissionsController extends Controller
         $request->validate([
             'name'          => 'required|string|max:255',
             'menu_type'     => 'required',
-            'activities'    => 'required'
+            'activities'    => 'required_if:menu_type,sub_menu',
         ]);
 
         $permission = Permission::findOrFail($id);
@@ -83,7 +83,6 @@ class PermissionsController extends Controller
 
         return redirect()->route('admin.permissions.index')->with('success', 'Permission updated successfully.');
     }
-
 
     public function destroy($id)
     {
@@ -100,4 +99,5 @@ class PermissionsController extends Controller
         }
         return response()->json(['status' => 'success']);
     }
+
 }

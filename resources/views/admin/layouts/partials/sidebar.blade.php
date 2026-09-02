@@ -118,6 +118,9 @@
             @if (hasPermission('roles'))
             <a class="nav-item {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}" href="{{ route('admin.roles.index') }}"><i class="bi bi-person-badge"></i> Roles</a>
             @endif
+            @if (hasPermission('users'))
+            <a class="nav-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}"><i class="bi bi-person"></i> Users</a>
+            @endif
             @if (hasPermission('permissions'))
             <a class="nav-item {{ request()->routeIs('admin.permissions.*') ? 'active' : '' }}" href="{{ route('admin.permissions.index') }}"><i class="bi bi-shield-check"></i> Permissions</a>
             @endif
