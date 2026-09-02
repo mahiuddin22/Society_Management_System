@@ -30,13 +30,15 @@
                     <tr>
                         <th>SL</th>
                         <th>Name (Role)</th>
+                        <th>Username</th>
                         <th class="text-center">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($roles as $role)
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $roles->firstItem() + $loop->index }}</td>
+                        <td>{{ ucfirst($role->name) }}</td>
                         <td>{{ $role->name }}</td>
 
                         @if(hasPermission('roles', 'edit') || hasPermission('roles', 'delete'))
