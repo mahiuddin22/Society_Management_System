@@ -7,6 +7,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PermissionsController;
 use App\Http\Controllers\PlotAndUnitController;
 use App\Http\Controllers\PlotTypeController;
+use App\Http\Controllers\RoadController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\SettingController;
@@ -51,6 +52,16 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
         Route::delete('{id}/destroy', 'destroy')->name('destroy');
     });
 
+    // Roads
+    Route::controller(RoadController::class)->prefix('roads')->name('roads.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('store', 'store')->name('store');
+        Route::get('{id}/edit', 'edit')->name('edit');
+        Route::put('{id}', 'update')->name('update');
+        Route::delete('{id}/destroy', 'destroy')->name('destroy');
+    });
+
+
     // Roles
     Route::controller(RoleController::class)->prefix('roles')->name('roles.')->group(function () {
         Route::get('/', 'index')->name('index');
@@ -59,7 +70,6 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
         Route::put('{id}', 'update')->name('update');
         Route::delete('{id}/destroy', 'destroy')->name('destroy');
     });
-
     // Users
     Route::controller(UserController::class)->prefix('users')->name('users.')->group(function () {
         Route::get('/', 'index')->name('index');

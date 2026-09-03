@@ -15,7 +15,7 @@
       </div>
 
       <button type="submit" class="btn btn-primary">Filter</button>
-      <a href="{{ route('admin.collection.index') }}" class="btn btn-secondary">Reset</a>
+      <a href="{{ route('admin.collectors.index') }}" class="btn btn-secondary">Reset</a>
 
     </form>
 

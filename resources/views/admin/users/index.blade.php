@@ -16,7 +16,7 @@
       </div>
 
       <button type="submit" class="btn btn-primary">Filter</button>
-      <a href="{{ route('admin.collection.index') }}" class="btn btn-secondary">Reset</a>
+      <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Reset</a>
 
     </form>
 
@@ -85,7 +85,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content shadow">
             <div class="modal-header bg-success text-white">
-                <h5 class="modal-title" id="createModalLabel"><i class="bi bi-person-plus me-2"></i> Add New Activity</h5>
+                <h5 class="modal-title" id="createModalLabel"><i class="bi bi-person-plus me-2"></i> Add New User</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form id="createUserForm" action="{{ route('admin.users.store') }}" method="POST" novalidate>
