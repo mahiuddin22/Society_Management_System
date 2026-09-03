@@ -11,7 +11,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        $data['users'] = User::paginate(10);
+        $data['users'] = User::where('name', 'like', '%' . request()->get('search') . '%')->orWhere('email', 'like', '%' . request()->get('search') . '%')->orWhere('role', 'like', '%' . request()->get('search') . '%')->paginate(10);
         $data['roles'] = Role::all();
         return view('admin.users.index', $data);
     }
@@ -66,7 +66,7 @@ class UserController extends Controller
 
     public function destroy($id)
     {
-        $user = User::findOrFail($id)->delete();
+        User::findOrFail($id)->delete();
         return redirect()->route('admin.users.index')->with('success', 'User deleted successfully.');
     }
 

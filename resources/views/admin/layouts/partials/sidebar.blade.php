@@ -33,40 +33,11 @@
                 Plot &amp; Units
             </a>
             @endif
-
-            <!-- <a class="nav-item" href="owners.html" data-panel="owners">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="8" r="4" /> <path d="M4 21c1-4 5-6 8-6s7 2 8 6" />
-                </svg>
-                Owners
-            </a>
-            <a class="nav-item" href="tenants.html" data-panel="tenants">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="9" cy="8" r="3.2" />
-                    <circle cx="17" cy="9" r="2.6" />
-                    <path d="M2.5 20c.7-3.3 3.6-5 6.5-5s5.8 1.7 6.5 5" />
-                    <path d="M15 15.2c2.4.3 4.3 1.8 4.9 4.3" />
-                </svg>
-                Tenants
-            </a>
-            <a class="nav-item" href="lifemembers.html" data-panel="lifemembers">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 21s-7-4.4-9.5-8.8C.6 8.6 2.4 5 6 5c2 0 3.6 1.1 4.5 2.6C11.4 6.1 13 5 15 5c3.6 0 5.4 3.6 3.5 7.2C19 16.6 12 21 12 21z" />
-                </svg>
-                Life Members <span class="count">6</span>
-            </a> -->
         </div>
 
         <!-- Collection Management -->
         <div class="nav-group">
             <div class="nav-group-label">Collection Management</div>
-            <!-- <a class="nav-item" href="subscriptions.html" data-panel="subscriptions">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="4" width="18" height="16" rx="2" />
-                    <path d="M3 10h18M8 15h4" />
-                </svg>
-                Subscription &amp; Billing
-            </a> -->
             <a class="nav-item {{ request()->routeIs('admin.collection.*') ? 'active' : '' }}" href="{{ route('admin.collection.index') }}" data-panel="payments">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="2" y="6" width="20" height="13" rx="2" />
@@ -75,39 +46,13 @@
                 </svg>
                 Collections
             </a>
-            <a class="nav-item" href="owners.html" data-panel="owners">
+            <a class="nav-item {{ request()->routeIs('admin.collectors.*') ? 'active' : '' }}" href="{{ route('admin.collectors.index') }}" data-panel="owners">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="8" r="4" /> <path d="M4 21c1-4 5-6 8-6s7 2 8 6" />
                 </svg>
                 Collectors
             </a>
         </div>
-
-        <!-- Operations -->
-        <!-- <div class="nav-group">
-            <div class="nav-group-label">Operations</div>
-            <a class="nav-item" href="notices.html" data-panel="notices">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M4 4h16v13H8l-4 4z" />
-                    <path d="M8 9h8M8 13h5" />
-                </svg>
-                Notice Board
-            </a>
-            <a class="nav-item" href="complaints.html" data-panel="complaints">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 9v4M12 17h.01" />
-                    <path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z" />
-                </svg>
-                Complaints <span class="count">4</span>
-            </a>
-            <a class="nav-item" href="events.html" data-panel="events">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="4" width="18" height="17" rx="2" />
-                    <path d="M3 9h18M8 2v4M16 2v4" />
-                </svg>
-                Events
-            </a>
-        </div> -->
 
         @if (hasPermission('activities') || hasPermission('roles') || hasPermission('permissions'))
         <div class="nav-group">

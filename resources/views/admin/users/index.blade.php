@@ -3,15 +3,22 @@
 @section('content')
 
 <!-- Filter Form -->
-<form action="{{ route('admin.users.index') }}" method="GET" class="row g-2 mb-3 mt-2">
-    <div class="col-md-8">
-        <input type="text" name="name" class="form-control form-control-sm" value="{{ request()->input('name') }}" placeholder="Search by name" />
-    </div>
+<form action="" method="GET" class="d-flex align-items-center gap-2">
 
-    <div class="col-md-4 d-grid text-center">
-        <button type="submit" class="btn btn-primary btn-sm">Filter</button>
-    </div>
-</form>
+      <div class="search">
+
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6d7469" stroke-width="2">
+          <circle cx="11" cy="11" r="7" />
+          <path d="m21 21-4.3-4.3" />
+        </svg>
+        <input class="input" name="search" value="{{ request('search') }}" placeholder="Search by name / role / email / ">
+
+      </div>
+
+      <button type="submit" class="btn btn-primary">Filter</button>
+      <a href="{{ route('admin.collection.index') }}" class="btn btn-secondary">Reset</a>
+
+    </form>
 
 <!-- Create Button under filter form -->
 <div class="d-flex justify-content-end mb-3">
@@ -95,7 +102,7 @@
                             <select id="role" name="role" class="form-select" required>
                                 <option value="">Select Role</option>
                                 @foreach($roles as $role)
-                                    <option value="{{ $role->name }}">{{ $role->name }}</option>
+                                <option value="{{ $role->name }}">{{ $role->name }}</option>
                                 @endforeach
                             </select>
                             <div class="invalid-feedback">Please select a role.</div>

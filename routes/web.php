@@ -1,7 +1,8 @@
 <?php
+
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\CollectionController;
-use App\Http\Controllers\collectorController;
+use App\Http\Controllers\CollectorController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PermissionsController;
 use App\Http\Controllers\PlotAndUnitController;
@@ -16,7 +17,10 @@ use Illuminate\Support\Facades\Route;
 
 Auth::routes();
 Route::get('/', function () {
-    return redirect()->route('login');
+    if (auth()->check()) {
+        return redirect()->route('admin.home');
+    }
+    return redirect('/login');
 });
 
 Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
@@ -102,7 +106,7 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
     });
 
     // Collectors
-    Route::controller(collectorController::class)->prefix('collectors')->name('collectors.')->group(function () {
+    Route::controller(CollectorController::class)->prefix('collectors')->name('collectors.')->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('/receipt/{id}', 'receipt')->name('receipt');
         Route::get('{id}/edit', 'edit')->name('edit');
@@ -130,5 +134,4 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
         Route::put('email-update', 'emailUpdate')->name('email.update');
         Route::put('password-update', 'passwordUpdate')->name('password.update');
     });
-
 });
