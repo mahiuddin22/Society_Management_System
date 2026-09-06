@@ -35,82 +35,90 @@
             @method('PUT')
 
             <div class="row g-3">
+                <div class="row g-3">
+                    <!-- {{-- Road --}} -->
+                    <div class="col-md-4">
+                        <label for="road" class="form-label">Road <span class="text-danger">*</span></label>
+                        <select class="form-select" id="road" name="road" required>
+                            <option value="" selected disabled>Select Road</option>
+                            @foreach($roads as $road)
+                            <option value="{{$road->id}}" {{ old('road', $data->road) == $road->id ? 'selected' : '' }}>{{$road->name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
 
-                <!-- {{-- Road --}} -->
-                <div class="col-md-4">
-                    <label for="road" class="form-label">Road <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="road" name="road" value="{{ old('road', $data->road) }}" placeholder="e.g. 1/A" required>
-                </div>
+                    <!-- {{-- Holding No --}} -->
+                    <div class="col-md-4">
+                        <label for="holding_no" class="form-label">Holding No. <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="holding_no" name="holding_no" value="{{ old('holding_no', $data->holding_no) }}" placeholder="e.g. 2" required>
+                    </div>
 
-                <!-- {{-- Holding No --}} -->
-                <div class="col-md-4">
-                    <label for="holding_no" class="form-label">Holding No. <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="holding_no" name="holding_no" value="{{ old('holding_no', $data->holding_no) }}" placeholder="e.g. 2" required>
-                </div>
-
-                <!-- {{-- Building Type --}} -->
-                <div class="col-md-4">
-                    <label for="building_type" class="form-label">Building Type <span class="text-danger">*</span></label>
-                    <select class="form-select" id="building_type" name="building_type" required>
-                        <option value="" disabled>Select Building Type</option>
-                        @foreach($plot_types as $type)
-                        <option value="{{ $type->id }}" {{ old('building_type', $data->building_type) == $type->id ? 'selected' : '' }}>{{ $type->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <!-- {{-- Total Flat --}} -->
-                <div class="col-md-4" id="totalFlatGroup">
-                    <label for="total_flat" class="form-label">Total Flat <span class="text-danger">*</span></label>
-                    <input type="number" class="form-control" id="total_flat" name="total_flat" value="{{ old('total_flat', $data->total_flat) }}" min="0" placeholder="e.g. 12" required>
-                </div>
-
-                <!-- {{-- Occupied Flat --}} -->
-                <div class="col-md-4" id="occupiedFlatGroup">
-                    <label for="occupied_flat" class="form-label">Occupied Flat <span class="text-danger">*</span></label>
-                    <input type="number" class="form-control" id="occupied_flat" name="occupied_flat" value="{{ old('occupied_flat', $data->occupied_flat) }}" min="0" placeholder="e.g. 10" required>
-                </div>
-
-                <!-- {{-- Collection Type --}} -->
-                <div class="col-md-4">
-                    <label for="collection_type" class="form-label">Collection Type <span class="text-danger">*</span></label>
-                    <select class="form-select" id="collection_type" name="collection_type" required>
-                        <option value="">Select Collection Type</option>
-                        <option value="Group" {{ old('collection_type', $data->collection_type) == 'Group' ? 'selected' : '' }}>Group</option>
-                        <option value="Individual" {{ old('collection_type', $data->collection_type) == 'Individual' ? 'selected' : '' }}>Individual</option>
-                    </select>
-                </div>
-
-                <!-- {{-- Contact Person --}} -->
-                <div class="col-md-4" id="contactPersonGroup">
-                    <label for="contact_person" class="form-label">Contact Person <span class="text-danger">*</span></label>
-                    <input type="number" class="form-control" id="contact_person" name="contact_person" value="{{ old('contact_person', $data->contact_person) }}" min="0" placeholder="Number of contact persons">
-                </div>
-
-                <!-- {{-- Collection Rate --}} -->
-                <div class="col-md-4">
-                    <label for="collection_rate" class="form-label">Collection Rate <span class="text-danger">*</span></label>
-                    <div class="input-group">
-                        <span class="input-group-text">৳</span>
-                        <input type="number" class="form-control" id="collection_rate" name="collection_rate" value="{{ old('collection_rate', $data->collection_rate) }}" min="0" step="0.01" placeholder="250" required>
+                    <!-- {{-- Building Type --}} -->
+                    <div class="col-md-4">
+                        <label for="building_type" class="form-label">Building Type <span class="text-danger">*</span></label>
+                        <select class="form-select" id="building_type" name="building_type" required>
+                            <option value="" disabled>Select Building Type</option>
+                            @foreach($plot_types as $type)
+                            <option value="{{ $type->id }}" {{ old('building_type', $data->building_type) == $type->id ? 'selected' : '' }}>{{ $type->name }}</option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
-
-                <!-- {{-- Discount --}} -->
-                <div class="col-md-4">
-                    <label for="discount" class="form-label">Discount</label>
-                    <div class="input-group">
-                        <span class="input-group-text">৳</span>
-                        <input type="number" class="form-control" id="discount" name="discount" value="{{ old('discount', $data->discount ?? 0) }}" min="0" step="0.01" placeholder="500">
+                
+                <div id="inputGroup" class="row g-3">
+                    <!-- {{-- Total Flat --}} -->
+                    <div class="col-md-4" id="totalFlatGroup">
+                        <label for="total_flat" class="form-label">Total Flat <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="total_flat" name="total_flat" value="{{ old('total_flat', $data->total_flat) }}" min="0" placeholder="e.g. 12" required>
                     </div>
-                </div>
 
-                <!-- {{-- Collection Amount --}} -->
-                <div class="col-md-4">
-                    <label for="collection_amount" class="form-label">Collection Amount <span class="text-danger">*</span></label>
-                    <div class="input-group">
-                        <span class="input-group-text">৳</span>
-                        <input type="number" class="form-control" id="collection_amount" name="collection_amount" value="{{ old('collection_amount', $data->collection_amount) }}" min="0" step="0.01" placeholder="2500" required>
+                    <!-- {{-- Occupied Flat --}} -->
+                    <div class="col-md-4" id="occupiedFlatGroup">
+                        <label for="occupied_flat" class="form-label">Occupied Flat <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="occupied_flat" name="occupied_flat" value="{{ old('occupied_flat', $data->occupied_flat) }}" min="0" placeholder="e.g. 10" required>
+                    </div>
+
+                    <!-- {{-- Collection Type --}} -->
+                    <div class="col-md-4">
+                        <label for="collection_type" class="form-label">Collection Type <span class="text-danger">*</span></label>
+                        <select class="form-select" id="collection_type" name="collection_type" required>
+                            <option value="">Select Collection Type</option>
+                            <option value="Group" {{ old('collection_type', $data->collection_type) == 'Group' ? 'selected' : '' }}>Group</option>
+                            <option value="Individual" {{ old('collection_type', $data->collection_type) == 'Individual' ? 'selected' : '' }}>Individual</option>
+                        </select>
+                    </div>
+
+                    <!-- {{-- Contact Person --}} -->
+                    <div class="col-md-4" id="contactPersonGroup">
+                        <label for="contact_person" class="form-label">Contact Person <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="contact_person" name="contact_person" value="{{ old('contact_person', $data->contact_person) }}" min="0" placeholder="Number of contact persons">
+                    </div>
+
+                    <!-- {{-- Collection Rate --}} -->
+                    <div class="col-md-4">
+                        <label for="collection_rate" class="form-label">Collection Rate <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text">৳</span>
+                            <input type="number" class="form-control" id="collection_rate" name="collection_rate" value="{{ old('collection_rate', $data->collection_rate) }}" min="0" step="0.01" placeholder="250" required>
+                        </div>
+                    </div>
+
+                    <!-- {{-- Discount --}} -->
+                    <div class="col-md-4">
+                        <label for="discount" class="form-label">Discount</label>
+                        <div class="input-group">
+                            <span class="input-group-text">৳</span>
+                            <input type="number" class="form-control" id="discount" name="discount" value="{{ old('discount', $data->discount ?? 0) }}" min="0" step="0.01" placeholder="500">
+                        </div>
+                    </div>
+
+                    <!-- {{-- Collection Amount --}} -->
+                    <div class="col-md-4">
+                        <label for="collection_amount" class="form-label">Collection Amount <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text">৳</span>
+                            <input type="number" class="form-control" id="collection_amount" name="collection_amount" value="{{ old('collection_amount', $data->collection_amount) }}" min="0" step="0.01" placeholder="2500" required>
+                        </div>
                     </div>
                 </div>
 
@@ -261,15 +269,15 @@
 
         function toggleBuildingFields() {
             if ($('#building_type').val() == '8') {
-                $('#totalFlatGroup, #occupiedFlatGroup, #contactPersonGroup').hide();
+                $('#inputGroup').hide();
 
-                $('#total_flat, #occupied_flat, #contact_person')
+                $('#total_flat, #occupied_flat, #collection_type, #collection_rate, #collection_amount, #contact_person')
                     .prop('required', false)
                     .val('');
             } else {
-                $('#totalFlatGroup, #occupiedFlatGroup, #contactPersonGroup').show();
+                $('#inputGroup').show();
 
-                $('#total_flat, #occupied_flat, #contact_person')
+                $('#total_flat, #occupied_flat, #collection_type, #collection_rate, #collection_amount, #contact_person')
                     .prop('required', true);
             }
         }

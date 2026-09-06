@@ -47,12 +47,12 @@
                         <td>{{ $plotAndUnit->occupied_flat }}</td>
 
                         <th>Collection Type</th>
-                        <td>{{ $plotAndUnit->collection_type }}</td>
+                        <td>{{ $plotAndUnit->collection_type ?? 'N/A' }}</td>
                     </tr>
 
                     <tr>
                         <th>Contact Person</th>
-                        <td>{{ $plotAndUnit->contact_person }}</td>
+                        <td>{{ $plotAndUnit->contact_person ?? 'N/A' }}</td>
 
                         <th>Collection Rate</th>
                         <td>

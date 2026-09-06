@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\PlotAndUnit;
 use App\Models\Member;
 use App\Models\PlotType;
+use App\Models\Road;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -33,7 +34,6 @@ class PlotAndUnitController extends Controller
         $plotAndUnits = $plotAndUnits->paginate(30);
 
         $plot_types = PlotType::where('status', true)->get();
-
         return view('admin.plot_and_units.index', compact('plotAndUnits', 'plot_types'));
     }
 
@@ -41,21 +41,22 @@ class PlotAndUnitController extends Controller
     {
         $plot_types = PlotType::where('status', true)->get();
         $rates      = $plot_types->pluck('amount', 'id')->toArray();
-        return view('admin.plot_and_units.create', compact('plot_types', 'rates'));
+        $roads      = Road::all();
+        return view('admin.plot_and_units.create', compact('plot_types', 'rates', 'roads'));
     }
 
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'road'              => 'required|string|max:255',
+            'road'              => 'required',
             'holding_no'        => 'required|string|max:255',
             'building_type'     => 'required',
             'total_flat'        => 'required_unless:building_type,8|nullable|integer|min:0',
             'occupied_flat'     => 'required_unless:building_type,8|nullable|integer|min:0|lte:total_flat',
-            'collection_type'   => 'required|in:Group,Individual',
+            'collection_type'   => 'required_unless:building_type,8',
             'contact_person'    => 'required_unless:building_type,8|nullable|integer|min:0',
-            'collection_rate'   => 'required|numeric|min:0',
-            'collection_amount' => 'required|numeric|min:0',
+            'collection_rate'   => 'required_unless:building_type,8|numeric|nullable|min:0',
+            'collection_amount' => 'required_unless:building_type,8|numeric|nullable|min:0',
             'discount'          => 'nullable|numeric|min:0',
             'date'              => 'required|date',
             'status'            => 'required|in:0,1',
@@ -72,12 +73,12 @@ class PlotAndUnitController extends Controller
         $plotAndUnit->road              = $validatedData['road'];
         $plotAndUnit->holding_no        = $validatedData['holding_no'];
         $plotAndUnit->building_type     = $validatedData['building_type'];
-        $plotAndUnit->total_flat        = $validatedData['total_flat'];
-        $plotAndUnit->occupied_flat     = $validatedData['occupied_flat'];
+        $plotAndUnit->total_flat        = $validatedData['total_flat'] ?? 0;
+        $plotAndUnit->occupied_flat     = $validatedData['occupied_flat'] ?? 0;
         $plotAndUnit->collection_type   = $validatedData['collection_type'];
         $plotAndUnit->contact_person    = $validatedData['contact_person'];
-        $plotAndUnit->collection_rate   = $validatedData['collection_rate'];
-        $plotAndUnit->collection_amount = $validatedData['collection_amount'];
+        $plotAndUnit->collection_rate   = $validatedData['collection_rate'] ?? 0;
+        $plotAndUnit->collection_amount = $validatedData['collection_amount'] ?? 0;
         $plotAndUnit->discount          = $validatedData['discount'] ?? 0;
         $plotAndUnit->date              = Carbon::createFromFormat('d-m-Y', $request->date)->format('Y-m-d');
         $plotAndUnit->status            = $validatedData['status'];
@@ -102,25 +103,26 @@ class PlotAndUnitController extends Controller
 
     public function edit($id)
     {
-        $data = PlotAndUnit::findOrFail($id);
-        $members = Member::where('plot_and_unit_id', $id)->get();
+        $data       = PlotAndUnit::findOrFail($id);
+        $members    = Member::where('plot_and_unit_id', $id)->get();
         $plot_types = PlotType::where('status', true)->get();
-        $rates = $plot_types->pluck('amount', 'id')->toArray();
-        return view('admin.plot_and_units.edit', compact('data', 'plot_types', 'rates', 'members'));
+        $rates      = $plot_types->pluck('amount', 'id')->toArray();
+        $roads      = Road::all();
+        return view('admin.plot_and_units.edit', compact('data', 'plot_types', 'rates', 'members', 'roads'));
     }
 
     public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
-            'road'              => 'required|string|max:255',
+            'road'              => 'required',
             'holding_no'        => 'required|string|max:255',
             'building_type'     => 'required',
             'total_flat'        => 'required_unless:building_type,8|nullable|integer|min:0',
             'occupied_flat'     => 'required_unless:building_type,8|nullable|integer|min:0|lte:total_flat',
-            'collection_type'   => 'required|in:Group,Individual',
+            'collection_type'   => 'required_unless:building_type,8',
             'contact_person'    => 'required_unless:building_type,8|nullable|integer|min:0',
-            'collection_rate'   => 'required|numeric|min:0',
-            'collection_amount' => 'required|numeric|min:0',
+            'collection_rate'   => 'required_unless:building_type,8|numeric|nullable|min:0',
+            'collection_amount' => 'required_unless:building_type,8|numeric|nullable|min:0',
             'discount'          => 'nullable|numeric|min:0',
             'date'              => 'required|date',
             'status'            => 'required|in:0,1',
@@ -139,12 +141,12 @@ class PlotAndUnitController extends Controller
         $plotAndUnit->road              = $validatedData['road'];
         $plotAndUnit->holding_no        = $validatedData['holding_no'];
         $plotAndUnit->building_type     = $validatedData['building_type'];
-        $plotAndUnit->total_flat        = $validatedData['total_flat'];
-        $plotAndUnit->occupied_flat     = $validatedData['occupied_flat'];
+        $plotAndUnit->total_flat        = $validatedData['total_flat'] ?? 0;
+        $plotAndUnit->occupied_flat     = $validatedData['occupied_flat'] ?? 0;
         $plotAndUnit->collection_type   = $validatedData['collection_type'];
         $plotAndUnit->contact_person    = $validatedData['contact_person'];
-        $plotAndUnit->collection_rate   = $validatedData['collection_rate'];
-        $plotAndUnit->collection_amount = $validatedData['collection_amount'];
+        $plotAndUnit->collection_rate   = $validatedData['collection_rate'] ?? 0;
+        $plotAndUnit->collection_amount = $validatedData['collection_amount'] ?? 0;
         $plotAndUnit->discount          = $validatedData['discount'] ?? 0;
         $plotAndUnit->date              = Carbon::createFromFormat('d-m-Y', $request->date)->format('Y-m-d');
         $plotAndUnit->status            = $validatedData['status'];

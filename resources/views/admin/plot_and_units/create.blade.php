@@ -32,85 +32,91 @@
             @csrf
 
             <div class="row g-3">
+                <div class="row g-3">
+                    <!-- {{-- Road --}} -->
+                    <div class="col-md-4">
+                        <label for="road" class="form-label">Road <span class="text-danger">*</span></label>
+                        <select class="form-select" id="road" name="road" required>
+                            <option value="" selected disabled>Select Road</option>
+                            @foreach($roads as $road)
+                            <option value="{{$road->id}}">{{$road->name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
 
-                <!-- {{-- Road --}} -->
-                <div class="col-md-4">
-                    <label for="road" class="form-label">Road <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="road" name="road" placeholder="e.g. 1/A" required>
+                    <!-- {{-- Holding No --}} -->
+                    <div class="col-md-4">
+                        <label for="holding_no" class="form-label">Holding No. <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="holding_no" name="holding_no" placeholder="e.g. 2" required>
+                    </div>
+
+                    <!-- {{-- Building Type --}} -->
+                    <div class="col-md-4">
+                        <label for="building_type" class="form-label">Building Type <span class="text-danger">*</span></label>
+                        <select class="form-select" id="building_type" name="building_type" required>
+                            <option value="" selected disabled>Select Building Type</option>
+                            @foreach($plot_types as $type)
+                            <option value="{{$type->id}}">{{$type->name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
-
-                <!-- {{-- Holding No --}} -->
-                <div class="col-md-4">
-                    <label for="holding_no" class="form-label">Holding No. <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="holding_no" name="holding_no" placeholder="e.g. 2" required>
-                </div>
-
-                <!-- {{-- Building Type --}} -->
-                <div class="col-md-4">
-                    <label for="building_type" class="form-label">Building Type <span class="text-danger">*</span></label>
-                    <select class="form-select" id="building_type" name="building_type" required>
-                        <option value="" selected disabled>Select Building Type</option>
-                        @foreach($plot_types as $type)
-                        <option value="{{$type->id}}">{{$type->name}}</option>
-                        @endforeach
-                    </select>
-                </div>
-
                 <!-- Total Flat -->
-                <div class="col-md-4" id="totalFlatGroup">
-                    <label for="total_flat" class="form-label">Total Flat <span class="text-danger">*</span></label>
-                    <input type="number" class="form-control" id="total_flat" name="total_flat" min="0" placeholder="e.g. 12" required>
-                </div>
+                <div id="inputGroup" class="row g-3">
+                    <div class="col-md-4" id="totalFlatGroup">
+                        <label for="total_flat" class="form-label">Total Flat <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="total_flat" name="total_flat" min="0" placeholder="e.g. 12" required>
+                    </div>
 
-                <!-- Occupied Flat -->
-                <div class="col-md-4" id="occupiedFlatGroup">
-                    <label for="occupied_flat" class="form-label">Occupied Flat <span class="text-danger">*</span></label>
-                    <input type="number" class="form-control" id="occupied_flat" name="occupied_flat" min="0" placeholder="e.g. 10" required>
-                </div>
+                    <!-- Occupied Flat -->
+                    <div class="col-md-4" id="occupiedFlatGroup">
+                        <label for="occupied_flat" class="form-label">Occupied Flat <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="occupied_flat" name="occupied_flat" min="0" placeholder="e.g. 10" required>
+                    </div>
 
-                <!-- {{-- Collection Type --}} -->
-                <div class="col-md-4">
-                    <label for="collection_type" class="form-label">Collection Type <span class="text-danger">*</span></label>
-                    <select class="form-select" id="collection_type" name="collection_type" required>
-                        <option value="">Select Collection Type</option>
-                        <option value="Group" {{ old('collection_type') == 'Group' ? 'selected' : '' }}>Group</option>
-                        <option value="Individual" {{ old('collection_type') == 'Individual' ? 'selected' : '' }}>Individual</option>
-                    </select>
-                </div>
+                    <!-- {{-- Collection Type --}} -->
+                    <div class="col-md-4">
+                        <label for="collection_type" class="form-label">Collection Type <span class="text-danger">*</span></label>
+                        <select class="form-select" id="collection_type" name="collection_type" required>
+                            <option value="">Select Collection Type</option>
+                            <option value="Group" {{ old('collection_type') == 'Group' ? 'selected' : '' }}>Group</option>
+                            <option value="Individual" {{ old('collection_type') == 'Individual' ? 'selected' : '' }}>Individual</option>
+                        </select>
+                    </div>
 
-                <!-- Contact Person -->
-                <div class="col-md-4" id="contactPersonGroup">
-                    <label for="contact_person" class="form-label">Contact Person<span class="text-danger">*</span></label>
-                    <input type="number" class="form-control" id="contact_person" name="contact_person" min="0" placeholder="Number of contact persons">
-                </div>
+                    <!-- Contact Person -->
+                    <div class="col-md-4" id="contactPersonGroup">
+                        <label for="contact_person" class="form-label">Contact Person<span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="contact_person" name="contact_person" min="0" placeholder="Number of contact persons">
+                    </div>
 
-                <!-- {{-- Collection Rate --}} -->
-                <div class="col-md-4">
-                    <label for="collection_rate" class="form-label">Collection Rate <span class="text-danger">*</span></label>
-                    <div class="input-group">
-                        <span class="input-group-text">৳</span>
-                        <input type="number" class="form-control" id="collection_rate" name="collection_rate" min="0" step="0.01" placeholder="Enter collection rate" required>
+                    <!-- {{-- Collection Rate --}} -->
+                    <div class="col-md-4">
+                        <label for="collection_rate" class="form-label">Collection Rate <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text">৳</span>
+                            <input type="number" class="form-control" id="collection_rate" name="collection_rate" min="0" step="0.01" placeholder="Enter collection rate" required>
+                        </div>
+                    </div>
+
+                    <!-- {{-- Discount --}} -->
+                    <div class="col-md-4">
+                        <label for="discount" class="form-label">Discount</label>
+                        <div class="input-group">
+                            <span class="input-group-text">৳</span>
+                            <input type="number" class="form-control" id="discount" name="discount" min="0" step="0.01" placeholder="Enter discount amount">
+                        </div>
+                    </div>
+
+                    <!-- {{-- Collection Amount --}} -->
+                    <div class="col-md-4">
+                        <label for="collection_amount" class="form-label">Collection Amount <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text">৳</span>
+                            <input type="number" class="form-control" id="collection_amount" name="collection_amount" min="0" step="0.01" placeholder="Enter collection amount" required>
+                        </div>
                     </div>
                 </div>
-
-                <!-- {{-- Discount --}} -->
-                <div class="col-md-4">
-                    <label for="discount" class="form-label">Discount</label>
-                    <div class="input-group">
-                        <span class="input-group-text">৳</span>
-                        <input type="number" class="form-control" id="discount" name="discount" min="0" step="0.01" placeholder="Enter discount amount">
-                    </div>
-                </div>
-
-                <!-- {{-- Collection Amount --}} -->
-                <div class="col-md-4">
-                    <label for="collection_amount" class="form-label">Collection Amount <span class="text-danger">*</span></label>
-                    <div class="input-group">
-                        <span class="input-group-text">৳</span>
-                        <input type="number" class="form-control" id="collection_amount" name="collection_amount" min="0" step="0.01" placeholder="Enter collection amount" required>
-                    </div>
-                </div>
-
                 <div class="col-md-4">
                     <label for="datepicker" class="form-label">Issue Date <span class="text-danger">*</span></label>
                     <div class="input-group">
@@ -168,12 +174,10 @@
 
     buildingType.addEventListener('change', function() {
         collectionRate.value = rates[this.value] || 0;
-
         calculateCollectionAmount();
     });
 
     occupiedFlat.addEventListener('input', calculateCollectionAmount);
-
     discount.addEventListener('input', calculateCollectionAmount);
 </script>
 
@@ -246,15 +250,15 @@
 
         function toggleBuildingFields() {
             if ($('#building_type').val() == '8') {
-                $('#totalFlatGroup, #occupiedFlatGroup, #contactPersonGroup').hide();
+                $('#inputGroup').hide();
 
-                $('#total_flat, #occupied_flat, #contact_person')
+                $('#total_flat, #occupied_flat, #collection_type, #collection_rate, #collection_amount, #contact_person')
                     .prop('required', false)
                     .val('');
             } else {
-                $('#totalFlatGroup, #occupiedFlatGroup, #contactPersonGroup').show();
+                $('#inputGroup').show();
 
-                $('#total_flat, #occupied_flat, #contact_person')
+                $('#total_flat, #occupied_flat, #collection_type, #collection_rate, #collection_amount, #contact_person')
                     .prop('required', true);
             }
         }

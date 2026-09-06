@@ -9,6 +9,11 @@ class PlotAndUnit extends Model
 {
     use HasFactory;
 
+    public function unit_road()
+    {
+        return $this->belongsTo(Road::class, 'road');
+    }
+
     public function members()
     {
         return $this->hasMany(Member::class, 'plot_and_unit_id');
