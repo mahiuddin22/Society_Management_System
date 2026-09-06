@@ -28,6 +28,7 @@
     </a>
     @endif
 </div>
+
 <!-- Table Card -->
 <div class="card shadow-sm">
     <div class="card-body">

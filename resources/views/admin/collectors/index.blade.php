@@ -4,20 +4,20 @@
 <!-- Filter Form -->
 <form action="" method="GET" class="d-flex align-items-center gap-2 mb-3">
 
-      <div class="search">
+    <div class="search">
 
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6d7469" stroke-width="2">
-          <circle cx="11" cy="11" r="7" />
-          <path d="m21 21-4.3-4.3" />
+            <circle cx="11" cy="11" r="7" />
+            <path d="m21 21-4.3-4.3" />
         </svg>
         <input class="input" name="search" value="{{ request('search') }}" placeholder="Search by name / email ">
 
-      </div>
+    </div>
 
-      <button type="submit" class="btn btn-primary">Filter</button>
-      <a href="{{ route('admin.collectors.index') }}" class="btn btn-secondary">Reset</a>
+    <button type="submit" class="btn btn-primary">Filter</button>
+    <a href="{{ route('admin.collectors.index') }}" class="btn btn-secondary">Reset</a>
 
-    </form>
+</form>
 
 <!-- Table Card -->
 <div class="card shadow-sm">
@@ -46,6 +46,12 @@
                             @if(hasPermission('users', 'edit'))
                             <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-outline-primary me-1" title="Edit">
                                 <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-outline-primary me-1" title="Edit">
+                                <span class="position-relative">
+                                    <i class="bi bi-signpost-2"></i>
+                                    <i class="bi bi-check-circle-fill position-absolute" style="font-size: 10px; right: -5px; bottom: -2px;"></i>
+                                </span>
                             </a>
                             @endif
 
