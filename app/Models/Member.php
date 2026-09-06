@@ -9,6 +9,11 @@ class Member extends Model
 {
     use HasFactory;
 
+    public function roadaNumber()
+    {
+        return $this->belongsTo(Road::class, 'road', 'id');
+    }
+
     public function plot()
     {
         return $this->belongsTo(PlotAndUnit::class, 'plot_and_unit_id', 'id');

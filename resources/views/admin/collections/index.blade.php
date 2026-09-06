@@ -26,7 +26,15 @@
       </div>
 
       <button type="submit" class="btn btn-primary">Filter</button>
+      @if(
+      request()->filled('member_id') ||
+      request()->filled('filter_holding_no') ||
+      request()->filled('filter_road') ||
+      request()->filled('filter_data') ||
+      request()->filled('filter_status')
+      )
       <a href="{{ route('admin.collection.index') }}" class="btn btn-secondary">Reset</a>
+      @endif
 
     </form>
     <!-- <a href="" class="btn btn-primary" style="margin-left:auto;">
@@ -60,7 +68,7 @@
           @forelse($data as $member)
           <tr>
             <td>{{ $member->unique_id }}</td>
-            <td>{{ $member->road }}</td>
+            <td>{{ $member->roadaNumber->name }}</td>
             <td>{{ $member->holding_no }}</td>
             <td>{{ $member->flat_no }}</td>
             <td>{{ $member->name }}</td>

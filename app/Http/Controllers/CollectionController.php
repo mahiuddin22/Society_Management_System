@@ -49,8 +49,8 @@ class CollectionController extends Controller
 
     public function receipt($id)
     {
-        $member = Member::with('plot')->findOrFail($id);
-        $settings = Settings::latest()->first();
+        $member     = Member::with('plot')->findOrFail($id);
+        $settings   = Settings::latest()->first();
         return view('admin.collections.receipt', compact('member', 'settings'));
     }
 
