@@ -24,8 +24,6 @@ class CollectionController extends Controller
             $roadIds = Road::where('collector_id', auth()->id())->pluck('id');
 
             $data->whereIn('road', $roadIds);
-        } else {
-            $data = Member::with('plot')->orderBy('id', 'desc');
         }
 
         if (!empty($filter_data)) {

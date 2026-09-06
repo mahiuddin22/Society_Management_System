@@ -137,12 +137,12 @@ $user = auth()->user();
         </div>
 
         <ul class="dropdown-menu shadow">
-            <li>
+            <!-- <li>
                 <a class="nav-item text-dark py-2" href="{{ route('admin.profile') }}">
                     <i class="bi bi-person-circle me-2"></i>
                     Profile
                 </a>
-            </li>
+            </li> -->
 
             <li>
                 <hr class="dropdown-divider" style="margin: 0 !important;">
