@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Member;
+use App\Models\Road;
 use App\Models\Settings;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -19,10 +20,20 @@ class CollectionController extends Controller
 
         $data = Member::with('plot')->orderBy('id', 'desc');
 
+        if (auth()->user()->role == 'collector') {
+            $roadIds = Road::where('collector_id', auth()->id())->pluck('id');
+
+            $data->whereIn('road', $roadIds);
+        } else {
+            $data = Member::with('plot')->orderBy('id', 'desc');
+        }
+
         if (!empty($filter_data)) {
             $data->where(function ($query) use ($filter_data) {
-                $query->where('name', 'LIKE', '%' . $filter_data . '%')->orWhere('number', $filter_data)
-                    ->orWhere('email', $filter_data)->orWhere('amount', $filter_data);
+                $query->where('name', 'LIKE', '%' . $filter_data . '%')
+                    ->orWhere('number', $filter_data)
+                    ->orWhere('email', $filter_data)
+                    ->orWhere('amount', $filter_data);
             });
         }
 

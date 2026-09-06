@@ -26,7 +26,7 @@
                 <tbody>
                     <tr>
                         <th width="15%">Road</th>
-                        <td width="35%">{{ $plotAndUnit->road }}</td>
+                        <td width="35%">{{ $plotAndUnit->unit_road->name }}</td>
 
                         <th width="15%">Holding No.</th>
                         <td width="35%">{{ $plotAndUnit->holding_no }}</td>

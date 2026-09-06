@@ -122,6 +122,8 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
         Route::get('{id}/edit', 'edit')->name('edit');
         Route::put('{id}', 'update')->name('update');
         Route::patch('change-status/{id}', 'changeStatus')->name('change.status');
+        Route::get('assign-road/{id}', 'assignRoad')->name('assign.road');
+        Route::put('assign-road/{id}', 'updateRoad')->name('update.road');
         Route::delete('{id}/destroy', 'destroy')->name('destroy');
     });
 

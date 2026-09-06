@@ -66,7 +66,7 @@ class PlotAndUnitController extends Controller
             'contact_persons.*.flat_no' => 'required|max:255',
             'contact_persons.*.number'  => 'required|string|max:255',
             'contact_persons.*.email'   => 'nullable|email|max:255',
-            'contact_persons.*.amount'  => 'required|numeric|min:0',
+            'contact_persons.*.amount'  => 'required',
         ]);
 
         $plotAndUnit                    = new PlotAndUnit();
@@ -132,7 +132,7 @@ class PlotAndUnitController extends Controller
             'contact_persons.*.flat_no' => 'required|string|max:255',
             'contact_persons.*.number'  => 'required|string|max:255',
             'contact_persons.*.email'   => 'nullable|email|max:255',
-            'contact_persons.*.amount'  => 'required|numeric|min:0',
+            'contact_persons.*.amount'  => 'required',
         ]);
 
         $plotAndUnit = PlotAndUnit::findOrFail($id);

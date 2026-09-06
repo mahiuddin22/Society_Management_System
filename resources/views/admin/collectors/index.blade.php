@@ -40,14 +40,10 @@
                         <td>{{ ucfirst($user->role) }}</td>
                         <td>{{ $user->name }}</td>
                         <td>{{ $user->email }}</td>
-                        @if(hasPermission('users', 'edit') || hasPermission('users', 'delete'))
                         <td class="text-center">
 
-                            @if(hasPermission('users', 'edit'))
-                            <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-outline-primary me-1" title="Edit">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-                            <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-outline-primary me-1" title="Edit">
+                            @if(hasPermission('collectors', 'assign'))
+                            <a href="{{ route('admin.collectors.assign.road', $user->id) }}" target="_blank" class="btn btn-sm btn-outline-info me-1" title="View | Assign Road">
                                 <span class="position-relative">
                                     <i class="bi bi-signpost-2"></i>
                                     <i class="bi bi-check-circle-fill position-absolute" style="font-size: 10px; right: -5px; bottom: -2px;"></i>
@@ -55,9 +51,15 @@
                             </a>
                             @endif
 
-                            @if(hasPermission('users', 'delete'))
+                            @if(hasPermission('collectors', 'edit'))
+                            <a href="{{ route('admin.collectors.edit', $user->id) }}" class="btn btn-sm btn-outline-primary me-1" title="Edit">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            @endif
+
+                            @if(hasPermission('collectors', 'delete'))
                             @if($user->name != 'admin')
-                            <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="d-inline delete-form">
+                            <form action="{{ route('admin.collectors.destroy', $user->id) }}" method="POST" class="d-inline delete-form">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-sm btn-outline-danger " title="Delete"><i class="bi bi-trash"></i></button>
@@ -66,7 +68,6 @@
                             @endif
 
                         </td>
-                        @endif
                     </tr>
                     @endforeach
                     <!-- Additional rows -->
