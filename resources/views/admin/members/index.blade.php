@@ -33,7 +33,7 @@
       request()->filled('filter_data') ||
       request()->filled('filter_status')
       )
-      <a href="{{ route('admin.collection.index') }}" class="btn btn-secondary">Reset</a>
+      <a href="{{ route('admin.members.index') }}" class="btn btn-secondary">Reset</a>
       @endif
 
     </form>
@@ -88,24 +88,12 @@
             </td>
             <td>
               @if (hasPermission('collections', 'download'))
-              @if($member->payment_status == 1)
-              <a href="{{ route('admin.collection.receipt', $member->id) }}" target="_blank" class="btn btn-info btn-sm" title="Money Receipt"><i class="bi bi-receipt"></i></a>
-              @endif
               @endif
               @if (hasPermission('collections', 'edit'))
-              <a href="{{ route('admin.collection.edit', $member->id) }}" class="btn btn-warning btn-sm" title="Edit"><i class="bi bi-pencil"></i></a>
-              @endif
-              @if (hasPermission('collections', 'change_status'))
-              <form id="change-status-{{ $member->id }}" action="{{ route('admin.collection.change.status', $member->id) }}" method="POST" class="d-inline">
-                @csrf
-                @method('PATCH')
-                <button type="submit" class="btn btn-success btn-sm" title="Change Payment Status" onclick="changePaymentStatus()">
-                  <i class="bi bi-{{ $member->payment_status == 1 ? 'toggle-on' : 'toggle-off' }}"></i>
-                </button>
-              </form>
+              <a href="{{ route('admin.members.edit', $member->id) }}" class="btn btn-warning btn-sm" title="Edit"><i class="bi bi-pencil"></i></a>
               @endif
               @if (hasPermission('collections', 'delete'))
-              <form action="{{ route('admin.collection.destroy', $member->id) }}" method="POST" id="delete-form-{{ $member->id }}" style="display: inline;">
+              <form action="{{ route('admin.members.destroy', $member->id) }}" method="POST" id="delete-form-{{ $member->id }}" style="display: inline;">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="btn btn-danger btn-sm" title="Delete"><i class="bi bi-trash"></i></button>
@@ -115,7 +103,7 @@
           </tr>
           @empty
           <tr>
-            <td colspan="12" class="text-center">No mermber data available.</td>
+            <td colspan="12" class="text-center">No member data available.</td>
           </tr>
           @endforelse
         </tbody>

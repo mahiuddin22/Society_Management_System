@@ -115,7 +115,7 @@
           </tr>
           @empty
           <tr>
-            <td colspan="12" class="text-center">No mermber data available.</td>
+            <td colspan="12" class="text-center">No member data available.</td>
           </tr>
           @endforelse
         </tbody>
