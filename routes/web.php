@@ -4,6 +4,7 @@ use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\CollectorController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MemberController;
 use App\Http\Controllers\PermissionsController;
 use App\Http\Controllers\PlotAndUnitController;
 use App\Http\Controllers\PlotTypeController;
@@ -114,6 +115,23 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
         Route::patch('change-status/{id}', 'changeStatus')->name('change.status');
         Route::delete('{id}/destroy', 'destroy')->name('destroy');
     });
+    
+    // Members
+    Route::controller(MemberController::class)->prefix('members')->name('members.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/bulk-upload', 'bulkUpload')->name('bulk-upload');
+        Route::post('/bulk-upload', 'bulkUploadStore')->name('bulk-upload.store');
+    });
+
+    // Collections
+    Route::controller(CollectionController::class)->prefix('collection')->name('collection.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/receipt/{id}', 'receipt')->name('receipt');
+        Route::get('{id}/edit', 'edit')->name('edit');
+        Route::put('{id}', 'update')->name('update');
+        Route::patch('change-status/{id}', 'changeStatus')->name('change.status');
+        Route::delete('{id}/destroy', 'destroy')->name('destroy');
+    });
 
     // Collectors
     Route::controller(CollectorController::class)->prefix('collectors')->name('collectors.')->group(function () {
@@ -124,18 +142,6 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
         Route::patch('change-status/{id}', 'changeStatus')->name('change.status');
         Route::get('assign-road/{id}', 'assignRoad')->name('assign.road');
         Route::put('assign-road/{id}', 'updateRoad')->name('update.road');
-        Route::delete('{id}/destroy', 'destroy')->name('destroy');
-    });
-
-    // Collections
-    Route::controller(CollectionController::class)->prefix('collection')->name('collection.')->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::get('/receipt/{id}', 'receipt')->name('receipt');
-        // Route::get('/create', 'create')->name('create');
-        // Route::post('store', 'store')->name('store');
-        Route::get('{id}/edit', 'edit')->name('edit');
-        Route::put('{id}', 'update')->name('update');
-        Route::patch('change-status/{id}', 'changeStatus')->name('change.status');
         Route::delete('{id}/destroy', 'destroy')->name('destroy');
     });
 

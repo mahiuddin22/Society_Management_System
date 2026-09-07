@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Member extends Model
 {
     use HasFactory;
+    protected $fillable = ['name','flat_no','number','email'];
 
     public function roadaNumber()
     {
@@ -18,5 +19,4 @@ class Member extends Model
     {
         return $this->belongsTo(PlotAndUnit::class, 'plot_and_unit_id', 'id');
     }
-    
 }
