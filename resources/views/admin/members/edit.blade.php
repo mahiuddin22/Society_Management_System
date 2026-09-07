@@ -6,10 +6,10 @@
     <div class="card">
 
         <div class="card-head">
-            <h3>Edit Types</h3>
+            <h3>Edit Member</h3>
         </div>
 
-        <form action="{{ route('admin.collection.update', $data->id) }}" method="POST" autocomplete="off">
+        <form action="{{ route('admin.members.update', $data->id) }}" method="POST" autocomplete="off">
             @csrf
             @method('PUT')
 
@@ -21,44 +21,29 @@
                     <input type="text" class="form-control" id="name" name="name" value="{{ $data->name }}" placeholder="e.g. 1/A" required>
                 </div>
 
+                <!-- {{-- Flat No --}} -->
+                <div class="col-md-4">
+                    <label for="flat_no" class="form-label">Flat No <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="flat_no" name="flat_no" value="{{ $data->flat_no }}" placeholder="e.g. 1/A" required>
+                </div>
+
                 <!-- {{-- Number --}} -->
                 <div class="col-md-4">
                     <label for="number" class="form-label">Number <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="number" name="number" value="{{ $data->name }}" placeholder="e.g. 1/A" required>
+                    <input type="text" class="form-control" id="number" name="number" value="{{ $data->number }}" placeholder="e.g. 1/A" required>
                 </div>
 
                 <!-- {{-- Email --}} -->
                 <div class="col-md-4">
                     <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="email" name="email" value="{{ $data->name }}" placeholder="e.g. 1/A" required>
-                </div>
-
-                <!-- {{-- Amount --}} -->
-                <div class="col-md-4">
-                    <label for="amount" class="form-label">Amount <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="amount" name="amount" value="{{ $data->amount }}" placeholder="e.g. 2" required>
-                </div>
-
-                <div class="col-md-4">
-                    <label for="datepicker" class="form-label">Payment Date <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="datepicker" name="payment_date" value="{{ $data->payment_date }}" placeholder="e.g. 2" required>
-                </div>
-
-                <!-- {{-- Payment Status --}} -->
-                <div class="col-md-4">
-                    <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
-                    <select class="form-select" id="status" name="payment_status" required>
-                        <option value="">Select Status</option>
-                        <option value="1" {{ $data->payment_status == 1 ? 'selected': '' }}>Active</option>
-                        <option value="0" {{ $data->payment_status == 0 ? 'selected': '' }}>Inactive</option>
-                    </select>
+                    <input type="text" class="form-control" id="email" name="email" value="{{ $data->email }}" placeholder="e.g. 1/A" required>
                 </div>
 
             </div>
 
             <div class="mt-4 d-flex gap-2">
-                <a href="{{ route('admin.collection.index') }}" class="btn btn-secondary">Cancel</a>
-                <button type="submit" class="btn btn-primary">Save Types</button>
+                <a href="{{ route('admin.members.index') }}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Save Member</button>
             </div>
 
         </form>
