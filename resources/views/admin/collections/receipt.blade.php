@@ -272,27 +272,27 @@
         <div class="info-grid">
             <div class="info-row">
                 <span class="info-value">Name</span>
-                <span class="info-value">{{ strtoupper($member->name) }}</span>
+                <span class="info-value">{{ strtoupper($collection->name) }}</span>
             </div>
             <div class="info-row">
                 <span class="info-value">Member ID</span>
-                <span class="info-value">{{ strtoupper($member->unique_id) }}</span>
+                <span class="info-value">{{ strtoupper($collection->unique_id) }}</span>
             </div>
             <div class="info-row">
                 <span class="info-value">Holding No</span>
-                <span class="info-value">{{ $member->plot->holding_no ?? '-' }}</span>
+                <span class="info-value">{{ $collection->plot->holding_no ?? '-' }}</span>
             </div>
             <div class="info-row">
                 <span class="info-value">Road No</span>
-                <span class="info-value">{{ $member->plot->road ?? '-' }}</span>
+                <span class="info-value">{{ $collection->plot->road ?? '-' }}</span>
             </div>
             <div class="info-row">
                 <span class="info-value">Mobile</span>
-                <span class="info-value">{{ $member->number }}</span>
+                <span class="info-value">{{ $collection->number }}</span>
             </div>
             <div class="info-row">
                 <span class="info-value">Email</span>
-                <span class="info-value">{{ $member->email ?? '-' }}</span>
+                <span class="info-value">{{ $collection->email ?? '-' }}</span>
             </div>
         </div>
 
@@ -304,20 +304,20 @@
         <div class="info-grid">
             <div class="info-row">
                 <span class="info-value">Issue Date</span>
-                <span class="info-value">{{ \Carbon\Carbon::parse($member->plot->date)->format('d F, Y') }}</span>
+                <span class="info-value">{{ \Carbon\Carbon::parse($collection->plot->date)->format('d F, Y') }}</span>
             </div>
             <div class="info-row">
                 <span class="info-value">Payment Date</span>
-                <span class="info-value">{{ \Carbon\Carbon::parse($member->payment_date)->format('d F, Y') }}</span>
+                <span class="info-value">{{ \Carbon\Carbon::parse($collection->payment_date)->format('d F, Y') }}</span>
             </div>
             <div class="info-row">
                 <span class="info-value">Amount Paid</span>
-                <span class="info-value">BDT {{ number_format($member->amount, 2) }}</span>
+                <span class="info-value">BDT {{ number_format($collection->amount, 2) }}</span>
             </div>
             <div class="info-row">
                 <span class="info-value">Payment Status</span>
                 <span class="info-value">
-                    {{ $member->payment_status == 1 ? 'PAID' : 'UNPAID' }}
+                    {{ $collection->payment_status == 1 ? 'PAID' : 'UNPAID' }}
                 </span>
             </div>
         </div>
@@ -327,7 +327,7 @@
         <div class="info-grid">
             <div class="info-row">
                 <span class="info-value">In Words:</span>
-                <span class="info-value" style="font-size: 12px;">{{ amountInWords($member->amount) }}</span>
+                <span class="info-value" style="font-size: 12px;">{{ amountInWords($collection->amount) }}</span>
             </div>
         </div>
         <hr class="dashed-line">

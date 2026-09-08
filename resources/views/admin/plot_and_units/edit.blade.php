@@ -197,8 +197,8 @@
 <script>
     const existingContactPersons = @json($plotAndUnit ?? []);
 
-    const contactPersonInput = document.getElementById('contact_person');
-    const contactPersonsContainer = document.getElementById('contactPersonsContainer');
+    const contactPersonInput        = document.getElementById('contact_person');
+    const contactPersonsContainer   = document.getElementById('contactPersonsContainer');
 
     function generateContactPersons(count, existingPersons = []) {
         contactPersonsContainer.innerHTML = '';

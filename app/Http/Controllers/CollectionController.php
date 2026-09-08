@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Member;
 use App\Models\Road;
+use App\Models\SectorCollenctions;
 use App\Models\Settings;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -18,7 +18,7 @@ class CollectionController extends Controller
         $filter_holding_no  = $request->filter_holding_no;
         $filter_road        = $request->filter_road;
 
-        $data = Member::with('plot')->orderBy('id', 'desc');
+        $data = SectorCollenctions::orderBy('id', 'desc');
 
         if (auth()->user()->role == 'collector') {
             $roadIds = Road::where('collector_id', auth()->id())->pluck('id');
@@ -28,10 +28,8 @@ class CollectionController extends Controller
 
         if (!empty($filter_data)) {
             $data->where(function ($query) use ($filter_data) {
-                $query->where('name', 'LIKE', '%' . $filter_data . '%')
-                    ->orWhere('number', $filter_data)
-                    ->orWhere('email', $filter_data)
-                    ->orWhere('amount', $filter_data);
+                $query->where('name', 'LIKE', '%' . $filter_data . '%')->orWhere('number', $filter_data)
+                    ->orWhere('email', $filter_data)->orWhere('amount', $filter_data);
             });
         }
 
@@ -58,9 +56,9 @@ class CollectionController extends Controller
 
     public function receipt($id)
     {
-        $member     = Member::with('plot')->findOrFail($id);
+        $collection = SectorCollenctions::findOrFail($id);
         $settings   = Settings::latest()->first();
-        return view('admin.collections.receipt', compact('member', 'settings'));
+        return view('admin.collections.receipt', compact('collection', 'settings'));
     }
 
     // public function create()
@@ -70,7 +68,7 @@ class CollectionController extends Controller
 
     // public function store(Request $request)
     // {
-    //     $data = new Member();
+    //     $data = new SectorCollenctions();
     //     $data->name              = $request->name;
     //     $data->number           = $request->number;
     //     $data->email             = $request->email;
@@ -82,13 +80,13 @@ class CollectionController extends Controller
 
     public function edit($id)
     {
-        $data = Member::where('id', $id)->first();
+        $data = SectorCollenctions::where('id', $id)->first();
         return view('admin.collections.edit', compact('data'));
     }
 
     public function update(Request $request, $id)
     {
-        $data = Member::findOrFail($id);
+        $data = SectorCollenctions::findOrFail($id);
         $data->name             = $request->name;
         $data->number           = $request->number;
         $data->email            = $request->email;
@@ -102,7 +100,7 @@ class CollectionController extends Controller
 
     public function changeStatus($id)
     {
-        $data = Member::findOrFail($id);
+        $data = SectorCollenctions::findOrFail($id);
         if ($data->payment_status == 0) {
             $data->payment_status = 1;
             if (is_null($data->payment_date)) {
@@ -118,7 +116,7 @@ class CollectionController extends Controller
 
     public function destroy($id)
     {
-        Member::findOrFail($id)->delete();
+        SectorCollenctions::findOrFail($id)->delete();
         return redirect()->route('admin.collection.index')->with('success', 'Data Deleted Successfully');
     }
 }
