@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Imports\MembersImport;
 use App\Models\Member;
-use App\Models\Road;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -15,14 +14,14 @@ class MemberController extends Controller
     {
         $filter_data = $request->filter_data;
 
-        $data = Member::with('plot')->orderBy('id', 'desc');
+        $data = Member::orderBy('id', 'desc');
 
         if (!empty($filter_data)) {
             $data->where(function ($query) use ($filter_data) {
                 $query->where('name', 'LIKE', '%' . $filter_data . '%')
                     ->orWhere('number', $filter_data)
                     ->orWhere('email', $filter_data)
-                    ->orWhere('amount', $filter_data);
+                    ->orWhere('flat_no', $filter_data);
             });
         }
 

@@ -195,7 +195,7 @@
 
 
 <script>
-    const existingContactPersons = @json($members);
+    const existingContactPersons = @json($plotAndUnit ?? []);
 
     const contactPersonInput = document.getElementById('contact_person');
     const contactPersonsContainer = document.getElementById('contactPersonsContainer');
@@ -212,10 +212,22 @@
                     <h6 class="mb-3">Contact Person ${i + 1}</h6>
 
                     <div class="row g-3">
-
+                        
                         <div class="col-md-4">
                             <label class="form-label">Name</label>
-                            <input type="text" class="form-control" name="contact_persons[${i}][name]" value="${person.name ?? ''}" placeholder="Name">
+
+                            <select class="form-select" name="contact_persons[${i}][member_id]">
+                                <option value="" disabled ${!person.member_id ? 'selected' : ''}>
+                                    Select Member
+                                </option>
+
+                                @foreach($members as $member)
+                                    <option value="{{ $member->id }}"
+                                        ${String(person.member_id) === String({{ $member->id }}) ? 'selected' : ''}>
+                                        {{ $member->name }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
 
                         <div class="col-md-2">

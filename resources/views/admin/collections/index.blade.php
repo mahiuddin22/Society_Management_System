@@ -44,7 +44,7 @@
 
   <div class="card">
     <div class="card-head">
-      <h3>Type Index</h3><span class="hint">96 of 148 units shown</span>
+      <h3>Collection Index</h3><span class="hint">{{ $data->count() }} of {{ $data->total() }} collections shown</span>
     </div>
     <div class="table-wrap">
       <table class="ledger">
@@ -67,15 +67,15 @@
         <tbody>
           @forelse($data as $member)
           <tr>
-            <td>{{ $member->unique_id ?? '--' }}</td>
-            <td>{{ $member->roadaNumber->name ?? '--' }}</td>
-            <td>{{ $member->holding_no ?? '--' }}</td>
-            <td>{{ $member->flat_no ?? '--' }}</td>
-            <td>{{ $member->name ?? '--' }}</td>
-            <td>{{ $member->number ?? '--' }}</td>
-            <td>{{ $member->email ?? '--' }}</td>
-            <td>{{ $member->amount ?? '--' }}</td>
-            <td class="text-center">{{ optional($member->plot)->date ? \Carbon\Carbon::parse($member->plot->date)->format('d-M-Y') : '--' }}</td>
+            <td>{{ $member->unique_id }}</td>
+            <td>{{ $member->roadaNumber?->name ?? '--' }}</td>
+            <td>{{ $member->holding_no }}</td>
+            <td>{{ $member->flat_no }}</td>
+            <td>{{ $member->name }}</td>
+            <td>{{ $member->number }}</td>
+            <td>{{ $member->email }}</td>
+            <td>{{ $member->amount }}</td>
+            <td>{{ $member->plot? \Carbon\Carbon::parse($member->plot->date)->format('d-M-Y') : '--' }}</td>
             <td class="text-center">
               {{ $member->payment_date ? \Carbon\Carbon::parse($member->payment_date)->format('d-M-Y') : '--' }}
             </td>

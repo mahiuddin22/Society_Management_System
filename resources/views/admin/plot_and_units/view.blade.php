@@ -114,7 +114,10 @@
                 </thead>
 
                 <tbody>
-                    @forelse($plotAndUnit->members as $member)
+                    @forelse($plotAndUnit->sector_collenctions as $collection)
+                    @php
+                    $member = \App\Models\Member::where('id', $collection->member_id)->first();
+                    @endphp
                     <tr>
                         <td class="text-center">
                             {{ $loop->iteration }}
@@ -125,19 +128,19 @@
                         </td>
 
                         <td>
-                            {{ $member->flat_no }}
+                            {{ $collection->flat_no }}
                         </td>
 
                         <td>
-                            {{ $member->number }}
+                            {{ $collection->number }}
                         </td>
 
                         <td>
-                            {{ $member->email ?: '-' }}
+                            {{ $collection->email ?: '-' }}
                         </td>
 
                         <td class="text-end">
-                            ৳{{ number_format($member->amount, 2) }}
+                            ৳{{ number_format($collection->amount, 2) }}
                         </td>
                     </tr>
                     @empty
@@ -149,7 +152,7 @@
                     @endforelse
                 </tbody>
 
-                @if($plotAndUnit->members->count())
+                @if($plotAndUnit->sector_collenctions->count())
                 <tfoot>
                     <tr class="table-light">
                         <th colspan="5" class="text-end">
@@ -157,7 +160,7 @@
                         </th>
 
                         <th class="text-end">
-                            ৳{{ number_format($plotAndUnit->members->sum('amount'), 2) }}
+                            ৳{{ number_format($plotAndUnit->sector_collenctions->sum('amount'), 2) }}
                         </th>
                     </tr>
                 </tfoot>

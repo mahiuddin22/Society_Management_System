@@ -23,6 +23,32 @@ class CollectorController extends Controller
         return view('admin.collectors.index', compact('collectors'));
     }
 
+    // public function edit($id)
+    // {
+    //     $collector = User::findOrFail($id);
+    //     return view('admin.collectors.edit', compact('collector'));
+    // }
+
+    public function update(Request $request, $id)
+    {
+        $collector = User::findOrFail($id);
+
+        $request->validate([
+            'name'      => 'required|string|max:255',
+            'email'     => 'required|string|email|max:255|unique:users,email,',
+            'role'      => 'required',
+        ]);
+
+        $collector->name    = $request->name;
+        $collector->email   = $request->email;
+        $collector->role    = $request->role;
+        $collector->save();
+
+        return redirect()
+            ->route('admin.collectors.index')
+            ->with('success', 'Collector updated successfully.');
+    }
+
     public function assignRoad($id)
     {
         $collector = User::findOrFail($id);

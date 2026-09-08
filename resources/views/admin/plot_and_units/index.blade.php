@@ -60,7 +60,7 @@
 
   <div class="card">
     <div class="card-head">
-      <h3>Unit Register</h3><span class="hint">96 of 148 units shown</span>
+      <h3>Plot and Unit Index</h3><span class="hint">{{ $plotAndUnits->count() }} of {{ $plotAndUnits->total() }} plots and units shown</span>
     </div>
     <div class="table-wrap">
       <table class="ledger">

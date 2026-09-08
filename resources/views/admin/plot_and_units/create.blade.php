@@ -200,7 +200,12 @@
 
                         <div class="col-md-4">
                             <label class="form-label"> Name </label>
-                            <input type="text" class="form-control" name="contact_persons[${i}][name]" placeholder="Name">
+                            <select class="form-select" name="contact_persons[${i}][member_id]">
+                                <option value="" disabled selected>Select Member</option>
+                                @foreach($members as $member)
+                                <option value="{{$member->id}}">{{$member->name}}</option>
+                                @endforeach
+                            </select>
                         </div>
 
                         <div class="col-md-2">

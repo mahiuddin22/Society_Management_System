@@ -29,7 +29,7 @@
 
   <div class="card">
     <div class="card-head">
-      <h3>Type Index</h3><span class="hint">96 of 148 units shown</span>
+      <h3>Member Index</h3><span class="hint">{{ $data->count() }} of {{ $data->total() }} members shown</span>
     </div>
     <div class="table-wrap">
       <table class="ledger">
