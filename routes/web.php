@@ -25,6 +25,28 @@ Route::get('/', function () {
     return redirect('/login');
 });
 
+Route::get('testsms', function () {
+    //MSISDN with country code
+    $number = "8801610440622";
+    //Text Message
+    $text = 'API Test Message';
+    //------------------ No change Needed-------------------
+    $ch = curl_init();
+    $apiUrl = "http://103.230.63.50/bulksms/api";
+    $requesteid = $_SERVER['REQUEST_TIME'];
+    $contentType = 1;
+    curl_setopt($ch, CURLOPT_URL, $apiUrl);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, "authUser=Redbee&authAccess=Redbee@5621&destination=" . $number . "&text=" . urlencode($text) . "&requestId=" . $requesteid . " &contentType=" . $contentType);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $server_output = curl_exec($ch);
+    curl_close($ch);
+    ////------------------ No change Needed-------------------
+    //
+    ////FOR DEBUG
+    var_dump($server_output);
+});
+
 Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
 
     // Dashboard
@@ -115,7 +137,7 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
         Route::patch('change-status/{id}', 'changeStatus')->name('change.status');
         Route::delete('{id}/destroy', 'destroy')->name('destroy');
     });
-    
+
     // Members
     Route::controller(MemberController::class)->prefix('members')->name('members.')->group(function () {
         Route::get('/', 'index')->name('index');
@@ -124,7 +146,7 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
         Route::get('/{id}/edit', 'edit')->name('edit');
         Route::put('/{id}', 'update')->name('update');
         Route::delete('/{id}/destroy', 'destroy')->name('destroy');
-        
+
         Route::get('/bulk-upload', 'bulkUpload')->name('bulk-upload');
         Route::post('/bulk-upload', 'bulkUploadStore')->name('bulk-upload.store');
     });
