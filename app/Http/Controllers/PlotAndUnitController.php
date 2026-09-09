@@ -42,7 +42,7 @@ class PlotAndUnitController extends Controller
         $plot_types = PlotType::where('status', true)->get();
         $rates      = $plot_types->pluck('amount', 'id')->toArray();
         $roads      = Road::all();
-        $members      = Member::all();
+        $members    = Member::all();
         return view('admin.plot_and_units.create', compact('plot_types', 'rates', 'roads', 'members'));
     }
 
@@ -81,22 +81,96 @@ class PlotAndUnitController extends Controller
         $plotAndUnit->collection_rate   = $validatedData['collection_rate'] ?? 0;
         $plotAndUnit->collection_amount = $validatedData['collection_amount'] ?? 0;
         $plotAndUnit->discount          = $validatedData['discount'] ?? 0;
-        $plotAndUnit->date              = Carbon::createFromFormat('d-m-Y', $request->date)->format('Y-m-d');
+        $plotAndUnit->date              = Carbon::createFromFormat('d-m-Y', $request->date)->format('Y-m-d') ?? null;
         $plotAndUnit->status            = $validatedData['status'];
         $plotAndUnit->save();
 
-        foreach ($validatedData['contact_persons'] ?? [] as $contact) {
-            $member = new SectorCollenctions();
-            $member->plot_and_unit_id   = $plotAndUnit->id;
-            $member->unique_id          = 'UT03' . $validatedData['road'] . $validatedData['holding_no'] . $plotAndUnit->id . $validatedData['total_flat'];
-            $member->road_id            = $validatedData['road'];
-            $member->holding_no         = $validatedData['holding_no'];
-            $member->member_id          = $contact['member_id'];
-            $member->flat_no            = $contact['flat_no'];
-            $member->number             = $contact['number'];
-            $member->email              = $contact['email'] ?? null;
-            $member->amount             = $contact['amount'];
-            $member->save();
+        if ($request->date) {
+            $issueDate = Carbon::createFromFormat('d-m-Y', $request->date)->format('F Y');
+        }
+
+        foreach ($validatedData['contact_persons'] ?? [] as $index => $contact) {
+
+            $collection = new SectorCollenctions();
+
+            $collection->plot_and_unit_id = $plotAndUnit->id;
+
+            $collection->road_id    = $validatedData['road'];
+            $collection->holding_no = $validatedData['holding_no'];
+            $collection->member_id  = $contact['member_id'];
+            $collection->flat_no    = $contact['flat_no'];
+
+            // Normalize phone number
+            $number = preg_replace('/\s+/', '', $contact['number']);
+
+            if (!str_starts_with($number, '88')) {
+                $number = '88' . $number;
+            }
+
+            $collection->number = $number;
+            $collection->email  = $contact['email'] ?? null;
+            $collection->amount = $contact['amount'];
+
+            $collection->save();
+
+            // Member name
+            $member_name = $collection->members->name;
+
+            // SMS text
+            $text = 'Dear ' . $member_name
+                . ', Your Collection Amount is ' . $contact['amount']
+                . ' BDT. for the month of ' . $issueDate
+                . '. Please pay your dues on time. Thank you.';
+
+            // Send SMS
+            $ch = curl_init();
+
+            $apiUrl = "http://103.230.63.50/bulksms/api";
+
+            // Different request ID for every member
+            $requesteid = time() . ($index + 1);
+
+            $postData = http_build_query([
+                'authUser'    => 'Sector-03',
+                'authAccess'  => 'Sector@0309',
+                'destination' => $number,
+                'text'        => $text,
+                'requestId'   => $requesteid,
+                'contentType' => 1,
+            ]);
+
+            curl_setopt($ch, CURLOPT_URL, $apiUrl);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+            $server_output = curl_exec($ch);
+
+            if ($server_output === false) {
+                \Log::error('SMS Error', [
+                    'number' => $number,
+                    'error'  => curl_error($ch),
+                ]);
+            }
+
+            curl_close($ch);
+
+            // Debug
+            \Log::info('SMS Response', [
+                'member_id' => $contact['member_id'],
+                'number'    => $number,
+                'requestId' => $requesteid,
+                'response'  => $server_output,
+            ]);
+
+            $collection->unique_id = 'UT03'
+                . $validatedData['road']
+                . $validatedData['holding_no']
+                . $plotAndUnit->id
+                . $validatedData['total_flat']
+                . $collection->id;
+
+            $collection->save();
         }
 
         return redirect()->route('admin.plot-and-units.index')->with('success', 'Data created successfully.');
@@ -105,7 +179,7 @@ class PlotAndUnitController extends Controller
     public function edit($id)
     {
         $data       = PlotAndUnit::findOrFail($id);
-        $plotAndUnit= SectorCollenctions::where('plot_and_unit_id', $id)->get();
+        $plotAndUnit = SectorCollenctions::where('plot_and_unit_id', $id)->get();
         $plot_types = PlotType::where('status', true)->get();
         $rates      = $plot_types->pluck('amount', 'id')->toArray();
         $roads      = Road::all();
@@ -163,7 +237,7 @@ class PlotAndUnitController extends Controller
                 $member->plot_and_unit_id = $plotAndUnit->id;
             }
 
-            $member->unique_id  = 'UT03' . $validatedData['road'] . $validatedData['holding_no'] . $contact['flat_no'];
+            $member->unique_id  = 'UT03' . $validatedData['road'] . $validatedData['holding_no'] . $plotAndUnit->id . $validatedData['total_flat'] . now()->format('ymdHis');
             $member->road_id    = $validatedData['road'];
             $member->holding_no = $validatedData['holding_no'];
             $member->member_id  = $contact['member_id'];
@@ -171,7 +245,6 @@ class PlotAndUnitController extends Controller
             $member->number     = $contact['number'];
             $member->email      = $contact['email'] ?? null;
             $member->amount     = $contact['amount'];
-
             $member->save();
         }
 
@@ -187,6 +260,7 @@ class PlotAndUnitController extends Controller
     public function destroy($id)
     {
         $plotAndUnit = PlotAndUnit::findOrFail($id);
+        $plotAndUnit->sector_collenctions()->delete();
         $plotAndUnit->delete();
         return redirect()->route('admin.plot-and-units.index')->with('success', 'Data deleted successfully.');
     }

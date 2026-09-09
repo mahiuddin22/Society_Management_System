@@ -64,7 +64,7 @@
                         </select>
                     </div>
                 </div>
-                
+
                 <div id="inputGroup" class="row g-3">
                     <!-- {{-- Total Flat --}} -->
                     <div class="col-md-4" id="totalFlatGroup">
@@ -195,84 +195,183 @@
 
 
 <script>
-    const existingContactPersons = @json($plotAndUnit ?? []);
+    document.getElementById('contact_person').addEventListener('input', function() {
 
-    const contactPersonInput        = document.getElementById('contact_person');
-    const contactPersonsContainer   = document.getElementById('contactPersonsContainer');
+        const count = parseInt(this.value) || 0;
+        const container = document.getElementById('contactPersonsContainer');
 
-    function generateContactPersons(count, existingPersons = []) {
-        contactPersonsContainer.innerHTML = '';
+        container.innerHTML = '';
 
         for (let i = 0; i < count; i++) {
-            const person = existingPersons[i] || {};
-            const memberId = person.id ?? '';
-            contactPersonsContainer.insertAdjacentHTML('beforeend', `
+
+            container.insertAdjacentHTML('beforeend', `
                 <div class="contact-person-group border rounded p-3 mb-3">
-                <input type="hidden" name="contact_persons[${i}][id]" value="${memberId}">
+
                     <h6 class="mb-3">Contact Person ${i + 1}</h6>
 
                     <div class="row g-3">
-                        
+
                         <div class="col-md-4">
                             <label class="form-label">Name</label>
 
-                            <select class="form-select" name="contact_persons[${i}][member_id]">
-                                <option value="" disabled ${!person.member_id ? 'selected' : ''}>
+                            <select class="form-select member-select"
+                                    name="contact_persons[${i}][member_id]">
+
+                                <option value="" disabled selected>
                                     Select Member
                                 </option>
 
                                 @foreach($members as $member)
-                                    <option value="{{ $member->id }}"
-                                        ${String(person.member_id) === String({{ $member->id }}) ? 'selected' : ''}>
+                                    <option value="{{ $member->id }}">
                                         {{ $member->name }}
                                     </option>
                                 @endforeach
+
                             </select>
                         </div>
 
                         <div class="col-md-2">
-                            <label class="form-label"> Flat no </label>
-                            <input type="text" class="form-control" name="contact_persons[${i}][flat_no]" value="${person.flat_no ?? ''}" placeholder="Flat number">
+                            <label class="form-label">Flat no</label>
+
+                            <input type="text"
+                                   class="form-control flat-no"
+                                   name="contact_persons[${i}][flat_no]"
+                                   placeholder="Flat number">
                         </div>
 
                         <div class="col-md-2">
                             <label class="form-label">Number</label>
-                            <input type="text" class="form-control" name="contact_persons[${i}][number]" value="${person.number ?? ''}" placeholder="Number">
+
+                            <input type="text"
+                                   class="form-control member-number"
+                                   name="contact_persons[${i}][number]"
+                                   placeholder="Number">
                         </div>
 
                         <div class="col-md-2">
                             <label class="form-label">Email</label>
-                            <input type="email" class="form-control" name="contact_persons[${i}][email]" value="${person.email ?? ''}" placeholder="Email">
+
+                            <input type="email"
+                                   class="form-control member-email"
+                                   name="contact_persons[${i}][email]"
+                                   placeholder="Email">
                         </div>
 
                         <div class="col-md-2">
                             <label class="form-label">Amount</label>
-                            <div class="input-group"><span class="input-group-text">৳</span>
-                                <input type="number" class="form-control" name="contact_persons[${i}][amount]" value="${person.amount ?? ''}" placeholder="Amount" min="0" step="0.01">
+
+                            <div class="input-group">
+                                <span class="input-group-text">৳</span>
+
+                                <input type="number"
+                                       class="form-control"
+                                       name="contact_persons[${i}][amount]"
+                                       placeholder="Amount"
+                                       min="0"
+                                       step="0.01">
                             </div>
                         </div>
 
                     </div>
+
                 </div>
             `);
         }
-    }
-
-    contactPersonInput.addEventListener('input', function() {
-        const count = parseInt(this.value) || 0;
-
-        generateContactPersons(count, existingContactPersons);
     });
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const count = parseInt(contactPersonInput.value) || 0;
 
-        if (count > 0) {
-            generateContactPersons(
-                count,
-                existingContactPersons
-            );
+    /*
+    |--------------------------------------------------------------------------
+    | Load Member Details
+    |--------------------------------------------------------------------------
+    */
+
+    document.addEventListener('change', function(e) {
+
+        // Only run when a member dropdown is changed
+        if (!e.target.classList.contains('member-select')) {
+            return;
         }
+
+        const select = e.target;
+        const memberId = select.value;
+
+        // Find the current contact-person group
+        const group = select.closest('.contact-person-group');
+
+        const flatNo = group.querySelector('.flat-no');
+        const number = group.querySelector('.member-number');
+        const email = group.querySelector('.member-email');
+
+        // Clear fields if no member is selected
+        if (!memberId) {
+
+            flatNo.value = '';
+            number.value = '';
+            email.value = '';
+
+            return;
+        }
+
+        // AJAX request
+        fetch(`{{ route('admin.ajax.memberdetails', ':id') }}`.replace(':id', memberId))
+
+            .then(response => {
+
+                if (!response.ok) {
+                    throw new Error('Failed to load member details.');
+                }
+
+                return response.json();
+            })
+
+            .then(data => {
+
+                if (data.success) {
+
+                    flatNo.value = data.flat_no ?? '';
+                    number.value = data.number ?? '';
+                    email.value = data.email ?? '';
+
+                } else {
+
+                    flatNo.value = '';
+                    number.value = '';
+                    email.value = '';
+
+                }
+
+            })
+
+            .catch(error => {
+
+                console.error('Error loading member details:', error);
+
+                flatNo.value = '';
+                number.value = '';
+                email.value = '';
+
+            });
+
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Re-create contact fields after validation error
+    |--------------------------------------------------------------------------
+    */
+
+    document.addEventListener('DOMContentLoaded', function() {
+
+        const contactPerson = document.getElementById('contact_person');
+
+        if (contactPerson && contactPerson.value) {
+
+            contactPerson.dispatchEvent(new Event('input'));
+
+        }
+
     });
 </script>
 

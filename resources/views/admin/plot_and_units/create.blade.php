@@ -182,6 +182,10 @@
 </script>
 
 <script>
+    // ==========================================================
+    // Generate Contact Person Fields
+    // ==========================================================
+
     document.getElementById('contact_person').addEventListener('input', function() {
 
         const count = parseInt(this.value) || 0;
@@ -194,40 +198,77 @@
             container.insertAdjacentHTML('beforeend', `
                 <div class="contact-person-group border rounded p-3 mb-3">
 
-                    <h6 class="mb-3"> Contact Person ${i + 1} </h6>
+                    <h6 class="mb-3">Contact Person ${i + 1}</h6>
 
                     <div class="row g-3">
 
                         <div class="col-md-4">
-                            <label class="form-label"> Name </label>
-                            <select class="form-select" name="contact_persons[${i}][member_id]">
-                                <option value="" disabled selected>Select Member</option>
+                            <label class="form-label">Name</label>
+
+                            <select
+                                class="form-select member-select"
+                                name="contact_persons[${i}][member_id]"
+                            >
+                                <option value="" disabled selected>
+                                    Select Member
+                                </option>
+
                                 @foreach($members as $member)
-                                <option value="{{$member->id}}">{{$member->name}}</option>
+                                    <option value="{{ $member->id }}">
+                                        {{ $member->name }}
+                                    </option>
                                 @endforeach
+
                             </select>
                         </div>
 
                         <div class="col-md-2">
-                            <label class="form-label"> Flat no </label>
-                            <input type="text" class="form-control" name="contact_persons[${i}][flat_no]" placeholder="Flat number">
+                            <label class="form-label">Flat no</label>
+
+                            <input
+                                type="text"
+                                class="form-control flat-no"
+                                name="contact_persons[${i}][flat_no]"
+                                placeholder="Flat number"
+                            >
                         </div>
 
                         <div class="col-md-2">
-                            <label class="form-label"> Number </label>
-                            <input type="text" class="form-control" name="contact_persons[${i}][number]" placeholder="Number">
+                            <label class="form-label">Number</label>
+
+                            <input
+                                type="text"
+                                class="form-control member-number"
+                                name="contact_persons[${i}][number]"
+                                placeholder="Number"
+                            >
                         </div>
 
                         <div class="col-md-2">
-                            <label class="form-label"> Email </label>
-                            <input type="email" class="form-control" name="contact_persons[${i}][email]" placeholder="Email">
+                            <label class="form-label">Email</label>
+
+                            <input
+                                type="email"
+                                class="form-control member-email"
+                                name="contact_persons[${i}][email]"
+                                placeholder="Email"
+                            >
                         </div>
 
                         <div class="col-md-2">
-                            <label class="form-label"> Amount </label>
+                            <label class="form-label">Amount</label>
+
                             <div class="input-group">
                                 <span class="input-group-text">৳</span>
-                                <input type="number" class="form-control" name="contact_persons[${i}][amount]" placeholder="Amount" min="0" step="0.01">
+
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    name="contact_persons[${i}][amount]"
+                                    placeholder="Amount"
+                                    min="0"
+                                    step="0.01"
+                                >
                             </div>
                         </div>
 
@@ -238,13 +279,114 @@
         }
     });
 
-    // Re-create contact fields after validation error
+
+    // ==========================================================
+    // Load Member Details using AJAX
+    // ==========================================================
+
+    document.addEventListener('change', function(e) {
+
+        if (!e.target.classList.contains('member-select')) {
+            return;
+        }
+
+        const select = e.target;
+        const memberId = select.value;
+
+        console.log('Selected Member ID:', memberId);
+
+        const group = select.closest('.contact-person-group');
+
+        if (!group) {
+            console.error('Contact person group not found.');
+            return;
+        }
+
+        const flatNo = group.querySelector('.flat-no');
+        const number = group.querySelector('.member-number');
+        const email = group.querySelector('.member-email');
+
+        console.log('Fields found:', {
+            flatNo: flatNo,
+            number: number,
+            email: email
+        });
+
+        if (!memberId) {
+            flatNo.value = '';
+            number.value = '';
+            email.value = '';
+            return;
+        }
+
+        // Generate Laravel URL
+        const url = `{{ route('admin.ajax.memberdetails', ['id' => '__ID__']) }}`
+            .replace('__ID__', memberId);
+
+        console.log('AJAX URL:', url);
+
+        fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+
+                console.log('Response status:', response.status);
+
+                if (!response.ok) {
+                    throw new Error(
+                        `HTTP ${response.status}: Failed to load member details.`
+                    );
+                }
+
+                return response.json();
+            })
+            .then(data => {
+
+                console.log('AJAX response:', data);
+
+                if (data.success) {
+
+                    flatNo.value = data.flat_no ?? '';
+                    number.value = data.number ?? '';
+                    email.value = data.email ?? '';
+
+                } else {
+
+                    flatNo.value = '';
+                    number.value = '';
+                    email.value = '';
+
+                    console.error(data.message ?? 'Member not found.');
+                }
+            })
+            .catch(error => {
+
+                console.error('AJAX Error:', error);
+
+                flatNo.value = '';
+                number.value = '';
+                email.value = '';
+
+            });
+
+    });
+
+
+    // ==========================================================
+    // Re-create Contact Fields after Validation Error
+    // ==========================================================
+
     document.addEventListener('DOMContentLoaded', function() {
 
         const contactPerson = document.getElementById('contact_person');
 
         if (contactPerson && contactPerson.value) {
+
             contactPerson.dispatchEvent(new Event('input'));
+
         }
 
     });

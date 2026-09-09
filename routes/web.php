@@ -3,6 +3,7 @@
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\CollectorController;
+use App\Http\Controllers\AjaxController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\PermissionsController;
@@ -37,7 +38,7 @@ Route::get('testsms', function () {
     $contentType = 1;
     curl_setopt($ch, CURLOPT_URL, $apiUrl);
     curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, "authUser=Redbee&authAccess=Redbee@5621&destination=" . $number . "&text=" . urlencode($text) . "&requestId=" . $requesteid . " &contentType=" . $contentType);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, "authUser=Sector-03&authAccess=Sector@0309&destination=" . $number . "&text=" . urlencode($text) . "&requestId=" . $requesteid . " &contentType=" . $contentType);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $server_output = curl_exec($ch);
     curl_close($ch);
@@ -54,6 +55,11 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
         Route::get('dashboard', 'index')->name('home');
         Route::get('settings', 'settings')->name('settings');
         Route::get('profile', 'profile')->name('profile');
+    });
+
+    // Ajax Routes
+    Route::controller(AjaxController::class)->prefix('ajax')->name('ajax.')->group(function () {
+        Route::get('/member-details/{id}', 'memberdetails')->name('memberdetails');
     });
 
     // Permissions

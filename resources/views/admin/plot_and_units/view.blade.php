@@ -96,7 +96,7 @@
             <h5 class="mb-0">Contact Persons</h5>
 
             <span class="badge bg-primary">
-                {{ $plotAndUnit->members->count() }} Persons
+                {{ $plotAndUnit->sector_collenctions->count() }} Persons
             </span>
         </div>
 
