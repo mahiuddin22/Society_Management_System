@@ -73,10 +73,13 @@
             <th>Total Flat</th>
             <th>Occupied Flat</th>
             <th>Collection Type</th>
-            <th>Contact person</th>
             <th>Collection Rate</th>
             <th>Discount</th>
             <th>Collection Amount</th>
+            <th>Person Name</th>
+            <th>Flat No</th>
+            <th>Phone No</th>
+            <th>Email</th>
             <th>Issue Date</th>
             <th>Status</th>
             <th>Action</th>
@@ -92,9 +95,13 @@
             <td>{{ $plotAndUnit->total_flat ?? 'N/A' }}</td>
             <td>{{ $plotAndUnit->occupied_flat ?? 'N/A' }}</td>
             <td>{{ $plotAndUnit->collection_type ?? 'N/A' }}</td>
-            <td>{{ $plotAndUnit->contact_person ?? 'N/A' }}</td>
             <td>৳{{ number_format($plotAndUnit->collection_rate, 2) }}</td>
             <td>৳{{ number_format($plotAndUnit->discount, 2) }}</td>
+            <td>৳{{ number_format($plotAndUnit->collection_amount) }}</td>
+            <td>{{ $plotAndUnit->name ?? 'N/A' }}</td>
+            <td>{{ $plotAndUnit->flat_no ?? 'N/A' }}</td>
+            <td>{{ $plotAndUnit->number ?? 'N/A' }}</td>
+            <td>{{ $plotAndUnit->email ?? 'N/A' }}</td>
             <td>৳{{ number_format($plotAndUnit->collection_amount, 2) }}</td>
             <td>{{ $plotAndUnit->date }}</td>
             <td>

@@ -69,30 +69,4 @@ class MemberController extends Controller
         $data->delete();
         return redirect()->route('admin.members.index')->with('success', 'Data Deleted Successfully');
     }
-
-    public function bulkUpload()
-    {
-        return view('admin.members.bulk-upload');
-    }
-
-    public function bulkUploadStore(Request $request)
-    {
-        $request->validate([
-            'file' => 'required|file|mimes:xlsx,xls,csv|max:10240',
-        ]);
-
-        $file = $request->file('file');
-        $directory = storage_path('app/imports');
-
-        if (!is_dir($directory)) {
-            mkdir($directory, 0755, true);
-        }
-
-        $fileName = time() . '_' . $file->getClientOriginalName();
-        $file->move($directory, $fileName);
-
-        Excel::import(new MembersImport(), $directory . DIRECTORY_SEPARATOR . $fileName);
-
-        return redirect()->back()->with('success', 'Members uploaded successfully.');
-    }
 }

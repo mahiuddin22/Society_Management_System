@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\MembersImport;
 use App\Models\PlotAndUnit;
 use App\Models\Member;
 use App\Models\PlotType;
 use App\Models\Road;
-use App\Models\SectorCollenctions;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PlotAndUnitController extends Controller
 {
@@ -52,22 +53,18 @@ class PlotAndUnitController extends Controller
             'road'              => 'required',
             'holding_no'        => 'required|string|max:255',
             'building_type'     => 'required',
-            'total_flat'        => 'required_unless:building_type,8|nullable|integer|min:0',
-            'occupied_flat'     => 'required_unless:building_type,8|nullable|integer|min:0|lte:total_flat',
-            'collection_type'   => 'required_unless:building_type,8',
-            'contact_person'    => 'required_unless:building_type,8|nullable|integer|min:0',
-            'collection_rate'   => 'required_unless:building_type,8|numeric|nullable|min:0',
-            'collection_amount' => 'required_unless:building_type,8|numeric|nullable|min:0',
+            'total_flat'        => 'nullable|integer|min:0',
+            'occupied_flat'     => 'nullable|integer|min:0|lte:total_flat',
+            'collection_type'   => 'nullable',
+            'collection_rate'   => 'required_if:building_type,9|nullable|numeric|min:0',
+            'collection_amount' => 'required_if:building_type,9|nullable|numeric|min:0',
             'discount'          => 'nullable|numeric|min:0',
+            'name'              => 'nullable',
+            'flat_no'           => 'nullable|max:255',
+            'number'            => 'nullable|string|max:255',
+            'email'             => 'nullable|email|max:255',
             'date'              => 'required|date',
             'status'            => 'required|in:0,1',
-
-            'contact_persons'             => 'nullable|array',
-            'contact_persons.*.member_id' => 'required|exists:members,id',
-            'contact_persons.*.flat_no'   => 'required|max:255',
-            'contact_persons.*.number'    => 'required|string|max:255',
-            'contact_persons.*.email'     => 'nullable|email|max:255',
-            'contact_persons.*.amount'    => 'required|numeric|min:0',
         ]);
 
         $plotAndUnit                    = new PlotAndUnit();
@@ -76,115 +73,48 @@ class PlotAndUnitController extends Controller
         $plotAndUnit->building_type     = $validatedData['building_type'];
         $plotAndUnit->total_flat        = $validatedData['total_flat'] ?? 0;
         $plotAndUnit->occupied_flat     = $validatedData['occupied_flat'] ?? 0;
+        $plotAndUnit->building_name     = $validatedData['building_name'] ?? 'N/A';
         $plotAndUnit->collection_type   = $validatedData['collection_type'];
-        $plotAndUnit->contact_person    = $validatedData['contact_person'];
+        $plotAndUnit->name              = $validatedData['name'];
+        $plotAndUnit->flat_no           = $validatedData['flat_no'];
         $plotAndUnit->collection_rate   = $validatedData['collection_rate'] ?? 0;
-        $plotAndUnit->collection_amount = $validatedData['collection_amount'] ?? 0;
         $plotAndUnit->discount          = $validatedData['discount'] ?? 0;
+        $plotAndUnit->collection_amount = $validatedData['collection_amount'] ?? 0;
         $plotAndUnit->date              = Carbon::createFromFormat('d-m-Y', $request->date)->format('Y-m-d') ?? null;
         $plotAndUnit->status            = $validatedData['status'];
-        $plotAndUnit->save();
 
         if ($request->date) {
-            $issueDate = Carbon::createFromFormat('d-m-Y', $request->date)->format('F Y');
+            $issue_date = Carbon::createFromFormat('d-m-Y', $request->date)->format('F Y');
         }
 
-        foreach ($validatedData['contact_persons'] ?? [] as $index => $contact) {
+        // Normalize phone number
+        $number = preg_replace('/\s+/', '', $validatedData['number']);
 
-            $collection = new SectorCollenctions();
-
-            $collection->plot_and_unit_id = $plotAndUnit->id;
-
-            $collection->road_id    = $validatedData['road'];
-            $collection->holding_no = $validatedData['holding_no'];
-            $collection->member_id  = $contact['member_id'];
-            $collection->flat_no    = $contact['flat_no'];
-
-            // Normalize phone number
-            $number = preg_replace('/\s+/', '', $contact['number']);
-
-            if (!str_starts_with($number, '88')) {
-                $number = '88' . $number;
-            }
-
-            $collection->number = $number;
-            $collection->email  = $contact['email'] ?? null;
-            $collection->amount = $contact['amount'];
-
-            $collection->save();
-
-            // Member name
-            $member_name = $collection->members->name;
-
-            // SMS text
-            $text = 'Dear ' . $member_name
-                . ', Your Collection Amount is ' . $contact['amount']
-                . ' BDT. for the month of ' . $issueDate
-                . '. Please pay your dues on time. Thank you.';
-
-            // Send SMS
-            $ch = curl_init();
-
-            $apiUrl = "http://103.230.63.50/bulksms/api";
-
-            // Different request ID for every member
-            $requesteid = time() . ($index + 1);
-
-            $postData = http_build_query([
-                'authUser'    => 'Sector-03',
-                'authAccess'  => 'Sector@0309',
-                'destination' => $number,
-                'text'        => $text,
-                'requestId'   => $requesteid,
-                'contentType' => 1,
-            ]);
-
-            curl_setopt($ch, CURLOPT_URL, $apiUrl);
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-            $server_output = curl_exec($ch);
-
-            if ($server_output === false) {
-                \Log::error('SMS Error', [
-                    'number' => $number,
-                    'error'  => curl_error($ch),
-                ]);
-            }
-
-            curl_close($ch);
-
-            // Debug
-            \Log::info('SMS Response', [
-                'member_id' => $contact['member_id'],
-                'number'    => $number,
-                'requestId' => $requesteid,
-                'response'  => $server_output,
-            ]);
-
-            $collection->unique_id = 'UT03'
-                . $validatedData['road']
-                . $validatedData['holding_no']
-                . $plotAndUnit->id
-                . $validatedData['total_flat']
-                . $collection->id;
-
-            $collection->save();
+        if (!str_starts_with($number, '88')) {
+            $number = '88' . $number;
         }
 
+        $plotAndUnit->number = $number;
+        $plotAndUnit->email  = $validatedData['email'] ?? null;
+        $plotAndUnit->save();
+
+        $plotAndUnit->unique_id = 'UT03'
+            . $validatedData['road']
+            . $validatedData['holding_no']
+            . $plotAndUnit->id
+            . $validatedData['total_flat'];
+
+        $plotAndUnit->save();
         return redirect()->route('admin.plot-and-units.index')->with('success', 'Data created successfully.');
     }
 
     public function edit($id)
     {
-        $data       = PlotAndUnit::findOrFail($id);
-        $plotAndUnit = SectorCollenctions::where('plot_and_unit_id', $id)->get();
-        $plot_types = PlotType::where('status', true)->get();
-        $rates      = $plot_types->pluck('amount', 'id')->toArray();
-        $roads      = Road::all();
-        $members    = Member::all();
-        return view('admin.plot_and_units.edit', compact('data', 'plot_types', 'rates', 'members', 'roads', 'plotAndUnit'));
+        $data           = PlotAndUnit::findOrFail($id);
+        $plot_types     = PlotType::where('status', true)->get();
+        $rates          = $plot_types->pluck('amount', 'id')->toArray();
+        $roads          = Road::all();
+        return view('admin.plot_and_units.edit', compact('data', 'plot_types', 'rates', 'roads'));
     }
 
     public function update(Request $request, $id)
@@ -193,59 +123,66 @@ class PlotAndUnitController extends Controller
             'road'              => 'required',
             'holding_no'        => 'required|string|max:255',
             'building_type'     => 'required',
-            'total_flat'        => 'required_unless:building_type,8|nullable|integer|min:0',
-            'occupied_flat'     => 'required_unless:building_type,8|nullable|integer|min:0|lte:total_flat',
-            'collection_type'   => 'required_unless:building_type,8',
-            'contact_person'    => 'required_unless:building_type,8|nullable|integer|min:0',
-            'collection_rate'   => 'required_unless:building_type,8|numeric|nullable|min:0',
-            'collection_amount' => 'required_unless:building_type,8|numeric|nullable|min:0',
+            'total_flat'        => 'nullable|integer|min:0',
+            'occupied_flat'     => 'nullable|integer|min:0|lte:total_flat',
+            'collection_type'   => 'nullable',
+            'collection_rate'   => 'required_if:building_type,9|nullable|numeric|min:0',
+            'collection_amount' => 'required_if:building_type,9|nullable|numeric|min:0',
             'discount'          => 'nullable|numeric|min:0',
+            'name'              => 'nullable',
+            'flat_no'           => 'nullable|max:255',
+            'number'            => 'nullable|string|max:255',
+            'email'             => 'nullable|email|max:255',
             'date'              => 'required|date',
             'status'            => 'required|in:0,1',
-
-            'contact_persons.*.id'          => 'nullable|integer',
-            'contact_persons.*.member_id'   => 'required|exists:members,id',
-            'contact_persons.*.flat_no'     => 'required|string|max:255',
-            'contact_persons.*.number'      => 'required|string|max:255',
-            'contact_persons.*.email'       => 'nullable|email|max:255',
-            'contact_persons.*.amount'      => 'required|numeric|min:0',
         ]);
 
         $plotAndUnit = PlotAndUnit::findOrFail($id);
 
-        // Update Plot and Unit
-        $plotAndUnit->road              = $validatedData['road'];
-        $plotAndUnit->holding_no        = $validatedData['holding_no'];
-        $plotAndUnit->building_type     = $validatedData['building_type'];
-        $plotAndUnit->total_flat        = $validatedData['total_flat'] ?? 0;
-        $plotAndUnit->occupied_flat     = $validatedData['occupied_flat'] ?? 0;
-        $plotAndUnit->collection_type   = $validatedData['collection_type'];
-        $plotAndUnit->contact_person    = $validatedData['contact_person'];
-        $plotAndUnit->collection_rate   = $validatedData['collection_rate'] ?? 0;
-        $plotAndUnit->collection_amount = $validatedData['collection_amount'] ?? 0;
-        $plotAndUnit->discount          = $validatedData['discount'] ?? 0;
-        $plotAndUnit->date              = Carbon::createFromFormat('d-m-Y', $request->date)->format('Y-m-d');
-        $plotAndUnit->status            = $validatedData['status'];
-        $plotAndUnit->save();
+        if ($plotAndUnit->building_type != $validatedData['building_type']) {
 
-        foreach ($validatedData['contact_persons'] ?? [] as $contact) {
+            // Create new PlotAndUnit
+            $newplot = new PlotAndUnit();
 
-            if (!empty($contact['id'])) {
-                $member = SectorCollenctions::where('id', $contact['id'])->where('plot_and_unit_id', $plotAndUnit->id)->firstOrFail();
-            } else {
-                $member = new SectorCollenctions();
-                $member->plot_and_unit_id = $plotAndUnit->id;
-            }
+            $newplot->road              = $validatedData['road'];
+            $newplot->holding_no        = $validatedData['holding_no'];
+            $newplot->building_type     = $validatedData['building_type'];
+            $newplot->total_flat        = $validatedData['total_flat'] ?? 0;
+            $newplot->occupied_flat     = $validatedData['occupied_flat'] ?? 0;
+            $newplot->collection_type   = $validatedData['collection_type'];
+            $newplot->name              = $validatedData['name'];
+            $newplot->flat_no           = $validatedData['flat_no'];
+            $newplot->collection_rate   = $validatedData['collection_rate'] ?? 0;
+            $newplot->discount          = $validatedData['discount'] ?? 0;
+            $newplot->collection_amount = $validatedData['collection_amount'] ?? 0;
+            $newplot->date              = Carbon::createFromFormat('d-m-Y', $request->date)->format('Y-m-d') ?? null;
+            $newplot->status            = $validatedData['status'];
 
-            $member->unique_id  = 'UT03' . $validatedData['road'] . $validatedData['holding_no'] . $plotAndUnit->id . $validatedData['total_flat'] . now()->format('ymdHis');
-            $member->road_id    = $validatedData['road'];
-            $member->holding_no = $validatedData['holding_no'];
-            $member->member_id  = $contact['member_id'];
-            $member->flat_no    = $contact['flat_no'];
-            $member->number     = $contact['number'];
-            $member->email      = $contact['email'] ?? null;
-            $member->amount     = $contact['amount'];
-            $member->save();
+            // Disable old PlotAndUnit
+            $plotAndUnit->status = 0;
+            $newplot->save();
+
+            // IMPORTANT:
+            // From now on, use the new plot
+            $plotAndUnit = $newplot;
+        } else {
+
+            // Update existing PlotAndUnit
+            $plotAndUnit->road              = $validatedData['road'];
+            $plotAndUnit->holding_no        = $validatedData['holding_no'];
+            $plotAndUnit->building_type     = $validatedData['building_type'];
+            $plotAndUnit->total_flat        = $validatedData['total_flat'] ?? 0;
+            $plotAndUnit->occupied_flat     = $validatedData['occupied_flat'] ?? 0;
+            $plotAndUnit->building_name     = $validatedData['building_name'] ?? 'N/A';
+            $plotAndUnit->collection_type   = $validatedData['collection_type'];
+            $plotAndUnit->name              = $validatedData['name'];
+            $plotAndUnit->flat_no           = $validatedData['flat_no'];
+            $plotAndUnit->collection_rate   = $validatedData['collection_rate'] ?? 0;
+            $plotAndUnit->discount          = $validatedData['discount'] ?? 0;
+            $plotAndUnit->collection_amount = $validatedData['collection_amount'] ?? 0;
+            $plotAndUnit->date              = Carbon::createFromFormat('d-m-Y', $request->date)->format('Y-m-d') ?? null;
+            $plotAndUnit->status            = $validatedData['status'];
+            $plotAndUnit->save();
         }
 
         return redirect()->route('admin.plot-and-units.index')->with('success', 'Data updated successfully.');
@@ -264,4 +201,31 @@ class PlotAndUnitController extends Controller
         $plotAndUnit->delete();
         return redirect()->route('admin.plot-and-units.index')->with('success', 'Data deleted successfully.');
     }
+
+    public function bulkUpload()
+    {
+        return view('admin.plot_and_units.bulk-upload');
+    }
+
+    public function bulkUploadStore(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls,csv|max:10240',
+        ]);
+
+        $file = $request->file('file');
+        $directory = storage_path('app/imports');
+
+        if (!is_dir($directory)) {
+            mkdir($directory, 0755, true);
+        }
+
+        $fileName = time() . '_' . $file->getClientOriginalName();
+        $file->move($directory, $fileName);
+
+        Excel::import(new MembersImport(), $directory . DIRECTORY_SEPARATOR . $fileName);
+
+        return redirect()->back()->with('success', 'Members uploaded successfully.');
+    }
+
 }

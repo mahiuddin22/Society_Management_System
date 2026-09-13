@@ -131,6 +131,9 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
         Route::get('{id}/edit', 'edit')->name('edit');
         Route::put('{id}', 'update')->name('update');
         Route::delete('{id}/destroy', 'destroy')->name('destroy');
+
+        Route::get('/bulk-upload', 'bulkUpload')->name('bulk-upload');
+        Route::post('/bulk-upload', 'bulkUploadStore')->name('bulk-upload.store');
     });
 
     // Plote Types

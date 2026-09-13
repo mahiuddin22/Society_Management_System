@@ -51,18 +51,38 @@
                     </tr>
 
                     <tr>
-                        <th>Contact Person</th>
-                        <td>{{ $plotAndUnit->contact_person ?? 'N/A' }}</td>
-
                         <th>Collection Rate</th>
                         <td>
-                            <strong>৳{{ number_format($plotAndUnit->collection_rate, 2) }}</strong>
+                            ৳{{ number_format($plotAndUnit->collection_rate, 2) }}
+                        </td>
+
+                        <th>Person Name</th>
+                        <td>
+                            {{ $plotAndUnit->name ?? 'N/A' }}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>Flat Number</th>
+                        <td>
+                            {{ $plotAndUnit->flat_no ?? 'N/A' }}
+                        </td>
+
+                        <th>Phone Number</th>
+                        <td>
+                            {{ $plotAndUnit->number ?? 'N/A' }}
                         </td>
                     </tr>
                     <tr>
+                        <th>Person Email</th>
+                        <td>
+                            {{ $plotAndUnit->email ?? 'N/A' }}
+                        </td>
+
                         <th>Issue Date</th>
                         <td>{{ \Carbon\Carbon::parse($plotAndUnit->date)->format('d-M-Y') }}</td>
-
+                    </tr>
+                    <tr>
                         <th>Current Status</th>
                         <td>
                             @if($plotAndUnit->status == 1)
@@ -71,13 +91,15 @@
                             <span class="badge red"><i class="dot"></i>Expired</span>
                             @endif
                         </td>
+                        <th>Discount</th>
+                        <td>
+                            ৳{{ number_format($plotAndUnit->discount, 2) }}
+                        </td>
                     </tr>
 
                     <tr>
-                        <th>Discount</th>
-                        <td>
-                            <strong>৳{{ number_format($plotAndUnit->discount, 2) }}</strong>
-                        </td>
+                        <th></th>
+                        <td></td>
 
                         <th>Collection Amount</th>
                         <td>
@@ -87,84 +109,6 @@
                         </td>
                     </tr>
                 </tbody>
-            </table>
-        </div>
-
-
-        <!-- Contact Persons -->
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="mb-0">Contact Persons</h5>
-
-            <span class="badge bg-primary">
-                {{ $plotAndUnit->sector_collenctions->count() }} Persons
-            </span>
-        </div>
-
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover align-middle">
-                <thead class="table-secondary">
-                    <tr>
-                        <th class="text-center">SL</th>
-                        <th>Name</th>
-                        <th>Flat no</th>
-                        <th>Number</th>
-                        <th>Email</th>
-                        <th class="text-end">Amount</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    @forelse($plotAndUnit->sector_collenctions as $collection)
-                    @php
-                    $member = \App\Models\Member::where('id', $collection->member_id)->first();
-                    @endphp
-                    <tr>
-                        <td class="text-center">
-                            {{ $loop->iteration }}
-                        </td>
-
-                        <td>
-                            {{ $member->name }}
-                        </td>
-
-                        <td>
-                            {{ $collection->flat_no }}
-                        </td>
-
-                        <td>
-                            {{ $collection->number }}
-                        </td>
-
-                        <td>
-                            {{ $collection->email ?: '-' }}
-                        </td>
-
-                        <td class="text-end">
-                            ৳{{ number_format($collection->amount, 2) }}
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="5" class="text-center text-muted py-4">
-                            No contact persons available.
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-
-                @if($plotAndUnit->sector_collenctions->count())
-                <tfoot>
-                    <tr class="table-light">
-                        <th colspan="5" class="text-end">
-                            Total Contact Person Amount:
-                        </th>
-
-                        <th class="text-end">
-                            ৳{{ number_format($plotAndUnit->sector_collenctions->sum('amount'), 2) }}
-                        </th>
-                    </tr>
-                </tfoot>
-                @endif
             </table>
         </div>
 
