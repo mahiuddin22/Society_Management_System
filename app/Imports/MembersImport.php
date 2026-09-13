@@ -7,52 +7,67 @@ use App\Models\PlotType;
 use App\Models\Road;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Carbon\Carbon;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 
-class MembersImport implements ToCollection, WithHeadingRow
+class MembersImport implements ToCollection
 {
     public function collection(Collection $rows)
     {
+        $rows->shift();
         foreach ($rows as $row) {
-
+        
             $plotAndUnit = new PlotAndUnit();
-            $road = Road::class::where('name', $row['road'])->first();
+
+            $road = Road::where('name', $row[0])->first();
+
             if ($road) {
-                $plotAndUnit->road_id = $road->id;
+                $plotAndUnit->road = $road->id;
             } else {
                 $newRoad = new Road();
-                $newRoad->name = $row['road'];
+                $newRoad->name = $row[0];
                 $newRoad->save();
 
-                $plotAndUnit->road_id = $newRoad->id;
+                $plotAndUnit->road = $newRoad->id;
             }
-            $plotAndUnit->holding_no         = $row['holding_no'];
-            $buildingType = PlotType::class::where('name', $row['plot type'])->first();
+
+            $plotAndUnit->holding_no = $row[1];
+
+            $buildingType = PlotType::where('name', $row[2])->first();
             if ($buildingType) {
-                $plotAndUnit->building_type  = $buildingType->id;
+                $plotAndUnit->building_type = $buildingType->id;
             } else {
                 $newBuildingType = new PlotType();
-                $newBuildingType->name  = $row['plot type'];
+                $newBuildingType->name = $row[2];
                 $newBuildingType->save();
-                $plotAndUnit->building_type  = $newBuildingType->id;
+
+                $plotAndUnit->building_type = $newBuildingType->id;
             }
-            $plotAndUnit->total_flat         = $row['total_flat'];
-            $plotAndUnit->occupied_flat      = $row['occupied_flat'];
-            $plotAndUnit->building_name      = $row['building name'];
-            $plotAndUnit->collection_type    = $row['collection_type'];
-            $plotAndUnit->contact_person     = $row['contact person'];
-            $plotAndUnit->collection_rate    = $row['collection rate'];
-            $plotAndUnit->discount           = $row['discount'];
-            $plotAndUnit->collection_amount  = $row['collection amount'];
-            $plotAndUnit->date               = $row['issue date']->format('Y-m-d');
-            $plotAndUnit->name               = $row['contact person name'];
-            $plotAndUnit->flat_no            = $row['flat no'];
-            $plotAndUnit->number             = $row['mobile number'];
-            $plotAndUnit->email              = $row['email'];
-            $plotAndUnit->amount             = $row['amount'];
+
+            $plotAndUnit->total_flat        = $row[3];
+            $plotAndUnit->occupied_flat     = $row[4];
+            $plotAndUnit->building_name     = $row[5];
+            $plotAndUnit->collection_type   = $row[6];
+            $plotAndUnit->collection_rate   = $row[7];
+            $plotAndUnit->discount          = $row[8];
+            $plotAndUnit->collection_amount = $row[9];
+            $plotAndUnit->date              = Carbon::instance(Date::excelToDateTimeObject($row[10]));
+            $plotAndUnit->name              = $row[11];
+            $plotAndUnit->flat_no           = $row[12];
+            $plotAndUnit->number            = $row[13];
+            $plotAndUnit->email             = $row[14];
+            
+            $paymentStatus = $row[15];
+            if($paymentStatus == 'Paid'){
+                $plotAndUnit->payment_status    = 1;
+                }else{
+                $plotAndUnit->payment_status    = 0;
+            }
+
             $plotAndUnit->save();
 
-            $plotAndUnit->unique_id          = 'UT03'. $road->id. $row['holding_no']. $plotAndUnit->id. $row['total_flat'];
+            $plotAndUnit->unique_id = 'UT03' . $plotAndUnit->road . $row[1] . $plotAndUnit->id . $row[3];
+            $plotAndUnit->save();
         }
     }
 }

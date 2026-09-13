@@ -50,7 +50,7 @@
     @endphp
     <div class="card">
       <div class="card-head">
-        <h3>{{$type->name ?? N/A}}</h3><span class="badge green">{{$unites_count}}</span>
+        <h3>{{$type->name ?? 'N/A'}}</h3><span class="badge green">{{$unites_count}}</span>
       </div>
       <div class="s hint">Collection Amount ৳{{$type->amount}}/unit</div>
     </div>

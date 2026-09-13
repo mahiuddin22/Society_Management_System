@@ -9,7 +9,7 @@ class RoadController extends Controller
 {
     public function index()
     {
-        $data['roads'] = Road::where('name', 'like', '%' . request()->get('search') . '%')->paginate(10);
+        $data['roads'] = Road::where('name', 'like', '%' . request()->get('search') . '%')->paginate(25);
         return view('admin.roads.index', $data);
     }
 

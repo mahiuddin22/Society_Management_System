@@ -55,6 +55,7 @@ class PlotAndUnitController extends Controller
             'building_type'     => 'required',
             'total_flat'        => 'nullable|integer|min:0',
             'occupied_flat'     => 'nullable|integer|min:0|lte:total_flat',
+            'building_name'     => 'nullable|string',
             'collection_type'   => 'nullable',
             'collection_rate'   => 'required_if:building_type,9|nullable|numeric|min:0',
             'collection_amount' => 'required_if:building_type,9|nullable|numeric|min:0',
@@ -125,6 +126,7 @@ class PlotAndUnitController extends Controller
             'building_type'     => 'required',
             'total_flat'        => 'nullable|integer|min:0',
             'occupied_flat'     => 'nullable|integer|min:0|lte:total_flat',
+            'building_name'     => 'nullable|string',
             'collection_type'   => 'nullable',
             'collection_rate'   => 'required_if:building_type,9|nullable|numeric|min:0',
             'collection_amount' => 'required_if:building_type,9|nullable|numeric|min:0',
@@ -149,9 +151,12 @@ class PlotAndUnitController extends Controller
             $newplot->building_type     = $validatedData['building_type'];
             $newplot->total_flat        = $validatedData['total_flat'] ?? 0;
             $newplot->occupied_flat     = $validatedData['occupied_flat'] ?? 0;
+            $plotAndUnit->building_name = $validatedData['building_name'] ?? 'N/A';
             $newplot->collection_type   = $validatedData['collection_type'];
             $newplot->name              = $validatedData['name'];
             $newplot->flat_no           = $validatedData['flat_no'];
+            $plotAndUnit->number        = $validatedData['number'];
+            $plotAndUnit->email         = $validatedData['email'];
             $newplot->collection_rate   = $validatedData['collection_rate'] ?? 0;
             $newplot->discount          = $validatedData['discount'] ?? 0;
             $newplot->collection_amount = $validatedData['collection_amount'] ?? 0;
@@ -160,6 +165,7 @@ class PlotAndUnitController extends Controller
 
             // Disable old PlotAndUnit
             $plotAndUnit->status = 0;
+            $plotAndUnit->save();
             $newplot->save();
 
             // IMPORTANT:
@@ -177,6 +183,8 @@ class PlotAndUnitController extends Controller
             $plotAndUnit->collection_type   = $validatedData['collection_type'];
             $plotAndUnit->name              = $validatedData['name'];
             $plotAndUnit->flat_no           = $validatedData['flat_no'];
+            $plotAndUnit->number            = $validatedData['number'];
+            $plotAndUnit->email             = $validatedData['email'];
             $plotAndUnit->collection_rate   = $validatedData['collection_rate'] ?? 0;
             $plotAndUnit->discount          = $validatedData['discount'] ?? 0;
             $plotAndUnit->collection_amount = $validatedData['collection_amount'] ?? 0;

@@ -42,14 +42,14 @@
                         <select class="form-select" id="road" name="road" required>
                             <option value="" disabled>Select Road</option>
                             @foreach($roads as $road)
-                            <option value="{{ $road->id }}" {{ old('road', $data->road) == $road->id ? 'selected' : '' }}>{{ $road->name }}</option>
+                            <option value="{{ $road->id }}" {{ $data->road == $road->id ? 'selected' : '' }}>{{ $road->name }}</option>
                             @endforeach
                         </select>
                     </div>
 
                     <div class="col-md-4">
                         <label for="holding_no" class="form-label">Holding No. <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="holding_no" name="holding_no" value="{{ old('holding_no', $data->holding_no) }}" placeholder="e.g. 2" required>
+                        <input type="text" class="form-control" id="holding_no" name="holding_no" value="{{ $data->holding_no }}" placeholder="e.g. 2" required>
                     </div>
 
                     <div class="col-md-4">
@@ -57,60 +57,60 @@
                         <select class="form-select" id="building_type" name="building_type" required>
                             <option value="" disabled>Select Building Type</option>
                             @foreach($plot_types as $type)
-                            <option value="{{ $type->id }}" {{ old('building_type', $data->building_type) == $type->id ? 'selected' : '' }}>{{ $type->name }}</option>
+                            <option value="{{ $type->id }}" {{ $data->building_type == $type->id ? 'selected' : '' }}>{{ $type->name }}</option>
                             @endforeach
                         </select>
                     </div>
 
                     <div class="col-md-4" id="totalFlatGroup">
                         <label for="total_flat" class="form-label">Total Flat <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control" id="total_flat" name="total_flat" value="{{ old('total_flat', $data->total_flat) }}" min="0" placeholder="e.g. 12" required>
+                        <input type="number" class="form-control" id="total_flat" name="total_flat" value="{{ $data->total_flat }}" min="0" placeholder="e.g. 12" required>
                     </div>
 
                     <div class="col-md-4" id="occupiedFlatGroup">
                         <label for="occupied_flat" class="form-label">Occupied Flat <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control" id="occupied_flat" name="occupied_flat" value="{{ old('occupied_flat', $data->occupied_flat) }}" min="0" placeholder="e.g. 10" required>
+                        <input type="number" class="form-control" id="occupied_flat" name="occupied_flat" value="{{ $data->occupied_flat }}" min="0" placeholder="e.g. 10" required>
                     </div>
 
                     <div class="col-md-4" id="BuildingNameGroup">
                         <label for="building_name" class="form-label">Building Name</label>
-                        <input type="text" class="form-control" id="building_name" name="building_name" value="{{ old('building_name', $data->building_name) }}" placeholder="Enter building name" required>
+                        <input type="text" class="form-control" id="building_name" name="building_name" value="{{ $data->building_name }}" placeholder="Enter building name" required>
                     </div>
 
                     <div class="col-md-4" id="collectionTypeGroup">
                         <label for="collection_type" class="form-label">Collection Type <span class="text-danger">*</span></label>
                         <select class="form-select" id="collection_type" name="collection_type" required>
                             <option value="">Select Collection Type</option>
-                            <option value="Group" {{ old('collection_type', $data->collection_type) == 'Group' ? 'selected' : '' }}>Group</option>
-                            <option value="Individual" {{ old('collection_type', $data->collection_type) == 'Individual' ? 'selected' : '' }}>Individual</option>
+                            <option value="Group" {{ $data->collection_type == 'Group' ? 'selected' : '' }}>Group</option>
+                            <option value="Individual" {{ $data->collection_type == 'Individual' ? 'selected' : '' }}>Individual</option>
                         </select>
                     </div>
 
                     <div class="col-md-4" id="personName">
                         <label class="form-label">Contact Person Name <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control flat-no" name="name" value="{{ old('name', $data->name) }}" id="person_name" placeholder="Name">
+                        <input type="text" class="form-control flat-no" name="name" value="{{ $data->name }}" id="person_name" placeholder="Name">
                     </div>
 
                     <div class="col-md-4" id="personFlatNo">
                         <label class="form-label">Flat no <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control flat-no" name="flat_no" value="{{ old('flat_no', $data->flat_no) }}" id="person_flat_no" placeholder="Flat number">
+                        <input type="text" class="form-control flat-no" name="flat_no" value="{{ $data->flat_no }}" id="person_flat_no" placeholder="Flat number">
                     </div>
 
                     <div class="col-md-4" id="personNumber">
                         <label class="form-label">Number <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control member-number" name="number" value="{{ old('number', $data->number) }}" id="person_number" placeholder="Number">
+                        <input type="text" class="form-control member-number" name="number" value="{{ $data->number }}" id="person_number" placeholder="Number">
                     </div>
 
                     <div class="col-md-4" id="personEmail">
                         <label class="form-label">Email <span class="text-danger">*</span></label>
-                        <input type="email" class="form-control member-email" name="email" value="{{ old('email', $data->email) }}" id="person_email" placeholder="Email">
+                        <input type="email" class="form-control member-email" name="email" value="{{ $data->email }}" id="person_email" placeholder="Email">
                     </div>
 
                     <div class="col-md-4" id="collectionRateGroup">
                         <label for="collection_rate" class="form-label">Collection Rate <span class="text-danger">*</span></label>
                         <div class="input-group">
                             <span class="input-group-text">৳</span>
-                            <input type="number" class="form-control" id="collection_rate" name="collection_rate" value="{{ old('collection_rate', $data->collection_rate) }}" min="0" step="0.01" placeholder="Enter collection rate">
+                            <input type="number" class="form-control" id="collection_rate" name="collection_rate" value="{{ $data->collection_rate }}" min="0" step="0.01" placeholder="Enter collection rate">
                         </div>
                     </div>
 
@@ -118,7 +118,7 @@
                         <label for="discount" class="form-label">Discount</label>
                         <div class="input-group">
                             <span class="input-group-text">৳</span>
-                            <input type="number" class="form-control" id="discount" name="discount" value="{{ old('discount', $data->discount ?? 0) }}" min="0" step="0.01" placeholder="Enter discount amount">
+                            <input type="number" class="form-control" id="discount" name="discount" value="{{ $data->discount ?? 0 }}" min="0" step="0.01" placeholder="Enter discount amount">
                         </div>
                     </div>
 
@@ -126,7 +126,7 @@
                         <label for="collection_amount" class="form-label">Collection Amount <span class="text-danger">*</span></label>
                         <div class="input-group">
                             <span class="input-group-text">৳</span>
-                            <input type="number" class="form-control" id="collection_amount" name="collection_amount" value="{{ old('collection_amount', $data->collection_amount) }}" min="0" step="0.01" placeholder="Enter collection amount" required>
+                            <input type="number" class="form-control" id="collection_amount" name="collection_amount" value="{{ $data->collection_amount }}" min="0" step="0.01" placeholder="Enter collection amount" required>
                         </div>
                     </div>
 
@@ -134,7 +134,7 @@
                         <label for="datepicker" class="form-label">Issue Date <span class="text-danger">*</span></label>
                         <div class="input-group">
                             <span class="input-group-text">৳</span>
-                            <input type="text" class="form-control" id="datepicker" name="date" value="{{ old('date', \Carbon\Carbon::parse($data->date)->format('d-m-Y')) }}" placeholder="Select date" required>
+                            <input type="text" class="form-control" id="datepicker" name="date" value="{{ \Carbon\Carbon::parse($data->date)->format('d-m-Y') }}" placeholder="Select date" required>
                         </div>
                     </div>
 
@@ -142,8 +142,17 @@
                         <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
                         <select class="form-select" id="status" name="status" required>
                             <option value="">Select Status</option>
-                            <option value="1" {{ old('status', $data->status) == 1 ? 'selected' : '' }}>Active</option>
-                            <option value="0" {{ old('status', $data->status) == 0 ? 'selected' : '' }}>Expired</option>
+                            <option value="1" {{ $data->status == 1 ? 'selected' : '' }}>Active</option>
+                            <option value="0" {{ $data->status == 0 ? 'selected' : '' }}>Expired</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="payment_status" class="form-label">Payment Status <span class="text-danger">*</span></label>
+                        <select class="form-select" id="payment_status" name="payment_status" required>
+                            <option value="">Select Payment Status</option>
+                            <option value="1" {{ $data->payment_status == 1 ? 'selected' : '' }}>Paid</option>
+                            <option value="0" {{ $data->payment_status == 0 ? 'selected' : '' }}>Unpaid</option>
                         </select>
                     </div>
 
