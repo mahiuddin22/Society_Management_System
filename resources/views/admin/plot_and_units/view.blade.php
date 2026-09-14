@@ -98,8 +98,14 @@
                     </tr>
 
                     <tr>
-                        <th></th>
-                        <td></td>
+                        <th>Payment Status</th>
+                        <td>
+                            @if($plotAndUnit->payment_status == 1)
+                            <span class="badge green"><i class="dot"></i>Paid</span>
+                            @else
+                            <span class="badge red"><i class="dot"></i>Unpaid</span>
+                            @endif
+                        </td>
 
                         <th>Collection Amount</th>
                         <td>

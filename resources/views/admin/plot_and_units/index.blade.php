@@ -63,7 +63,7 @@
       <h3>Plot and Unit Index</h3><span class="hint">{{ $plotAndUnits->count() }} of {{ $plotAndUnits->total() }} plots and units shown</span>
     </div>
     <div class="table-wrap">
-      <table class="ledger">
+      <table class="ledger text-nowrap">
         <thead>
           <tr>
             <th>SL</th>
@@ -88,7 +88,7 @@
         <tbody>
           @forelse($plotAndUnits as $plotAndUnit)
           <tr>
-            <td>{{ $loop->iteration }}</td>
+            <td>{{ $plotAndUnits->firstItem() + $loop->iteration }}</td>
             <td>{{ $plotAndUnit->unit_road->name}}</td>
             <td>{{ $plotAndUnit->holding_no }}</td>
             <td>{{ $plotAndUnit->plot_type->name ?? 'N/A' }}</td>
@@ -102,7 +102,6 @@
             <td>{{ $plotAndUnit->flat_no ?? 'N/A' }}</td>
             <td>{{ $plotAndUnit->number ?? 'N/A' }}</td>
             <td>{{ $plotAndUnit->email ?? 'N/A' }}</td>
-            <td>৳{{ number_format($plotAndUnit->collection_amount, 2) }}</td>
             <td>{{ $plotAndUnit->date }}</td>
             <td>
               @if($plotAndUnit->status == 1)
@@ -111,7 +110,7 @@
               <span class="badge red"><i class="dot"></i>Expired</span>
               @endif
             </td>
-            <td>
+            <td class="text-center">
               @if (hasPermission('plot_and_units', 'view'))
               <a href="{{ route('admin.plot-and-units.view', $plotAndUnit->id) }}" target="__blank" class="btn btn-info btn-sm" title="View"><i class="bi bi-eye"></i></a>
               @endif

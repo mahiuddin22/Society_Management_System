@@ -114,10 +114,7 @@
         word-break: break-word;
     }
 
-    /* =========================
-       STAMP & FOOTER
-    ========================== */
-
+    /* ========================= STAMP & FOOTER ========================== */
     .stamp-container {
         display: flex;
         justify-content: center;
@@ -125,32 +122,127 @@
     }
 
     .paid-stamp {
-        width: 65px;
+        width: 70px;
         height: 65px;
-        border: 2px dashed #000;
+        border: 2px dotted #000;
         border-radius: 50%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        position: relative;
         text-align: center;
         transform: rotate(-8deg);
-        padding: 3px;
     }
 
-    .paid-stamp .stamp-top,
-    .paid-stamp .stamp-bottom {
+    /* ========================= TOP CIRCULAR TEXT ========================== */
+    .stamp-top {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+    }
+
+    .stamp-top span {
+        position: absolute;
+        left: 50%;
+        top: 3px;
+        transform-origin: 0 29px;
         font-size: 6px;
         font-weight: 700;
-        letter-spacing: 0.5px;
+        line-height: 1;
     }
 
+    .stamp-top span:nth-child(1) {
+        transform: rotate(-55deg);
+    }
+
+    .stamp-top span:nth-child(2) {
+        transform: rotate(-40deg);
+    }
+
+    .stamp-top span:nth-child(3) {
+        transform: rotate(-25deg);
+    }
+
+    .stamp-top span:nth-child(4) {
+        transform: rotate(-10deg);
+    }
+
+    .stamp-top span:nth-child(5) {
+        transform: rotate(5deg);
+    }
+
+    .stamp-top span:nth-child(6) {
+        transform: rotate(20deg);
+    }
+
+    .stamp-top span:nth-child(7) {
+        transform: rotate(35deg);
+    }
+
+    .stamp-top span:nth-child(8) {
+        transform: rotate(50deg);
+    }
+
+    /* ========================= CENTER PAID ========================== */
     .paid-stamp .stamp-middle {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
         font-size: 14px;
         font-weight: 700;
         letter-spacing: 1px;
         line-height: 1;
-        margin: 2px 0;
+    }
+
+    /* ========================= BOTTOM CIRCULAR TEXT ========================== */
+    .stamp-bottom {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+    }
+
+    .stamp-bottom span {
+        position: absolute;
+        left: 50%;
+        bottom: 3px;
+        transform-origin: 0 -29px;
+        font-size: 6px;
+        font-weight: 700;
+        line-height: 1;
+    }
+
+    .stamp-bottom span:nth-child(1) {
+        transform: rotate(55deg);
+    }
+
+    .stamp-bottom span:nth-child(2) {
+        transform: rotate(40deg);
+    }
+
+    .stamp-bottom span:nth-child(3) {
+        transform: rotate(25deg);
+    }
+
+    .stamp-bottom span:nth-child(4) {
+        transform: rotate(10deg);
+    }
+
+    .stamp-bottom span:nth-child(5) {
+        transform: rotate(-5deg);
+    }
+
+    .stamp-bottom span:nth-child(6) {
+        transform: rotate(-20deg);
+    }
+
+    .stamp-bottom span:nth-child(7) {
+        transform: rotate(-35deg);
+    }
+
+    .stamp-bottom span:nth-child(8) {
+        transform: rotate(-50deg);
     }
 
     .receipt-footer-note {
@@ -304,7 +396,7 @@
         <div class="info-grid">
             <div class="info-row">
                 <span class="info-value">Issue Date</span>
-                <span class="info-value">{{ \Carbon\Carbon::parse($collection->plot->date)->format('d F, Y') }}</span>
+                <span class="info-value">{{ \Carbon\Carbon::parse($collection->date)->format('d F, Y') }}</span>
             </div>
             <div class="info-row">
                 <span class="info-value">Payment Date</span>
@@ -312,7 +404,7 @@
             </div>
             <div class="info-row">
                 <span class="info-value">Amount Paid</span>
-                <span class="info-value">BDT {{ number_format($collection->amount, 2) }}</span>
+                <span class="info-value">BDT {{ number_format($collection->collection_amount, 2) }}</span>
             </div>
             <div class="info-row">
                 <span class="info-value">Payment Status</span>
@@ -325,9 +417,9 @@
         <!-- Amount in Words -->
         <hr class="dashed-line">
         <div class="info-grid">
-            <div class="info-row">
-                <span class="info-value">In Words:</span>
-                <span class="info-value" style="font-size: 12px;">{{ amountInWords($collection->amount) }}</span>
+            <div class="info-row d-flex align-items-start">
+                <span class="info-value flex-shrink-0 me-2">In Words:</span>
+                <span class="info-value text-start" style="font-size: 12px; line-height: 1.5;">{{ amountInWords($collection->collection_amount) }}</span>
             </div>
         </div>
         <hr class="dashed-line">
@@ -335,9 +427,8 @@
         <!-- Circular Stamp -->
         <div class="stamp-container">
             <div class="paid-stamp">
-                <span class="stamp-top">THANKYOU</span>
-                <span class="stamp-middle">PAID</span>
-                <span class="stamp-bottom">THANKYOU</span>
+                <div class="stamp-top"> <span>T</span><span>H</span><span>A</span><span>N</span><span>K</span><span>Y</span><span>O</span><span>U</span> </div> <span class="stamp-middle">PAID</span>
+                <div class="stamp-bottom"> <span>T</span><span>H</span><span>A</span><span>N</span><span>K</span><span>Y</span><span>O</span><span>U</span> </div>
             </div>
         </div>
 

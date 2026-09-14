@@ -47,65 +47,85 @@
       <h3>Collection Index</h3><span class="hint">{{ $data->count() }} of {{ $data->total() }} collections shown</span>
     </div>
     <div class="table-wrap">
-      <table class="ledger">
+      <table class="ledger text-nowrap">
         <thead>
           <tr>
+            <th>SL</th>
             <th>Member ID</th>
-            <th>Road No</th>
-            <th>Holding No</th>
+            <th>Road</th>
+            <th>Holding No.</th>
+            <th>Building Type</th>
+            <th>Total Flat</th>
+            <th>Occupied Flat</th>
+            <th>Collection Type</th>
+            <th>Collection Rate</th>
+            <th>Discount</th>
+            <th>Collection Amount</th>
+            <th>Person Name</th>
             <th>Flat No</th>
-            <th>Name</th>
-            <th>Number</th>
+            <th>Phone No</th>
             <th>Email</th>
-            <th>Amount</th>
             <th>Issue Date</th>
-            <th>Payment Date</th>
             <th>Status</th>
+            <th>Payment Status</th>
+            <th>Payment Date</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody>
-          @forelse($data as $member)
+          @forelse($data as $collection)
           <tr>
-            <td>{{ $member->unique_id }}</td>
-            <td>{{ $member->roadaNumber?->name ?? '--' }}</td>
-            <td>{{ $member->holding_no }}</td>
-            <td>{{ $member->flat_no }}</td>
-            <td>{{ $member->name }}</td>
-            <td>{{ $member->number }}</td>
-            <td>{{ $member->email }}</td>
-            <td>{{ $member->amount }}</td>
-            <td>{{ $member->plot? \Carbon\Carbon::parse($member->plot->date)->format('d-M-Y') : '--' }}</td>
-            <td class="text-center">
-              {{ $member->payment_date ? \Carbon\Carbon::parse($member->payment_date)->format('d-M-Y') : '--' }}
+            <td>{{ $data->firstItem() + $loop->iteration  - 1}}</td>
+            <td>{{ $collection->unique_id}}</td>
+            <td>{{ $collection->unit_road->name}}</td>
+            <td>{{ $collection->holding_no }}</td>
+            <td>{{ $collection->plot_type->name ?? 'N/A' }}</td>
+            <td>{{ $collection->total_flat ?? 'N/A' }}</td>
+            <td>{{ $collection->occupied_flat ?? 'N/A' }}</td>
+            <td>{{ $collection->collection_type ?? 'N/A' }}</td>
+            <td>৳{{ number_format($collection->collection_rate, 2) }}</td>
+            <td>৳{{ number_format($collection->discount, 2) }}</td>
+            <td>৳{{ number_format($collection->collection_amount) }}</td>
+            <td>{{ $collection->name ?? 'N/A' }}</td>
+            <td>{{ $collection->flat_no ?? 'N/A' }}</td>
+            <td>{{ $collection->number ?? 'N/A' }}</td>
+            <td>{{ $collection->email ?? 'N/A' }}</td>
+            <td>{{ $collection->date }}</td>
+            <td>
+              @if($collection->status == 1)
+              <span class="badge green"><i class="dot"></i>Active</span>
+              @else
+              <span class="badge red"><i class="dot"></i>Expired</span>
+              @endif
             </td>
             <td>
-              @if($member->payment_status == 1)
+              @if($collection->payment_status == 1)
               <span class="badge green"><i class="dot"></i>Paid</span>
               @else
               <span class="badge red"><i class="dot"></i>Unpaid</span>
               @endif
             </td>
+            <td class="text-center">{{ $collection->payment_date ?? '--' }}</td>
             <td>
               @if (hasPermission('collections', 'download'))
-              @if($member->payment_status == 1)
-              <a href="{{ route('admin.collection.receipt', $member->id) }}" target="_blank" class="btn btn-info btn-sm" title="Money Receipt"><i class="bi bi-receipt"></i></a>
+              @if($collection->payment_status == 1)
+              <a href="{{ route('admin.collection.receipt', $collection->id) }}" target="_blank" class="btn btn-info btn-sm" title="Money Receipt"><i class="bi bi-receipt"></i></a>
               @endif
               @endif
               @if (hasPermission('collections', 'edit'))
-              <a href="{{ route('admin.collection.edit', $member->id) }}" class="btn btn-warning btn-sm" title="Edit"><i class="bi bi-pencil"></i></a>
+              <a href="{{ route('admin.collection.edit', $collection->id) }}" class="btn btn-warning btn-sm" title="Edit"><i class="bi bi-pencil"></i></a>
               @endif
               @if (hasPermission('collections', 'change_status'))
-              <form id="change-status-{{ $member->id }}" action="{{ route('admin.collection.change.status', $member->id) }}" method="POST" class="d-inline">
+              <form id="change-status-{{ $collection->id }}" action="{{ route('admin.collection.change.status', $collection->id) }}" method="POST" class="d-inline">
                 @csrf
                 @method('PATCH')
                 <button type="submit" class="btn btn-success btn-sm" title="Change Payment Status" onclick="changePaymentStatus()">
-                  <i class="bi bi-{{ $member->payment_status == 1 ? 'toggle-on' : 'toggle-off' }}"></i>
+                  <i class="bi bi-{{ $collection->payment_status == 1 ? 'toggle-on' : 'toggle-off' }}"></i>
                 </button>
               </form>
               @endif
               @if (hasPermission('collections', 'delete'))
-              <form action="{{ route('admin.collection.destroy', $member->id) }}" method="POST" id="delete-form-{{ $member->id }}" style="display: inline;">
+              <form action="{{ route('admin.collection.destroy', $collection->id) }}" method="POST" id="delete-form-{{ $collection->id }}" style="display: inline;">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="btn btn-danger btn-sm" title="Delete"><i class="bi bi-trash"></i></button>
@@ -115,7 +135,7 @@
           </tr>
           @empty
           <tr>
-            <td colspan="12" class="text-center">No member data available.</td>
+            <td colspan="12" class="text-center">No plot or unit data available.</td>
           </tr>
           @endforelse
         </tbody>
