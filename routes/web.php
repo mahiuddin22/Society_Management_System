@@ -99,6 +99,7 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
         Route::put('{id}', 'update')->name('update');
         Route::delete('{id}/destroy', 'destroy')->name('destroy');
     });
+    
     // Users
     Route::controller(UserController::class)->prefix('users')->name('users.')->group(function () {
         Route::get('/', 'index')->name('index');
