@@ -108,8 +108,8 @@
                             <div class="invalid-feedback">Please select a role.</div>
                         </div>
                         <div class="col-md-12">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" id="email" name="email" class="form-control" placeholder="Email" required />
+                            <label for="email" class="form-label">Username</label>
+                            <input type="text" id="text" name="username" class="form-control" placeholder="Enter Username" required />
                             <div class="invalid-feedback">Please enter a valid email address.</div>
                         </div>
                         <div class="col-md-6">
@@ -134,3 +134,72 @@
 </div>
 
 @endsection
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const form = document.getElementById('createUserForm');
+
+    if (!form) return;
+
+    const fields = form.querySelectorAll('input, select');
+
+    fields.forEach(function (field) {
+
+        field.addEventListener('input', function () {
+            validateField(field);
+        });
+
+        field.addEventListener('change', function () {
+            validateField(field);
+        });
+
+        field.addEventListener('blur', function () {
+            validateField(field);
+        });
+
+    });
+
+    function validateField(field) {
+
+        if (field.id === 'password_confirmation') {
+            if (field.value !== document.getElementById('password').value) {
+                field.setCustomValidity('Passwords do not match.');
+            } else {
+                field.setCustomValidity('');
+            }
+        }
+
+        if (field.checkValidity()) {
+            field.classList.remove('is-invalid');
+            field.classList.add('is-valid');
+        } else {
+            field.classList.remove('is-valid');
+            field.classList.add('is-invalid');
+        }
+    }
+
+    form.addEventListener('submit', function (event) {
+
+        const password = document.getElementById('password');
+        const passwordConfirmation = document.getElementById('password_confirmation');
+
+        if (password.value !== passwordConfirmation.value) {
+            passwordConfirmation.setCustomValidity('Passwords do not match.');
+        } else {
+            passwordConfirmation.setCustomValidity('');
+        }
+
+        if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            fields.forEach(function (field) {
+                validateField(field);
+            });
+        }
+    });
+
+});
+</script>
+@endpush

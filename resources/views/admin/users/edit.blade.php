@@ -44,7 +44,7 @@
             </div>
 
             <div class="mt-4 d-flex justify-content-between">
-                <a href="{{ route('admin.roles.index') }}" class="btn btn-secondary">
+                <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">
                     <i class="bi bi-x-circle me-1"></i> Cancel
                 </a>
                 <button type="submit" class="btn btn-primary">

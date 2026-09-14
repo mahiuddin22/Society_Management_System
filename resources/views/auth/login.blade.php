@@ -87,8 +87,8 @@
                     @csrf
 
                     <div class="mb-3">
-                        <label for="email" class="form-label required">Email</label>
-                        <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" placeholder="Enter email" required />
+                        <label for="email" class="form-label required">Email | Username</label>
+                        <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" placeholder="Enter email | username" required />
                         <div class="invalid-feedback">Please enter email.</div>
                         @error('email')
                         <span class="invalid-feedback" role="alert">

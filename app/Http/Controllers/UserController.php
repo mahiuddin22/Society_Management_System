@@ -50,7 +50,8 @@ class UserController extends Controller
         $request->validate([
             'name'  => 'required|string|max:255',
             'role'  => 'required|string|exists:roles,name',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'email' => 'email|max:255|unique:users,email,' . $user->id,
+            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
             'password' => 'nullable|string|min:6|confirmed',
         ]);
 
@@ -58,6 +59,7 @@ class UserController extends Controller
             'name'  => $request->name,
             'role'  => $request->role,
             'email' => $request->email,
+            'username' => $request->username,
             'password' => $request->password ? Hash::make($request->password) : $user->password,
         ]);
 
