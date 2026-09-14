@@ -43,8 +43,7 @@ class PlotAndUnitController extends Controller
         $plot_types = PlotType::where('status', true)->get();
         $rates      = $plot_types->pluck('amount', 'id')->toArray();
         $roads      = Road::all();
-        $members    = Member::all();
-        return view('admin.plot_and_units.create', compact('plot_types', 'rates', 'roads', 'members'));
+        return view('admin.plot_and_units.create', compact('plot_types', 'rates', 'roads'));
     }
 
     public function store(Request $request)
@@ -232,8 +231,6 @@ class PlotAndUnitController extends Controller
         $file->move($directory, $fileName);
 
         Excel::import(new MembersImport(), $directory . DIRECTORY_SEPARATOR . $fileName);
-
         return redirect()->back()->with('success', 'Members uploaded successfully.');
     }
-
 }

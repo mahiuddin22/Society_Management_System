@@ -13,17 +13,7 @@ class PlotAndUnit extends Model
     {
         return $this->belongsTo(Road::class, 'road');
     }
-
-    public function members()
-    {
-        return $this->hasMany(Member::class, 'plot_and_unit_id');
-    }
-
-    public function sector_collenctions()
-    {
-        return $this->hasMany(SectorCollenctions::class, 'plot_and_unit_id');
-    }
-
+    
     public function plot_type()
     {
         return $this->belongsTo(PlotType::class, 'building_type');

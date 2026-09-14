@@ -147,19 +147,6 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
         Route::delete('{id}/destroy', 'destroy')->name('destroy');
     });
 
-    // Members
-    Route::controller(MemberController::class)->prefix('members')->name('members.')->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::get('/create', 'create')->name('create');
-        Route::post('/store', 'store')->name('store');
-        Route::get('/{id}/edit', 'edit')->name('edit');
-        Route::put('/{id}', 'update')->name('update');
-        Route::delete('/{id}/destroy', 'destroy')->name('destroy');
-
-        Route::get('/bulk-upload', 'bulkUpload')->name('bulk-upload');
-        Route::post('/bulk-upload', 'bulkUploadStore')->name('bulk-upload.store');
-    });
-
     // Collections
     Route::controller(CollectionController::class)->prefix('collection')->name('collection.')->group(function () {
         Route::get('/', 'index')->name('index');

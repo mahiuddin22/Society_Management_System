@@ -127,7 +127,7 @@ $user = auth()->user();
 
             <div class="user-meta">
                 <div class="name">
-                    {{ $user?->username ?? 'Administrator' }}
+                    {{ $user?->name ?? 'Administrator' }}
                 </div>
 
                 <div class="role">

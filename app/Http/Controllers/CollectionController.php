@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PlotAndUnit;
 use App\Models\Road;
-use App\Models\SectorCollenctions;
 use App\Models\Settings;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -18,7 +18,7 @@ class CollectionController extends Controller
         $filter_holding_no  = $request->filter_holding_no;
         $filter_road        = $request->filter_road;
 
-        $data = SectorCollenctions::orderBy('id', 'desc');
+        $data = PlotAndUnit::orderBy('id', 'desc');
 
         if (auth()->user()->role == 'collector') {
             $roadIds = Road::where('collector_id', auth()->id())->pluck('id');
@@ -56,7 +56,7 @@ class CollectionController extends Controller
 
     public function receipt($id)
     {
-        $collection = SectorCollenctions::findOrFail($id);
+        $collection = PlotAndUnit::findOrFail($id);
         $settings   = Settings::latest()->first();
         return view('admin.collections.receipt', compact('collection', 'settings'));
     }
@@ -68,7 +68,7 @@ class CollectionController extends Controller
 
     // public function store(Request $request)
     // {
-    //     $data = new SectorCollenctions();
+    //     $data = new PlotAndUnit();
     //     $data->name              = $request->name;
     //     $data->number           = $request->number;
     //     $data->email             = $request->email;
@@ -80,13 +80,13 @@ class CollectionController extends Controller
 
     public function edit($id)
     {
-        $data = SectorCollenctions::where('id', $id)->first();
+        $data = PlotAndUnit::where('id', $id)->first();
         return view('admin.collections.edit', compact('data'));
     }
 
     public function update(Request $request, $id)
     {
-        $data = SectorCollenctions::findOrFail($id);
+        $data = PlotAndUnit::findOrFail($id);
         $data->name             = $request->name;
         $data->number           = $request->number;
         $data->email            = $request->email;
@@ -100,7 +100,7 @@ class CollectionController extends Controller
 
     public function changeStatus($id)
     {
-        $data = SectorCollenctions::findOrFail($id);
+        $data = PlotAndUnit::findOrFail($id);
         if ($data->payment_status == 0) {
             $data->payment_status = 1;
             if (is_null($data->payment_date)) {
@@ -116,7 +116,7 @@ class CollectionController extends Controller
 
     public function destroy($id)
     {
-        SectorCollenctions::findOrFail($id)->delete();
+        PlotAndUnit::findOrFail($id)->delete();
         return redirect()->route('admin.collection.index')->with('success', 'Data Deleted Successfully');
     }
 }
