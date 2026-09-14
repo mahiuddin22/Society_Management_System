@@ -38,7 +38,7 @@
                         <th>SL</th>
                         <th>Role</th>
                         <th>Name</th>
-                        <th>Email</th>
+                        <th>Username</th>
                         <th class="text-center">Action</th>
                     </tr>
                 </thead>
@@ -48,7 +48,7 @@
                         <td>{{ $users->firstItem() + $loop->index }}</td>
                         <td>{{ ucfirst($user->role) }}</td>
                         <td>{{ $user->name }}</td>
-                        <td>{{ $user->email }}</td>
+                        <td>{{ $user->username }}</td>
                         @if(hasPermission('users', 'edit') || hasPermission('users', 'delete'))
                         <td class="text-center">
 
@@ -109,18 +109,18 @@
                         </div>
                         <div class="col-md-12">
                             <label for="email" class="form-label">Username</label>
-                            <input type="text" id="text" name="username" class="form-control" placeholder="Enter Username" required />
-                            <div class="invalid-feedback">Please enter a valid email address.</div>
+                            <input type="text" id="username" name="username" class="form-control" placeholder="Enter Username" required />
+                            <div class="invalid-feedback">Please enter a username.</div>
                         </div>
                         <div class="col-md-6">
                             <label for="password" class="form-label">Password</label>
-                            <input type="password" id="password" name="password" class="form-control" placeholder="Password" required />
-                            <div class="invalid-feedback">Please enter a password.</div>
+                            <input type="password" id="password" name="password" class="form-control" placeholder="Password" minlength="6" required />
+                            <div class="invalid-feedback">Password must be at least 6 characters.</div>
                         </div>
                         <div class="col-md-6">
                             <label for="password_confirmation" class="form-label">Confirm Password</label>
-                            <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" placeholder="Confirm Password" required />
-                            <div class="invalid-feedback">Please confirm your password.</div>
+                            <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" placeholder="Confirm Password" minlength="6" required />
+                            <div class="invalid-feedback">Passwords must match.</div>
                         </div>
                     </div>
                 </div>
@@ -136,70 +136,74 @@
 @endsection
 @push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
 
-    const form = document.getElementById('createUserForm');
+        const form = document.getElementById('createUserForm');
 
-    if (!form) return;
+        if (!form) return;
 
-    const fields = form.querySelectorAll('input, select');
+        const fields = form.querySelectorAll('input, select');
 
-    fields.forEach(function (field) {
+        fields.forEach(function(field) {
 
-        field.addEventListener('input', function () {
-            validateField(field);
+            field.addEventListener('input', function() {
+                validateField(field);
+            });
+
+            field.addEventListener('change', function() {
+                validateField(field);
+            });
+
+            field.addEventListener('blur', function() {
+                validateField(field);
+            });
+
         });
 
-        field.addEventListener('change', function () {
-            validateField(field);
-        });
+        function validateField(field) {
 
-        field.addEventListener('blur', function () {
-            validateField(field);
-        });
+            if (field.id === 'password_confirmation') {
+                if (!field.value) {
+                    field.setCustomValidity('Please confirm your password.');
+                } else if (field.value.length < 6) {
+                    field.setCustomValidity('Password must be at least 6 characters.');
+                } else if (field.value !== document.getElementById('password').value) {
+                    field.setCustomValidity('Passwords do not match.');
+                } else {
+                    field.setCustomValidity('');
+                }
+            }
 
-    });
-
-    function validateField(field) {
-
-        if (field.id === 'password_confirmation') {
-            if (field.value !== document.getElementById('password').value) {
-                field.setCustomValidity('Passwords do not match.');
+            if (field.checkValidity()) {
+                field.classList.remove('is-invalid');
+                field.classList.add('is-valid');
             } else {
-                field.setCustomValidity('');
+                field.classList.remove('is-valid');
+                field.classList.add('is-invalid');
             }
         }
 
-        if (field.checkValidity()) {
-            field.classList.remove('is-invalid');
-            field.classList.add('is-valid');
-        } else {
-            field.classList.remove('is-valid');
-            field.classList.add('is-invalid');
-        }
-    }
+        form.addEventListener('submit', function(event) {
 
-    form.addEventListener('submit', function (event) {
+            const password = document.getElementById('password');
+            const passwordConfirmation = document.getElementById('password_confirmation');
 
-        const password = document.getElementById('password');
-        const passwordConfirmation = document.getElementById('password_confirmation');
+            if (password.value !== passwordConfirmation.value) {
+                passwordConfirmation.setCustomValidity('Passwords do not match.');
+            } else {
+                passwordConfirmation.setCustomValidity('');
+            }
 
-        if (password.value !== passwordConfirmation.value) {
-            passwordConfirmation.setCustomValidity('Passwords do not match.');
-        } else {
-            passwordConfirmation.setCustomValidity('');
-        }
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
 
-        if (!form.checkValidity()) {
-            event.preventDefault();
-            event.stopPropagation();
+                fields.forEach(function(field) {
+                    validateField(field);
+                });
+            }
+        });
 
-            fields.forEach(function (field) {
-                validateField(field);
-            });
-        }
     });
-
-});
 </script>
 @endpush
