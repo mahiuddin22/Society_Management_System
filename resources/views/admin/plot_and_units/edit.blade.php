@@ -222,14 +222,12 @@
                 $('#totalFlatGroup, #occupiedFlatGroup, #collectionTypeGroup, #collectionRateGroup, #discountGroup, #collectionAmountGroup, #personName, #personFlatNo, #personNumber, #personEmail').hide();
 
                 $('#total_flat, #occupied_flat, #collection_type, #collection_rate, #discount, #collection_amount, #person_name, #person_flat_no, #person_number, #person_email')
-                    .prop('required', false)
-                    .val('');
+                    .prop('required', false);
             } else if (buildingType == '9') {
                 $('#totalFlatGroup, #occupiedFlatGroup, #collectionTypeGroup, #personName, #personFlatNo, #personNumber, #personEmail').hide();
 
                 $('#total_flat, #occupied_flat, #collection_type, #person_name, #person_flat_no, #person_number, #person_email')
-                    .prop('required', false)
-                    .val('');
+                    .prop('required', false);
 
                 $('#collectionRateGroup, #discountGroup, #collectionAmountGroup, #personName, #personFlatNo, #personNumber, #personEmail').show();
 

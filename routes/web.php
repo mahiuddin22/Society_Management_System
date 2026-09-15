@@ -5,7 +5,6 @@ use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\CollectorController;
 use App\Http\Controllers\AjaxController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\MemberController;
 use App\Http\Controllers\PermissionsController;
 use App\Http\Controllers\PlotAndUnitController;
 use App\Http\Controllers\PlotTypeController;
@@ -99,7 +98,7 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
         Route::put('{id}', 'update')->name('update');
         Route::delete('{id}/destroy', 'destroy')->name('destroy');
     });
-    
+
     // Users
     Route::controller(UserController::class)->prefix('users')->name('users.')->group(function () {
         Route::get('/', 'index')->name('index');
