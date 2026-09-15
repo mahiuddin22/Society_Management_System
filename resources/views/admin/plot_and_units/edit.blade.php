@@ -237,6 +237,7 @@
                 $('#totalFlatGroup, #occupiedFlatGroup, #collectionTypeGroup, #collectionRateGroup, #discountGroup, #collectionAmountGroup, #personName, #personFlatNo, #personNumber, #personEmail').show();
 
                 $('#total_flat, #occupied_flat, #collection_type, #collection_rate, #collection_amount, #person_name, #person_flat_no, #person_number, #person_email')
+                
                     .prop('required', true);
             }
         }
