@@ -22,6 +22,7 @@
             <a class="nav-item {{ request()->routeIs('admin.home') ? 'active' : '' }}" href="{{ route('admin.home') }}"><i class="bi bi-grid-1x2"></i> Dashboard</a>
         </div>
         <!-- Collection -->
+        @if(hasPermission('plot_and_units') || hasPermission('upload_members'))
         <div class="nav-group">
             <div class="nav-group-label">People</div>
             @if (hasPermission('plot_and_units'))
@@ -34,7 +35,7 @@
                 Plot &amp; Units
             </a>
             @endif
-
+            @if (hasPermission('upload_members'))
             <a class="nav-item {{ request()->routeIs('admin.plot-and-units.bulk-upload*') ? 'active' : '' }}" href="{{ route('admin.plot-and-units.bulk-upload') }}" data-panel="members">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="2" y="6" width="20" height="13" rx="2" />
@@ -43,12 +44,37 @@
                 </svg>
                 Upload Members
             </a>
+            @endif
 
         </div>
+        @endif
+
+        <!-- Member Payment Managaments -->
+        @if(hasPermission('my_payments') || hasPermission('payments_report'))
+        <div class="nav-group">
+            <div class="nav-group-label">Payment Management</div>
+
+            @if (hasPermission('my_payments'))
+            <a class="nav-item {{ request()->routeIs('member.mypayment') ? 'active' : '' }}" href="{{ route('member.mypayment') }}" data-panel="units">
+                <i class="bi bi-wallet2"></i>
+                My Payments
+            </a>
+            @endif
+
+            @if (hasPermission('payments_report'))
+            <a class="nav-item {{ request()->routeIs('member.paymentreport') ? 'active' : '' }}" href="{{ route('member.paymentreport') }}" data-panel="members">
+                <i class="bi bi-file-earmark-bar-graph"></i>
+                Payment Report
+            </a>
+            @endif
+        </div>
+        @endif
 
         <!-- Collection Management -->
+        @if(hasPermission('collections') || hasPermission('Collectors'))
         <div class="nav-group">
             <div class="nav-group-label">Collection Management</div>
+            @if(hasPermission('collections'))
             <a class="nav-item {{ request()->routeIs('admin.collection.*') ? 'active' : '' }}" href="{{ route('admin.collection.index') }}" data-panel="payments">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="2" y="6" width="20" height="13" rx="2" />
@@ -57,6 +83,8 @@
                 </svg>
                 Collections
             </a>
+            @endif
+            @if(hasPermission('collectors'))
             <a class="nav-item {{ request()->routeIs('admin.collectors.*') ? 'active' : '' }}" href="{{ route('admin.collectors.index') }}" data-panel="owners">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="8" r="4" />
@@ -64,7 +92,9 @@
                 </svg>
                 Collectors
             </a>
+            @endif
         </div>
+        @endif
 
         @if (hasPermission('activities') || hasPermission('roles') || hasPermission('permissions'))
         <div class="nav-group">
@@ -95,11 +125,17 @@
         </div>
         @endif
 
+        @if(hasPermission('plot_types') || hasPermission('site_settings'))
         <div class="nav-group">
             <div class="nav-group-label">Settings</div>
+            @if(hasPermission('plot_types'))
             <a class="nav-item {{ request()->routeIs('admin.type.*') ? 'active' : '' }}" href="{{ route('admin.type.index') }}"><i class="bi bi-person-circle"></i> Plot Types</a>
+            @endif
+            @if(hasPermission('site_settings'))
             <a class="nav-item {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}" href="{{ route('admin.settings.edit') }}"><i class="bi bi-person-circle"></i> Site Settings</a>
+            @endif
         </div>
+        @endif
     </nav>
 
     <div class="sidebar-foot">

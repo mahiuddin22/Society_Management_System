@@ -5,6 +5,7 @@ use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\CollectorController;
 use App\Http\Controllers\AjaxController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MemberController;
 use App\Http\Controllers\PermissionsController;
 use App\Http\Controllers\PlotAndUnitController;
 use App\Http\Controllers\PlotTypeController;
@@ -45,6 +46,15 @@ Route::get('testsms', function () {
     //
     ////FOR DEBUG
     var_dump($server_output);
+});
+Route::middleware('auth')->prefix('member')->as('member.')->group(function () {
+    // Members
+    Route::controller(MemberController::class)->group(function () {
+        Route::get('my-payments', 'myPayments')->name('mypayment');
+        Route::get('/receipt/{id}', 'receipt')->name('receipt');
+        Route::get('pay-dues', 'Pay')->name('pay');
+        Route::get('payment-report', 'paymentReport')->name('paymentreport');
+    });
 });
 
 Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
