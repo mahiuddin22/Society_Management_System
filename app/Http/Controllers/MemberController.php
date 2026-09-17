@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 class MemberController extends Controller
 {
+
     public function mypayments(){
         $data = PlotAndUnit::where('unique_id', auth()->user()->uid)->paginate(30);
         return view('members.index', compact('data'));
@@ -21,7 +22,11 @@ class MemberController extends Controller
     }
 
     public function Pay(){
-        dd("Under COnstructions");
+        dd("Under Construction");
+    }
+
+    public function paymentReport(){
+        dd("Under Construction");
     }
 
 }
