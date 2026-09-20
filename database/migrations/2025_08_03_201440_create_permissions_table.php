@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('name')->unique(); // like 'view_reports', 'add_user'
             $table->string('menu_type');
-            $table->string('menu_key')->unique();
+            $table->string('menu_key')->unique()->nullable();
             $table->string('order_no');
-            $table->string('activity_id');
+            $table->string('activity_id')->nullable();
+
             $table->timestamps();
         });
     }

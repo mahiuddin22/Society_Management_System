@@ -13,9 +13,11 @@ return new class extends Migration
     {
         Schema::create('plot_types', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->integer('amount');
+            
+            $table->string('name')->nullable();
+            $table->integer('amount')->nullable();
             $table->tinyInteger('status')->default(1);
+
             $table->timestamps();
         });
     }

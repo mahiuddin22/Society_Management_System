@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('sector_collenctions', function (Blueprint $table) {
             $table->id();
+            
             $table->string('unique_id')->unique()->nullable();
             $table->integer('road_id')->nullable();
             $table->string('holding_no')->nullable();
@@ -24,6 +25,7 @@ return new class extends Migration
             $table->decimal('amount', 10, 2)->nullable();
             $table->tinyInteger('payment_status')->default(0);
             $table->date('payment_date')->nullable();
+
             $table->timestamps();
         });
     }
