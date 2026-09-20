@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::create('members', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('plot_and_unit_id')->constrained('plot_and_units')->cascadeOnDelete();
+
             $table->string('name');
+            $table->string('flat_no', 255);
             $table->string('number');
             $table->string('email')->nullable();
             $table->decimal('amount', 10, 2)->default(0);
+
             $table->timestamps();
         });
     }
