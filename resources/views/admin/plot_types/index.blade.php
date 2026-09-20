@@ -39,11 +39,11 @@
   <div class="grid grid-3 section-row">
     @forelse($plot_types as $type)
     <div class="stat-card {{ $type->status == 'Active' ? '' : 'due' }}" 
-         style="display: flex; flex-direction: column; justify-content: space-between; min-height: 380px; padding: 24px 20px;">
+         style="display: flex; flex-direction: column; justify-content: space-between; min-height: 350px; padding: 24px 22px;">
       
-      {{-- Section 1: Header / Category Icon & Status --}}
+      {{-- Top Block: Icon, Status, Title, Description --}}
       <div>
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px;">
           <div style="width: 44px; height: 44px; border-radius: var(--radius-m); background: {{ $type->status == 'Active' ? 'var(--forest-100)' : 'var(--paper-100)' }}; color: {{ $type->status == 'Active' ? 'var(--forest-800)' : 'var(--ink-500)' }}; display: flex; align-items: center; justify-content: center;">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="3" y="3" width="7" height="9" rx="1.5"/>
@@ -60,41 +60,30 @@
           @endif
         </div>
 
-        {{-- Section 2: Title & Identity Info --}}
-        <div style="margin-bottom: 22px;">
-          <h3 style="font-family: var(--font-display); font-size: 20px; font-weight: 600; color: var(--ink-900); margin: 0 0 4px 0; line-height: 1.3;">
-            {{ $type->name }}
-          </h3>
-          <div class="hint" style="font-size: 11.5px; letter-spacing: .02em;">
-            Holding Type ID: #{{ str_pad($type->id, 3, '0', STR_PAD_LEFT) }}
-          </div>
-        </div>
+        <h3 style="font-family: var(--font-display); font-size: 20px; font-weight: 600; color: var(--ink-900); margin: 0 0 6px 0; line-height: 1.3;">
+          {{ $type->name }}
+        </h3>
+        
+        <p class="hint" style="font-size: 12.5px; line-height: 1.5; margin: 0; color: var(--ink-500);">
+          {{ $type->description ?? 'Standard plot category configuration.' }}
+        </p>
+      </div>
 
-        {{-- Section 3: Vertical Metadata Rows --}}
-        <div style="border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line); padding: 14px 0; display: flex; flex-direction: column; gap: 10px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px;">
-            <span class="hint">Billing Cycle</span>
-            <span style="font-weight: 600; color: var(--ink-700);">Monthly</span>
-          </div>
-          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px;">
-            <span class="hint">Category</span>
-            <span style="font-weight: 600; color: var(--ink-700);">Plot &amp; Building</span>
-          </div>
-        </div>
-
-        {{-- Section 4: Tall Fee Box --}}
-        <div style="background: var(--paper-100); border-radius: var(--radius-m); padding: 16px; margin-top: 18px;">
-          <span class="hint" style="text-transform: uppercase; font-size: 10.5px; font-weight: 600; letter-spacing: .05em; display: block;">
+      {{-- Center Block: Prominent Rate Panel --}}
+      <div style="background: var(--paper-100); border: 1px solid var(--line); border-radius: var(--radius-m); padding: 18px; margin: 20px 0 0 0;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <span class="hint" style="text-transform: uppercase; font-size: 11px; font-weight: 600; letter-spacing: .05em;">
             Subscription Fee
           </span>
-          <div class="value" style="margin-top: 4px; color: {{ $type->status == 'Active' ? 'var(--forest-700)' : 'var(--ink-700)' }};">
-            <span class="sym">৳</span>{{ number_format((float)$type->fees, 2) }}
-          </div>
+          
+        </div>
+        <div class="value" style="margin-top: 0; color: {{ $type->status == 'Active' ? 'var(--forest-700)' : 'var(--ink-300)' }}; font-size: 28px;">
+          <span class="sym" style="font-size: 18px;  color: {{ $type->status == 'Active' ? 'var(--forest-700)' : 'var(--ink-300)' }};">৳</span>{{ number_format((float)$type->fees, 2) }}
         </div>
       </div>
 
-      {{-- Section 5: Full-Width Bottom Actions Toolbar --}}
-      <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 16px; border-top: 1px solid var(--line); margin-top: 20px;">
+      {{-- Bottom Block: Actions Toolbar --}}
+      <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 14px; border-top: 1px solid var(--line); margin-top: 18px;">
         
         @if (hasPermission('plot_types', 'edit'))
         <a href="{{ route('admin.plot_type.edit', $type->id) }}" class="btn btn-ghost btn-sm" title="Edit Plot Type">

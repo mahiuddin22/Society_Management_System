@@ -1,52 +1,112 @@
 @extends('admin.layouts.app')
-@section('content')
 
+@section('content')
 <section class="panel active" id="panel-units">
 
-    <div class="card">
+  {{-- Centered Responsive Container with Wider Grid Columns --}}
+  <div class="row justify-content-center py-4">
+    <div class="col-12 col-md-10 col-lg-8 col-xl-7">
 
-        {{-- <div class="card-head">
-            <h3>Edit Types</h3>
-        </div> --}}
+      <div class="card p-4">
 
-        <form action="{{ route('admin.plot_type.update', $plot_type->id) }}" method="POST" autocomplete="off">
-            @csrf
-            @method('PUT')
+        {{-- Form Header --}}
+        <div class="card-head pb-3 mb-4">
+          <div>
+            <h3 class="mb-1">Edit Plot Type</h3>
+            <span class="hint">Update plot type name, fee, and status.</span>
+          </div>
+        </div>
 
-            <div class="row g-3">
+        <form action="{{ route('admin.plot_type.update', $plot_type->id) }}" method="POST" autocomplete="off" class="d-flex flex-column gap-3">
+          @csrf
+          @method('PUT')
 
-                <!-- {{-- Name --}} -->
-                <div class="col-md-4">
-                    <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="name" name="name" value="{{ $plot_type->name }}" placeholder="e.g. 1/A" required>
-                </div>
+          {{-- 1. Name --}}
+          <div>
+            <label for="name" class="form-label fw-semibold small mb-1">
+              Name <span class="text-danger">*</span>
+            </label>
+            <input 
+              type="text" 
+              class="input w-100" 
+              id="name" 
+              name="name" 
+              value="{{ old('name', $plot_type->name) }}" 
+              placeholder="e.g. Commercial, Residential..." 
+              required
+            >
+            @error('name')
+              <div class="text-danger small mt-1">{{ $message }}</div>
+            @enderror
+          </div>
 
-                <!-- Fee -->
-                <div class="col-md-4">
-                    <label for="fees" class="form-label">Fee <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="fees" name="fees" value="{{ $plot_type->fees }}" placeholder="e.g. 2" required>
-                </div>
-
-                <!-- {{-- Status --}} -->
-                <div class="col-md-4">
-                    <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
-                    <select class="form-select" id="status" name="status" required>
-                        <option value="1" {{ $plot_type->status == 'Active' ? 'selected': '' }}>Active</option>
-                        <option value="0" {{ $plot_type->status == 'Inactive' ? 'selected': '' }}>Inactive</option>
-                    </select>
-                </div>
-
+          {{-- 2. Fee --}}
+          <div>
+            <label for="fees" class="form-label fw-semibold small mb-1">
+              Plot Fee <span class="text-danger">*</span>
+            </label>
+            <div class="position-relative">
+              <input 
+                type="number" 
+                step="any" 
+                class="input w-100" 
+                id="fees" 
+                name="fees" 
+                value="{{ old('fees', $plot_type->fees) }}" 
+                placeholder="0.00" 
+                required
+              >
             </div>
+            @error('fees')
+              <div class="text-danger small mt-1">{{ $message }}</div>
+            @enderror
+          </div>
 
-            <div class="mt-4 d-flex gap-2">
-                <a href="{{ route('admin.plot_type.index') }}" class="btn btn-secondary">Cancel</a>
-                <button type="submit" class="btn btn-primary">Save Types</button>
+          {{-- 3. Description --}}
+          <div>
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <label for="description" class="form-label fw-semibold small mb-0">
+                Short Description
+              </label>
             </div>
+            <textarea 
+              class="input w-100" 
+              id="description" 
+              name="description" 
+              rows="3" 
+              placeholder="Brief 5-word description..."
+            >{{ old('description', $plot_type->description ?? '') }}</textarea>
+            @error('description')
+              <div class="text-danger small mt-1">{{ $message }}</div>
+            @enderror
+          </div>
+
+          {{-- 4. Status --}}
+          <div>
+            <label for="status" class="form-label fw-semibold small mb-1">
+              Status <span class="text-danger">*</span>
+            </label>
+            <select class="select w-100" id="status" name="status" required>
+              <option value="Active" {{ old('status', $plot_type->status) == 'Active' || old('status', $plot_type->status) == '1' ? 'selected' : '' }}>Active</option>
+              <option value="Inactive" {{ old('status', $plot_type->status) == 'Inactive' || old('status', $plot_type->status) == '0' ? 'selected' : '' }}>Inactive</option>
+            </select>
+            @error('status')
+              <div class="text-danger small mt-1">{{ $message }}</div>
+            @enderror
+          </div>
+
+          {{-- Actions Toolbar --}}
+          <div class="d-flex align-items-center justify-content-end gap-2 pt-3 mt-2">
+            <a href="{{ route('admin.plot_type.index') }}" class="btn btn-ghost">Cancel</a>
+            <button type="submit" class="btn btn-primary px-4">Update</button>
+          </div>
 
         </form>
 
+      </div>
+
     </div>
+  </div>
 
 </section>
-
 @endsection
