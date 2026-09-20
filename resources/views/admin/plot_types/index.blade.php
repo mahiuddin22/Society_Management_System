@@ -17,8 +17,8 @@
           <option value="0" {{ request('filter_status') == 0 ? 'selected' : '' }}>Inactive</option>
           <option value="1" {{ request('filter_status') == 1 ? 'selected' : '' }}>Active</option>
         </select>
-
       </div>
+
 
       <button type="submit" class="btn btn-primary">Filter</button>
       <a href="{{ route('admin.type.index') }}" class="btn btn-secondary">Reset</a>

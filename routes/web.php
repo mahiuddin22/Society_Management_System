@@ -4,6 +4,7 @@ use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\CollectorController;
 use App\Http\Controllers\AjaxController;
+use App\Http\Controllers\BulkSmsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\PermissionsController;
@@ -167,6 +168,16 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
         Route::delete('{id}/destroy', 'destroy')->name('destroy');
     });
 
+    // SMS Managements
+    Route::controller(BulkSmsController::class)->prefix('bulksms')->name('bulksms.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/receipt/{id}', 'receipt')->name('receipt');
+        Route::get('{id}/edit', 'edit')->name('edit');
+        Route::put('{id}', 'update')->name('update');
+        Route::patch('change-status/{id}', 'changeStatus')->name('change.status');
+        Route::delete('{id}/destroy', 'destroy')->name('destroy');
+    });
+
     // Collectors
     Route::controller(CollectorController::class)->prefix('collectors')->name('collectors.')->group(function () {
         Route::get('/', 'index')->name('index');
@@ -187,5 +198,3 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
         Route::put('password-update', 'passwordUpdate')->name('password.update');
     });
 });
-
-//test
