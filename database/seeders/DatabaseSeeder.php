@@ -16,14 +16,14 @@ class DatabaseSeeder extends Seeder
             MembersSeeder::class,
             PasswordResetTokensSeeder::class,
             PermissionsSeeder::class,
-            PlotAndUnitsSeeder::class,
-            PlotTypesSeeder::class,
+            UsersSeeder::class,
             RoadsSeeder::class,
+            PlotTypesSeeder::class,
+            PlotAndUnitsSeeder::class,
             RolesSeeder::class,
             RolePermissionsSeeder::class,
             SectorCollenctionsSeeder::class,
-            SettingsSeeder::class,
-            UsersSeeder::class
+            SettingsSeeder::class
         ]);
     }
 }

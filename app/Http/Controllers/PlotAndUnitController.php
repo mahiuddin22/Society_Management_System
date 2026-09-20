@@ -21,7 +21,7 @@ class PlotAndUnitController extends Controller
         $building_type   = $request->building_type;
         $collection_type = $request->collection_type;
 
-        $plotAndUnits = PlotAndUnit::orderBy('id', 'desc');
+        $plotAndUnits = PlotAndUnit::with(['road', 'plotType'])->orderBy('id', 'desc');
 
         if (!empty($holding_no)) {
             $plotAndUnits->where('holding_no', 'LIKE', '%' . $holding_no . '%');
@@ -42,9 +42,9 @@ class PlotAndUnitController extends Controller
 
     public function create()
     {
-        $plot_types = PlotType::where('status', true)->get();
+        $plot_types = PlotType::whereStatus('Active')->get(['id', 'name']);
         $rates      = $plot_types->pluck('amount', 'id')->toArray();
-        $roads      = Road::all();
+        $roads      = Road::get();
         return view('admin.plot_and_units.create', compact('plot_types', 'rates', 'roads'));
     }
 

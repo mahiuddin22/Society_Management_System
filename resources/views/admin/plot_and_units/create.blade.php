@@ -39,7 +39,7 @@
                         <select class="form-select" id="road" name="road" required>
                             <option value="" selected disabled>Select Road</option>
                             @foreach($roads as $road)
-                            <option value="{{$road->id}}">{{$road->name}}</option>
+                            <option value="{{$road->id}}">Road {{$road->number}}</option>
                             @endforeach
                         </select>
                     </div>
@@ -54,7 +54,7 @@
                     <div class="col-md-4">
                         <label for="building_type" class="form-label">Plot Type <span class="text-danger">*</span></label>
                         <select class="form-select" id="building_type" name="building_type" required>
-                            <option value="" selected disabled>Select Building Type</option>
+                            <option value="" selected disabled>Select Plot Type</option>
                             @foreach($plot_types as $type)
                             <option value="{{$type->id}}">{{$type->name}}</option>
                             @endforeach

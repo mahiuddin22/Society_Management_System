@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Road;
+use Exception;
 use Illuminate\Http\Request;
 
 class RoadController extends Controller
 {
     public function index()
     {
-        $data['roads'] = Road::where('name', 'like', '%' . request()->get('search') . '%')->paginate(25);
+        $data['roads'] = Road::where('number', 'like', '%' . request()->get('search') . '%')->paginate(25);
         return view('admin.roads.index', $data);
     }
 
@@ -48,8 +49,19 @@ class RoadController extends Controller
 
     public function destroy($id)
     {
-        Road::findOrFail($id)->delete();
-        return redirect()->route('admin.roads.index')->with('success', 'Road deleted successfully.');
+         try {
+            Road::findOrFail($id)->delete();
+
+            return redirect()
+                ->route('admin.roads.index')
+                ->with('success', 'Road deleted successfully.');
+
+        } catch (Exception $e) {
+
+            return redirect()
+                ->route('admin.roads.index')
+                ->with('error', 'This road cannot be deleted because it is already associated with plot and unit records.');
+        }
     }
 
 }

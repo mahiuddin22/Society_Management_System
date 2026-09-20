@@ -10,14 +10,14 @@ class PlotAndUnit extends Model
     use HasFactory;
     protected $table = 'plot_and_units';
 
-    public function unit_road()
+    public function road()
     {
-        return $this->belongsTo(Road::class, 'road');
+        return $this->belongsTo(Road::class);
     }
-    
-    public function plot_type()
+
+    public function plotType()
     {
-        return $this->belongsTo(PlotType::class, 'building_type');
+        return $this->belongsTo(PlotType::class);
     }
     
 }

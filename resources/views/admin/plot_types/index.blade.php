@@ -73,7 +73,7 @@
       <div style="background: var(--paper-100); border: 1px solid var(--line); border-radius: var(--radius-m); padding: 18px; margin: 20px 0 0 0;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
           <span class="hint" style="text-transform: uppercase; font-size: 11px; font-weight: 600; letter-spacing: .05em;">
-            Subscription Fee
+            Plot Fee
           </span>
           
         </div>
