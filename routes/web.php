@@ -187,3 +187,5 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
         Route::put('password-update', 'passwordUpdate')->name('password.update');
     });
 });
+
+//test
