@@ -5,11 +5,11 @@
 
     <div class="card">
 
-        <div class="card-head">
+        {{-- <div class="card-head">
             <h3>Edit Types</h3>
-        </div>
+        </div> --}}
 
-        <form action="{{ route('admin.type.update', $plot_type->id) }}" method="POST" autocomplete="off">
+        <form action="{{ route('admin.plot_type.update', $plot_type->id) }}" method="POST" autocomplete="off">
             @csrf
             @method('PUT')
 
@@ -21,26 +21,25 @@
                     <input type="text" class="form-control" id="name" name="name" value="{{ $plot_type->name }}" placeholder="e.g. 1/A" required>
                 </div>
 
-                <!-- {{-- Amount --}} -->
+                <!-- Fee -->
                 <div class="col-md-4">
-                    <label for="amount" class="form-label">Amount <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="amount" name="amount" value="{{ $plot_type->amount }}" placeholder="e.g. 2" required>
+                    <label for="fees" class="form-label">Fee <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="fees" name="fees" value="{{ $plot_type->fees }}" placeholder="e.g. 2" required>
                 </div>
 
                 <!-- {{-- Status --}} -->
                 <div class="col-md-4">
                     <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
                     <select class="form-select" id="status" name="status" required>
-                        <option value="">Select Status</option>
-                        <option value="1" {{ $plot_type->status == 1 ? 'selected': '' }}>Active</option>
-                        <option value="0" {{ $plot_type->status == 0 ? 'selected': '' }}>Inactive</option>
+                        <option value="1" {{ $plot_type->status == 'Active' ? 'selected': '' }}>Active</option>
+                        <option value="0" {{ $plot_type->status == 'Inactive' ? 'selected': '' }}>Inactive</option>
                     </select>
                 </div>
 
             </div>
 
             <div class="mt-4 d-flex gap-2">
-                <a href="{{ route('admin.type.index') }}" class="btn btn-secondary">Cancel</a>
+                <a href="{{ route('admin.plot_type.index') }}" class="btn btn-secondary">Cancel</a>
                 <button type="submit" class="btn btn-primary">Save Types</button>
             </div>
 

@@ -15,52 +15,39 @@ class PlotTypesSeeder extends Seeder
     {
         DB::table('plot_types')->insert([
             [
-                'id' => 8,
+                'id' => 1,
                 'name' => 'Empty Plot',
-                'amount' => 0,
-                'status' => 1,
-                'created_at' => '2026-08-17 23:09:57',
-                'updated_at' => '2026-08-17 23:09:57'
+                'slug' => 'empty-plot',
+                'fees' => 0,
+                'status' => 'Active',
             ],
             [
-                'id' => 9,
+                'id' => 2,
                 'name' => 'Under Construction',
-                'amount' => 1500,
-                'status' => 1,
-                'created_at' => '2026-08-17 23:10:17',
-                'updated_at' => '2026-08-25 05:16:09'
+                'slug' => 'under-construction',
+                'fees' => 1500,
+                'status' => 'Active',
             ],
             [
-                'id' => 10,
+                'id' => 3,
                 'name' => 'Apartment',
-                'amount' => 250,
-                'status' => 1,
-                'created_at' => '2026-08-17 23:10:31',
-                'updated_at' => '2026-08-25 05:15:55'
+                'slug' => 'apartment',
+                'fees' => 250,
+                'status' => 'Active',
             ],
             [
-                'id' => 11,
+                'id' => 4,
                 'name' => 'Owner Made Building',
-                'amount' => 250,
-                'status' => 1,
-                'created_at' => '2026-08-17 23:10:48',
-                'updated_at' => '2026-08-25 05:15:42'
+                'slug' => 'owner-building',
+                'fees' => 250,
+                'status' => 'Active',
             ],
             [
-                'id' => 12,
+                'id' => 5,
                 'name' => 'Commercial Building',
-                'amount' => 1500,
-                'status' => 1,
-                'created_at' => '2026-08-17 23:11:05',
-                'updated_at' => '2026-08-25 05:15:25'
-            ],
-            [
-                'id' => 14,
-                'name' => null,
-                'amount' => null,
-                'status' => 1,
-                'created_at' => '2026-09-13 03:57:36',
-                'updated_at' => '2026-09-13 03:57:36'
+                'slug' => 'commercial-building',
+                'fees' => 1500,
+                'status' => 'Active',
             ]
         ]);
     }

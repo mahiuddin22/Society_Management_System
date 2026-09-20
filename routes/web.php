@@ -147,7 +147,7 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
     });
 
     // Plote Types
-    Route::controller(PlotTypeController::class)->prefix('type')->name('type.')->group(function () {
+    Route::controller(PlotTypeController::class)->prefix('plot-type')->name('plot_type.')->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('/create', 'create')->name('create');
         Route::post('store', 'store')->name('store');

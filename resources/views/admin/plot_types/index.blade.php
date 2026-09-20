@@ -14,34 +14,33 @@
 
         <select class="select" name="filter_status">
           <option value="" disabled selected>-select status-</option>
-          <option value="0" {{ request('filter_status') == 0 ? 'selected' : '' }}>Inactive</option>
-          <option value="1" {{ request('filter_status') == 1 ? 'selected' : '' }}>Active</option>
+          <option value="Active" {{ request('filter_status') == 'Active' ? 'selected' : '' }}>Active</option>
+          <option value="Inactive" {{ request('filter_status') == 'Inactive' ? 'selected' : '' }}>Inactive</option>
         </select>
 
       </div>
 
       <button type="submit" class="btn btn-primary">Filter</button>
-      <a href="{{ route('admin.type.index') }}" class="btn btn-secondary">Reset</a>
+      <a href="{{ route('admin.plot_type.index') }}" class="btn btn-secondary">Reset</a>
 
     </form>
     @if (hasPermission('plot_types', 'create'))
-    <a href="{{route('admin.type.create')}}" class="btn btn-primary" style="margin-left:auto;">
+    <a href="{{route('admin.plot_type.create')}}" class="btn btn-primary" style="margin-left:auto;">
       + Add Plot Type
     </a>
     @endif
   </div>
 
   <div class="card">
-    <div class="card-head">
+    {{-- <div class="card-head">
       <h3>Type Index</h3><span class="hint">96 of 148 units shown</span>
-    </div>
+    </div> --}}
     <div class="table-wrap">
       <table class="ledger">
         <thead>
           <tr>
-            <th>SL</th>
             <th>Name</th>
-            <th>Amount</th>
+            <th>Fee</th>
             <th>Status</th>
             <th>Action</th>
           </tr>
@@ -49,11 +48,10 @@
         <tbody>
           @forelse($plot_types as $type)
           <tr>
-            <td>{{ $loop->iteration }}</td>
             <td>{{ $type->name }}</td>
-            <td>{{ $type->amount }}</td>
+            <td>{{ $type->fees }}</td>
             <td>
-              @if($type->status == 1)
+              @if($type->status == 'Active')
               <span class="badge green"><i class="dot"></i>Active</span>
               @else
               <span class="badge red"><i class="dot"></i>Inactive</span>
@@ -61,19 +59,19 @@
             </td>
             <td>
               @if (hasPermission('plot_types', 'edit'))
-              <a href="{{ route('admin.type.edit', $type->id) }}" class="btn btn-warning btn-sm" title="Edit"><i class="bi bi-pencil"></i></a>
+              <a href="{{ route('admin.plot_type.edit', $type->id) }}" class="btn btn-warning btn-sm" title="Edit"><i class="bi bi-pencil"></i></a>
               @endif
               @if (hasPermission('plot_types', 'change_status'))
-              <form id="change-status-{{ $type->id }}" action="{{ route('admin.type.change.status', $type->id) }}" method="POST" class="d-inline" autocomplete="off">
+              <form id="change-status-{{ $type->id }}" action="{{ route('admin.plot_type.change.status', $type->id) }}" method="POST" class="d-inline" autocomplete="off">
                 @csrf
                 @method('PATCH')
                 <button type="submit" class="btn btn-success btn-sm" title="Change Payment Status" onclick="changePaymentStatus()">
-                  <i class="bi bi-{{ $type->status == 1 ? 'toggle-on' : 'toggle-off' }}"></i>
+                  <i class="bi bi-{{ $type->status == 'Active' ? 'toggle-on' : 'toggle-off' }}"></i>
                 </button>
               </form>
               @endif
               @if (hasPermission('plot_types', 'delete'))
-              <form action="{{ route('admin.type.destroy', $type->id) }}" method="POST" id="delete-form-{{ $type->id }}" style="display: inline;">
+              <form action="{{ route('admin.plot_type.destroy', $type->id) }}" method="POST" id="delete-form-{{ $type->id }}" style="display: inline;">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="btn btn-danger btn-sm" title="Delete"><i class="bi bi-trash"></i></button>
