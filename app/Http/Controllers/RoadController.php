@@ -20,7 +20,6 @@ class RoadController extends Controller
     {
         $request->validate([
             'number'  => 'required|string|max:21|unique:roads,number',
-            ''
         ]);
 
         Road::create([

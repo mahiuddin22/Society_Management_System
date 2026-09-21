@@ -25,18 +25,19 @@ return new class extends Migration
                 ->cascadeOnUpdate()
                 ->restrictOnDelete();
 
-            // Owner / Payer Information
+            $table->string('unique_id', 30)->unique();
+
             $table->string('name', 100)->index();
             $table->string('email', 254)->nullable();
-            $table->string('phone', 20);
-            $table->string('unique_id', 30)->unique();
+            $table->string('phone', 20); // form sends name="number" (map in controller)
+            $table->string('flat_no', 30)->nullable(); // Contact person's unit
 
             // Property Information
             $table->string('holding_no', 20);
-            $table->unsignedSmallInteger('total_flat');
-            $table->unsignedSmallInteger('occupied_flat');
-            $table->string('building_name', 100);
-            $table->string('flat_numbers')->nullable()->comment('2A,2B,3A,3C');
+            $table->string('building_name', 100)->nullable()->comment('Optional for plots/vacant land');
+            $table->unsignedSmallInteger('total_flat')->default(0)->nullable();
+            $table->unsignedSmallInteger('occupied_flat')->default(0)->nullable();
+            $table->string('flat_numbers')->nullable()->comment('Comma-separated flat tags e.g. 2A,2B,3A,3C');
 
             // Collection Information
             $table->enum('collection_type', [
@@ -44,8 +45,8 @@ return new class extends Migration
                 'Individual',
             ]);
 
-            $table->decimal('collection_rate', 10, 2);
-            $table->decimal('total_amount', 12, 2);
+            $table->decimal('collection_rate', 10, 2)->default(0);
+            $table->decimal('total_amount', 12, 2)->default(0); // form sends name="collection_amount"
             $table->decimal('discount', 12, 2)->default(0);
 
             // Status

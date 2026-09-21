@@ -21,10 +21,10 @@
       </select>
 
       <button type="submit" class="btn btn-primary">Filter</button>
-      <a href="{{ route('admin.plot_type.index') }}" class="btn btn-ghost">Reset</a>
+      {{-- <a href="{{ route('admin.plot_type.index') }}" class="btn btn-ghost">Reset</a> --}}
     </form>
 
-    @if (hasPermission('plot_types', 'create'))
+    {{-- @if (hasPermission('plot_types', 'create'))
     <a href="{{ route('admin.plot_type.create') }}" class="btn btn-primary" style="margin-left:auto;">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
         <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -32,7 +32,8 @@
       </svg>
       Add Plot Type
     </a>
-    @endif
+    @endif --}}
+     <a href="{{ route('admin.plot_type.index') }}" class="btn btn-ghost" style="margin-left:auto;">Reset</a>
   </div>
 
   {{-- Vertically Long Cards Grid --}}
@@ -73,7 +74,7 @@
       <div style="background: var(--paper-100); border: 1px solid var(--line); border-radius: var(--radius-m); padding: 18px; margin: 20px 0 0 0;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
           <span class="hint" style="text-transform: uppercase; font-size: 11px; font-weight: 600; letter-spacing: .05em;">
-            Plot Fee
+            Monthly Fee
           </span>
           
         </div>

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class PlotAndUnit extends Model
 {
     use HasFactory;
+    protected $guarded = [];
     protected $table = 'plot_and_units';
 
     public function road()
