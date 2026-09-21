@@ -12,6 +12,7 @@ class BulkSmsController extends Controller
         $totalsentapi = Http::get('http://103.230.63.50/bulksms/api/sent-sms-this-month');
         $balanceapi = Http::get('http://103.230.63.50/bulksms/api/sec03-amount');
 
+        $data['all_sms']            = $totalsentapi->json('all_sms');
         $data['totalsent']          = $totalsentapi->json('this_month');
         $data['amount']             = $balanceapi->json('amount');
         $data['validity_period']    = $balanceapi->json('validity_period');

@@ -1,5 +1,4 @@
 @extends('admin.layouts.app')
-
 @section('content')
 
 <section class="panel active" id="panel-sms">
@@ -46,9 +45,7 @@
                     <span class="small fw-semibold text-body-secondary">Running low?</span>
                     <span class="badge badge-partial">Below 5,000</span>
                 </div>
-                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="tab" data-bs-target="#smsRecharge">
-                    Recharge Balance
-                </button>
+                <button type="button" class="btn btn-primary btn-sm sms-recharge-btn">Recharge Balance</button>
             </div>
         </div>
 
@@ -59,125 +56,170 @@
 
     <div class="filter-bar">
         <div class="d-flex align-items-center gap-2 flex-wrap">
-            <button type="button" class="btn btn-primary active" data-bs-toggle="tab" data-bs-target="#smsCompose">Compose Campaign</button>
-            <button type="button" class="btn btn-secondary" data-bs-toggle="tab" data-bs-target="#smsDrafts">Drafts</button>
-            <button type="button" class="btn btn-secondary" data-bs-toggle="tab" data-bs-target="#smsReports">Delivery Reports</button>
-            <button type="button" class="btn btn-secondary" data-bs-toggle="tab" data-bs-target="#smsRecharge">Recharge & Settings</button>
+            <button type="button" class="btn btn-primary sms-tab-btn active" data-sms-tab="smsCompose">Compose Campaign</button>
+            <button type="button" class="btn btn-secondary sms-tab-btn" data-sms-tab="smsDrafts">Drafts</button>
+            <button type="button" class="btn btn-secondary sms-tab-btn" data-sms-tab="smsReports">Delivery Reports</button>
+            <button type="button" class="btn btn-secondary sms-tab-btn" data-sms-tab="smsRecharge">Recharge & Settings</button>
         </div>
     </div>
 
-    <div class="tab-content">
+    <div class="sms-tab-content">
 
         <!-- COMPOSE CAMPAIGN -->
-        <div class="tab-pane fade show active" id="smsCompose">
+        <div id="smsCompose" class="sms-tab-pane active">
 
             <div class="row g-3">
 
                 <!-- New Campaign -->
                 <div class="col-lg-7">
 
-                    <div class="card">
+                    <div class="card border-0 shadow-sm overflow-hidden">
 
-                        <div class="card-head">
-                            <h3>New Campaign</h3>
-                            <span class="hint">Draft autosaved</span>
+                        <!-- Header -->
+                        <div class="card-header bg-white border-bottom px-4 py-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="mb-1 fw-semibold">New Campaign</h5>
+                                    <small class="text-body-secondary">Create and send a personalized SMS campaign</small>
+                                </div>
+
+                                <span class="badge rounded-pill bg-light text-success border px-3 py-2">
+                                    <i class="bi bi-cloud-check me-1"></i> Draft autosaved
+                                </span>
+                            </div>
                         </div>
 
-                        <div class="p-3">
+                        <div class="card-body p-4">
+                            
+                            <!-- SMS Type -->
+                            <div class="mb-4">
 
-                            <div class="mb-3">
-                                <label class="form-label">Campaign Name</label>
-                                <input type="text" class="form-control" placeholder="Campaign name (e.g. July Invoice Notice)">
+                                <label class="form-label fw-semibold d-block mb-2">Message Source</label>
+
+                                <div class="row g-2">
+
+                                    <div class="col-md-6">
+                                        <label class="border rounded-3 p-3 w-100 h-100 d-flex align-items-center gap-3" style="cursor:pointer;">
+                                            <input type="radio" class="form-check-input mt-0" name="sms_type" value="custom" checked onclick="customSms()">
+                                            <div>
+                                                <div class="fw-semibold">Custom Message</div>
+                                                <small class="text-body-secondary">Write a new message</small>
+                                            </div>
+
+                                        </label>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="border rounded-3 p-3 w-100 h-100 d-flex align-items-center gap-3" style="cursor:pointer;">
+                                            <input type="radio" class="form-check-input mt-0" name="sms_type" value="draft" onclick="draftSms()">
+                                            <div>
+                                                <div class="fw-semibold">Draft Message</div>
+                                                <small class="text-body-secondary">Use an existing draft</small>
+                                            </div>
+                                        </label>
+                                    </div>
+
+                                </div>
+
                             </div>
 
-                            <div class="mb-3">
-                                <label class="form-label">Start From Draft</label>
-                                <select class="form-select">
-                                    <option>Start from a draft…</option>
-                                    <option>Monthly Invoice Notice</option>
-                                    <option>Payment Reminder</option>
-                                    <option>Event Invitation</option>
+                            <!-- Draft -->
+                            <div class="mb-4" id="draftSmsBox" style="display:none;">
+
+                                <label class="form-label fw-semibold">Start From Draft</label>
+                                <select class="form-select" id="draftSMS">
+                                    <option value="">Start from a draft…</option>
+                                    <option value="Monthly Invoice Notice">Monthly Invoice Notice</option>
+                                    <option value="Payment Reminder">Payment Reminder</option>
+                                    <option value="Event Invitation">Event Invitation</option>
                                 </select>
+
                             </div>
 
-                            <div class="mb-3">
+                            <!-- Message -->
+                            <div class="mb-4">
 
                                 <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <label class="form-label mb-0">Message</label>
+
+                                    <label class="form-label fw-semibold mb-0">
+                                        Message
+                                    </label>
 
                                     <div class="btn-group btn-group-sm">
-                                        <button type="button" class="btn btn-primary active" data-lang="en">
-                                            English · 160/SMS
+
+                                        <button type="button" class="btn btn-primary active" data-lang="en">English
+                                            <span class="opacity-75">· 160/SMS</span>
                                         </button>
-                                        <button type="button" class="btn btn-secondary" data-lang="bn">
-                                            বাংলা · 67/SMS
+
+                                        <button type="button" class="btn btn-outline-secondary" data-lang="bn"> বাংলা
+                                            <span class="opacity-75">· 67/SMS</span>
                                         </button>
+
                                     </div>
+
                                 </div>
 
-                                <textarea id="smsBodyBs"
-                                    class="form-control"
-                                    rows="6"
-                                    placeholder="Type your message… use to personalize"></textarea>
+                                <div class="border rounded-3 overflow-hidden">
 
-                                <div class="d-flex justify-content-between small mt-2">
-                                    <span id="smsCharCountBs" class="text-body-secondary">
-                                        0 characters
-                                    </span>
+                                    <textarea id="customSMS" class="form-control border-0 rounded-0 shadow-none" rows="7"
+                                        placeholder="Type your SMS message here..." required></textarea>
 
-                                    <span id="smsCountBadgeBs" class="badge badge-neutral">
-                                        0 SMS / recipient
-                                    </span>
-                                </div>
+                                    <div class="bg-light border-top px-3 py-2">
 
-                            </div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span id="smsCharCountBs" class="small text-body-secondary">0 characters</span>
+                                            <span id="smsCountBadgeBs" class="badge bg-white text-body-secondary border">0 SMS / recipient</span>
+                                        </div>
 
-                            <!-- Dynamic Tags -->
-                            <div class="mb-3">
+                                    </div>
 
-                                <label class="form-label">Personalization Tags</label>
-
-                                <div class="d-flex gap-2 flex-wrap">
-                                    <span class="badge badge-neutral sms-tag-bs" style="cursor:pointer;" data-tag="name">
-                                        name
-                                    </span>
-
-                                    <span class="badge badge-neutral sms-tag-bs" style="cursor:pointer;" data-tag="holding">
-                                        holding
-                                    </span>
-
-                                    <span class="badge badge-neutral sms-tag-bs" style="cursor:pointer;" data-tag="due amount">
-                                        due_amount
-                                    </span>
-
-                                    <span class="badge badge-neutral sms-tag-bs" style="cursor:pointer;" data-tag="due_date">
-                                        due_date
-                                    </span>
                                 </div>
 
                             </div>
 
-                            <!-- Schedule -->
-                            <div class="row g-2 mb-3">
+                            <!-- Sending -->
+                            <div class="mb-4">
 
-                                <div class="col-md-5">
-                                    <label class="form-label">Sending Option</label>
-                                    <select class="form-select">
-                                        <option>Send now</option>
-                                        <option>Schedule for later</option>
-                                    </select>
-                                </div>
+                                <label class="form-label fw-semibold mb-2"> Sending Options </label>
 
-                                <div class="col-md-7">
-                                    <label class="form-label">Schedule Date & Time</label>
-                                    <input type="datetime-local" class="form-control">
+                                <div class="row g-3">
+
+                                    <div class="col-md-5">
+                                        <select class="form-select">
+                                            <option>Send now</option>
+                                            <option>Schedule for later</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-7">
+
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light">
+                                                <i class="bi bi-calendar-event"></i>
+                                            </span>
+                                            <input type="datetime-local" class="form-control">
+                                        </div>
+
+                                    </div>
+
                                 </div>
 
                             </div>
 
-                            <button class="btn btn-primary w-100">
-                                Review & Send Campaign
-                            </button>
+                            <!-- Action -->
+                            <div class="border-top pt-4">
+
+                                <button type="button" class="btn btn-primary btn-lg w-100">
+                                    <i class="bi bi-send me-2"></i>Review & Send Campaign
+                                </button>
+
+                                <div class="text-center mt-2">
+                                    <small class="text-body-secondary">
+                                        You can review recipients and message details before sending.
+                                    </small>
+                                </div>
+
+                            </div>
 
                         </div>
 
@@ -199,17 +241,9 @@
                         <div class="p-3">
 
                             <div class="btn-group w-100 mb-3">
-                                <button type="button" class="btn btn-secondary">
-                                    Single
-                                </button>
-
-                                <button type="button" class="btn btn-secondary">
-                                    Multiple
-                                </button>
-
-                                <button type="button" class="btn btn-primary">
-                                    All Residents
-                                </button>
+                                <button type="button" class="btn btn-secondary">Single</button>
+                                <button type="button" class="btn btn-secondary">Multiple</button>
+                                <button type="button" class="btn btn-primary">All Residents</button>
                             </div>
 
                             <div class="row g-2 mb-3">
@@ -331,7 +365,7 @@
         </div>
 
         <!-- DRAFTS -->
-        <div class="tab-pane fade" id="smsDrafts">
+        <div id="smsDrafts" class="sms-tab-pane d-none">
 
             <div class="card">
 
@@ -419,7 +453,7 @@
         </div>
 
         <!-- DELIVERY REPORTS -->
-        <div class="tab-pane fade" id="smsReports">
+        <div id="smsReports" class="sms-tab-pane d-none">
 
             <div class="card mb-3">
 
@@ -571,7 +605,7 @@
         </div>
 
         <!-- RECHARGE & SETTINGS -->
-        <div class="tab-pane fade" id="smsRecharge">
+        <div id="smsRecharge" class="sms-tab-pane d-none">
 
             <div class="row g-3">
 
@@ -589,21 +623,15 @@
                             <label class="form-label">Quick Amount</label>
 
                             <div class="d-flex gap-2 flex-wrap mb-3">
-
-                                <button type="button" class="btn btn-secondary btn-sm">৳500</button>
-
-                                <button type="button" class="btn btn-secondary btn-sm">৳1,000</button>
-
-                                <button type="button" class="btn btn-primary btn-sm">৳2,500</button>
-
-                                <button type="button" class="btn btn-secondary btn-sm">৳5,000</button>
-
+                                <button type="button" class="btn btn-secondary btn-sm quick-amount" data-amount="500">৳500</button>
+                                <button type="button" class="btn btn-secondary btn-sm quick-amount" data-amount="1000">৳1,000</button>
+                                <button type="button" class="btn btn-primary btn-sm quick-amount" data-amount="2500">৳2,500</button>
+                                <button type="button" class="btn btn-secondary btn-sm quick-amount" data-amount="5000">৳5,000</button>
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label">Custom Amount</label>
-
-                                <input class="form-control" placeholder="Custom amount (৳)">
+                                <input type="number" id="customAmount" class="form-control" placeholder="Custom amount (৳)">
                             </div>
 
                             <div class="hint mb-3">
@@ -615,6 +643,23 @@
                             </button>
 
                         </div>
+
+                        <script>
+                            document.querySelectorAll('.quick-amount').forEach(function(button) {
+                                button.addEventListener('click', function() {
+
+                                    document.getElementById('customAmount').value = this.dataset.amount;
+
+                                    document.querySelectorAll('.quick-amount').forEach(function(btn) {
+                                        btn.classList.remove('btn-primary');
+                                        btn.classList.add('btn-secondary');
+                                    });
+
+                                    this.classList.remove('btn-secondary');
+                                    this.classList.add('btn-primary');
+                                });
+                            });
+                        </script>
 
                     </div>
 
@@ -689,12 +734,111 @@
     </div>
 
 </section>
-
+@endsection
+@push('scripts')
 <script>
-    document.querySelectorAll('[data-bs-toggle="tab"]').forEach(function(button) {
-        button.addEventListener('shown.bs.tab', function(event) {
-            console.log('Tab changed:', event.target.getAttribute('data-bs-target'));
+    document.addEventListener('DOMContentLoaded', function() {
+
+        const tabButtons = document.querySelectorAll('.sms-tab-btn');
+        const tabPanes = document.querySelectorAll('.sms-tab-pane');
+
+        function showSmsTab(targetId) {
+
+            tabButtons.forEach(function(btn) {
+                btn.classList.remove('active', 'btn-primary');
+                btn.classList.add('btn-secondary');
+            });
+
+            tabPanes.forEach(function(pane) {
+                pane.classList.add('d-none');
+                pane.classList.remove('active');
+            });
+
+            const button = document.querySelector('[data-sms-tab="' + targetId + '"]');
+            const pane = document.getElementById(targetId);
+
+            if (button) {
+                button.classList.remove('btn-secondary');
+                button.classList.add('active', 'btn-primary');
+            }
+
+            if (pane) {
+                pane.classList.remove('d-none');
+                pane.classList.add('active');
+            }
+        }
+
+        tabButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                showSmsTab(this.getAttribute('data-sms-tab'));
+            });
         });
+
+        const rechargeButton = document.querySelector('.sms-recharge-btn');
+
+        if (rechargeButton) {
+            rechargeButton.addEventListener('click', function() {
+                showSmsTab('smsRecharge');
+            });
+        }
+
     });
 </script>
-@endsection
+
+<!-- Hide Show SMS Types -->
+<script>
+    let smsLimit = 160;
+
+    function customSms() {
+        document.getElementById('customSMS').style.display = 'block';
+        document.getElementById('customSMS').required = true;
+
+        document.getElementById('draftSmsBox').style.display = 'none';
+        document.getElementById('draftSMS').required = false;
+    }
+
+    function draftSms() {
+        document.getElementById('customSMS').style.display = 'none';
+        document.getElementById('customSMS').required = false;
+
+        document.getElementById('draftSmsBox').style.display = 'block';
+        document.getElementById('draftSMS').required = true;
+    }
+
+    function updateSmsCount() {
+        let message = document.getElementById('customSMS').value;
+        let characterCount = message.length;
+        let smsCount = characterCount > 0 ? Math.ceil(characterCount / smsLimit) : 0;
+
+        document.getElementById('smsCharCountBs').textContent = characterCount + ' characters';
+        document.getElementById('smsCountBadgeBs').textContent = smsCount + ' SMS / recipient';
+    }
+
+    document.getElementById('customSMS').addEventListener('input', function() {
+        updateSmsCount();
+    });
+
+    document.querySelectorAll('[data-lang]').forEach(function(button) {
+        button.addEventListener('click', function() {
+
+            document.querySelectorAll('[data-lang]').forEach(function(btn) {
+                btn.classList.remove('btn-primary', 'active');
+                btn.classList.add('btn-outline-secondary');
+            });
+
+            this.classList.remove('btn-outline-secondary');
+            this.classList.add('btn-primary', 'active');
+
+            if (this.dataset.lang === 'bn') {
+                smsLimit = 67;
+            } else {
+                smsLimit = 160;
+            }
+
+            updateSmsCount();
+        });
+    });
+
+    updateSmsCount();
+</script>
+@endpush
