@@ -49,12 +49,21 @@
       @if(hasPermission('roads', 'edit') || hasPermission('roads', 'delete'))
       <div class="d-inline-flex align-items-center gap-1">
         @if(hasPermission('roads', 'edit'))
-        <a href="{{ route('admin.roads.edit', $road->id) }}" class="btn btn-ghost btn-sm px-2" title="Edit Road">
+        <button 
+          type="button" 
+          class="btn btn-ghost btn-sm px-2 edit-road-btn" 
+          title="Edit Road"
+          data-bs-toggle="modal" 
+          data-bs-target="#editModal"
+          data-id="{{ $road->id }}"
+          data-number="{{ $road->number ?? $road->name }}"
+          data-url="{{ route('admin.roads.update', $road->id) }}"
+        >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
             <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
           </svg>
-        </a>
+        </button>
         @endif
 
         @if(hasPermission('roads', 'delete') && $road->name != 'admin')
@@ -89,7 +98,7 @@
 
 </section>
 
-{{-- Modal --}}
+{{-- 1. Create Modal --}}
 <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" style="max-width: 460px;">
     <div class="modal-content" style="border-radius: var(--radius-l); border: 1px solid var(--line); box-shadow: var(--shadow-2); background: var(--card);">
@@ -101,17 +110,17 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
-      <form id="createUserForm" action="{{ route('admin.roads.store') }}" method="POST" autocomplete="off">
+      <form id="createRoadForm" action="{{ route('admin.roads.store') }}" method="POST" autocomplete="off">
         @csrf
         <div class="modal-body p-4">
           <div>
-            <label for="name" class="form-label fw-semibold small mb-1">
+            <label for="create_number" class="form-label fw-semibold small mb-1">
               Road Number <span class="text-danger">*</span>
             </label>
             <input 
               type="text" 
-              id="name" 
-              name="name" 
+              id="create_number" 
+              name="number" 
               class="input w-100" 
               placeholder="e.g. 05 or 12/A" 
               required 
@@ -128,4 +137,65 @@
     </div>
   </div>
 </div>
+
+{{-- 2. Edit Modal --}}
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 460px;">
+    <div class="modal-content" style="border-radius: var(--radius-l); border: 1px solid var(--line); box-shadow: var(--shadow-2); background: var(--card);">
+      
+      <div class="modal-header border-bottom py-3 px-4" style="background: var(--paper-100); border-radius: var(--radius-l) var(--radius-l) 0 0;">
+        <h5 class="modal-title m-0" id="editModalLabel" style="font-family: var(--font-display); font-size: 18px; color: var(--ink-900);">
+          Edit Road
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <form id="editRoadForm" action="" method="POST" autocomplete="off">
+        @csrf
+        @method('PUT')
+        
+        <div class="modal-body p-4">
+          <div>
+            <label for="edit_number" class="form-label fw-semibold small mb-1">
+              Road Number <span class="text-danger">*</span>
+            </label>
+            <input 
+              type="text" 
+              id="edit_number" 
+              name="number" 
+              class="input w-100" 
+              placeholder="e.g. 05 or 12/A" 
+              required 
+            />
+          </div>
+        </div>
+
+        <div class="modal-footer border-top px-4 py-3 d-flex justify-content-end gap-2">
+          <button type="button" class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary px-3">Update Road</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+{{-- Edit Modal Script Listener --}}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const editBtns = document.querySelectorAll('.edit-road-btn');
+    const editForm = document.getElementById('editRoadForm');
+    const editNumberInput = document.getElementById('edit_number');
+
+    editBtns.forEach(btn => {
+      btn.addEventListener('click', function () {
+        const url = this.getAttribute('data-url');
+        const number = this.getAttribute('data-number');
+
+        editForm.setAttribute('action', url);
+        editNumberInput.value = number;
+      });
+    });
+  });
+</script>
 @endsection

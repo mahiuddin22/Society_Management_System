@@ -20,7 +20,7 @@ return new class extends Migration
                 ->cascadeOnUpdate()
                 ->restrictOnDelete();
 
-            $table->string('number', 21);
+            $table->string('number', 21)->unique();
 
             $table->timestamps();
         });

@@ -1,5 +1,7 @@
 <?php
 
+#TODO::Ajax request check if already road exist
+
 namespace App\Http\Controllers;
 
 use App\Models\Road;
@@ -17,11 +19,12 @@ class RoadController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'  => 'required|string|max:255'
+            'number'  => 'required|string|max:21|unique:roads,number',
+            ''
         ]);
 
         Road::create([
-            'name' => $request->name,
+            'number' => $request->number,
         ]);
 
         return redirect()->route('admin.roads.index')->with('success', 'Road created successfully.');
@@ -37,11 +40,11 @@ class RoadController extends Controller
     {
 
         $request->validate([
-            'name' => 'required|string|max:255',
+            'number' => 'required|string|max:21|unique:roads,number,' . $id,
         ]);
 
         Road::findOrFail($id)->update([
-            'name' => $request->name,
+            'number' => $request->number,
         ]);
 
         return redirect()->route('admin.roads.index')->with('success', 'Road updated successfully.');
