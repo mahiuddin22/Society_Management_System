@@ -46,7 +46,7 @@
         <!-- Pagination -->
         @if($allsms['last_page'] > 1)
 
-        <div class="mt-3">
+        <div class="mt-3 d-flex justify-content-end">
             <nav>
                 <ul class="pagination">
 
