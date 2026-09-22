@@ -15,187 +15,105 @@ class RoadsSeeder extends Seeder
     {
         DB::table('roads')->insert([
             [
-                'id' => 3,
                 'collector_id' => 10,
-                'name' => 'Road 01',
-                'created_at' => '2026-09-03 03:42:09',
-                'updated_at' => '2026-09-06 03:12:12'
+                'number' => '01',
             ],
             [
-                'id' => 4,
                 'collector_id' => 10,
-                'name' => 'Road 02',
-                'created_at' => '2026-09-03 03:45:35',
-                'updated_at' => '2026-09-06 03:12:12'
+                'number' => '02',
             ],
             [
-                'id' => 5,
                 'collector_id' => 10,
-                'name' => 'Road 03',
-                'created_at' => '2026-09-03 03:45:42',
-                'updated_at' => '2026-09-06 03:12:12'
+                'number' => '03',
             ],
             [
-                'id' => 6,
                 'collector_id' => 10,
-                'name' => 'Road 04',
-                'created_at' => '2026-09-03 03:45:48',
-                'updated_at' => '2026-09-06 03:12:12'
+                'number' => '04',
             ],
             [
-                'id' => 7,
                 'collector_id' => 10,
-                'name' => 'Road 05',
-                'created_at' => '2026-09-03 03:45:54',
-                'updated_at' => '2026-09-06 03:12:12'
+                'number' => '05'
             ],
             [
-                'id' => 8,
-                'collector_id' => 9,
-                'name' => 'Road 06',
-                'created_at' => '2026-09-03 03:46:06',
-                'updated_at' => '2026-09-06 03:12:37'
+                'collector_id' => 10,
+                'number' => '06'
             ],
             [
-                'id' => 9,
-                'collector_id' => 9,
-                'name' => 'Road 07',
-                'created_at' => '2026-09-03 03:46:28',
-                'updated_at' => '2026-09-06 03:12:37'
+                'collector_id' => 10,
+                'number' => '07'
             ],
             [
-                'id' => 10,
-                'collector_id' => 9,
-                'name' => 'Road 07-A',
-                'created_at' => '2026-09-03 03:56:19',
-                'updated_at' => '2026-09-06 03:12:37'
+                'collector_id' => 10,
+                'number' => '07/A'
             ],
             [
-                'id' => 11,
-                'collector_id' => 9,
-                'name' => 'Road 07-B',
-                'created_at' => '2026-09-03 03:56:24',
-                'updated_at' => '2026-09-06 03:12:37'
+                'collector_id' => 10,
+                'number' => '07/B'
             ],
             [
-                'id' => 12,
-                'collector_id' => 9,
-                'name' => 'Road 07-C',
-                'created_at' => '2026-09-03 03:56:31',
-                'updated_at' => '2026-09-06 03:12:37'
+                'collector_id' => 10,
+                'number' => '07/C'
             ],
             [
-                'id' => 13,
-                'collector_id' => 9,
-                'name' => 'Road 08',
-                'created_at' => '2026-09-03 03:46:36',
-                'updated_at' => '2026-09-06 03:12:37'
+                'collector_id' => 10,
+                'number' => '08'
             ],
             [
-                'id' => 14,
-                'collector_id' => 9,
-                'name' => 'Road 09',
-                'created_at' => '2026-09-03 03:46:43',
-                'updated_at' => '2026-09-06 03:12:37'
+                'collector_id' => 10,
+                'number' => '09'
             ],
             [
-                'id' => 15,
-                'collector_id' => 9,
-                'name' => 'Road 10',
-                'created_at' => '2026-09-03 03:46:53',
-                'updated_at' => '2026-09-06 03:12:37'
+                'collector_id' => 10,
+                'number' => '10',
             ],
             [
-                'id' => 16,
                 'collector_id' => null,
-                'name' => 'Road 11',
-                'created_at' => '2026-09-03 03:47:04',
-                'updated_at' => '2026-09-03 03:47:04'
+                'number' => '11'
             ],
             [
-                'id' => 17,
                 'collector_id' => null,
-                'name' => 'Road 12',
-                'created_at' => '2026-09-03 03:48:23',
-                'updated_at' => '2026-09-03 03:48:23'
+                'number' => '12'
             ],
             [
-                'id' => 18,
                 'collector_id' => null,
-                'name' => 'Road 13',
-                'created_at' => '2026-09-03 03:48:28',
-                'updated_at' => '2026-09-03 03:48:28'
+                'number' => '13'
             ],
             [
-                'id' => 19,
                 'collector_id' => null,
-                'name' => 'Road 13-A',
-                'created_at' => '2026-09-03 03:50:23',
-                'updated_at' => '2026-09-03 03:50:23'
+                'number' => '13/A'
             ],
             [
-                'id' => 20,
                 'collector_id' => null,
-                'name' => 'Road 13-B',
-                'created_at' => '2026-09-03 03:50:33',
-                'updated_at' => '2026-09-03 03:50:33'
+                'number' => '13/B'
             ],
             [
-                'id' => 21,
                 'collector_id' => null,
-                'name' => 'Road 14',
-                'created_at' => '2026-09-03 03:48:34',
-                'updated_at' => '2026-09-03 03:48:34'
+                'number' => '14'
             ],
             [
-                'id' => 22,
                 'collector_id' => null,
-                'name' => 'Road 15',
-                'created_at' => '2026-09-03 03:52:59',
-                'updated_at' => '2026-09-03 03:52:59'
+                'number' => '15'
             ],
             [
-                'id' => 23,
                 'collector_id' => null,
-                'name' => 'Road 16',
-                'created_at' => '2026-09-03 03:53:09',
-                'updated_at' => '2026-09-03 03:53:09'
+                'number' => '16'
             ],
             [
-                'id' => 24,
                 'collector_id' => null,
-                'name' => 'Road 17',
-                'created_at' => '2026-09-03 03:54:40',
-                'updated_at' => '2026-09-03 03:54:40'
+                'number' => '17'
             ],
             [
-                'id' => 25,
                 'collector_id' => null,
-                'name' => 'Road 18',
-                'created_at' => '2026-09-03 03:54:44',
-                'updated_at' => '2026-09-03 03:54:44'
+                'number' => '18'
             ],
             [
-                'id' => 26,
                 'collector_id' => null,
-                'name' => 'Road 19',
-                'created_at' => '2026-09-03 03:54:49',
-                'updated_at' => '2026-09-03 03:54:49'
+                'number' => '19'
             ],
             [
-                'id' => 27,
                 'collector_id' => null,
-                'name' => 'Road 20',
-                'created_at' => '2026-09-03 03:54:56',
-                'updated_at' => '2026-09-03 03:54:56'
+                'number' => '20'
             ],
-            [
-                'id' => 1118,
-                'collector_id' => null,
-                'name' => null,
-                'created_at' => '2026-09-13 03:57:36',
-                'updated_at' => '2026-09-13 03:57:36'
-            ]
         ]);
     }
 }

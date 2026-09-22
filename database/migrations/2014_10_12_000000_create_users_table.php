@@ -17,9 +17,9 @@ return new class extends Migration
             $table->string('uid')->nullable();
             $table->string('role');
             $table->string('name');
-            $table->string('username');
-            $table->string('email');
-            $table->string('phone')->nullable();
+            $table->string('username')->nullable();
+            $table->string('email')->nullable();
+            $table->string('phone');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

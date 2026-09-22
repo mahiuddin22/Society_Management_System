@@ -26,7 +26,12 @@
         <div class="nav-group">
             <div class="nav-group-label">People</div>
             @if (hasPermission('plot_and_units'))
-            @php $plot_activity = request()->routeIs('admin.plot-and-units.index') || request()->routeIs('admin.plot-and-units.create') || request()->routeIs('admin.plot-and-units.edit') @endphp
+                @php 
+                    $plot_activity = request()->routeIs('admin.plot-and-units.index') 
+                                    || request()->routeIs('admin.plot-and-units.create') 
+                                    || request()->routeIs('admin.plot-and-units.edit') 
+                                    || request()->routeIs('admin.plot-and-units.show')
+                @endphp
             <a class="nav-item {{ $plot_activity ? 'active' : '' }}" href="{{ route('admin.plot-and-units.index') }}" data-panel="units">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M3 21V9l9-6 9 6v12" />
@@ -163,7 +168,7 @@
         <div class="nav-group">
             <div class="nav-group-label">Settings</div>
             @if(hasPermission('plot_types'))
-            <a class="nav-item {{ request()->routeIs('admin.type.*') ? 'active' : '' }}" href="{{ route('admin.type.index') }}"><i class="bi bi-person-circle"></i> Plot Types</a>
+            <a class="nav-item {{ request()->routeIs('admin.plot_type.*') ? 'active' : '' }}" href="{{ route('admin.plot_type.index') }}"><i class="bi bi-person-circle"></i> Plot Types</a>
             @endif
             @if(hasPermission('site_settings'))
             <a class="nav-item {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}" href="{{ route('admin.settings.edit') }}"><i class="bi bi-person-circle"></i> Site Settings</a>

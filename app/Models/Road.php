@@ -9,6 +9,6 @@ class Road extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'name',
+        'number',
     ];
 }

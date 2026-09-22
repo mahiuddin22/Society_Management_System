@@ -1,26 +1,29 @@
 <?php
 
+#TODO::Ajax request check if already road exist
+
 namespace App\Http\Controllers;
 
 use App\Models\Road;
+use Exception;
 use Illuminate\Http\Request;
 
 class RoadController extends Controller
 {
     public function index()
     {
-        $data['roads'] = Road::where('name', 'like', '%' . request()->get('search') . '%')->paginate(25);
+        $data['roads'] = Road::where('number', 'like', '%' . request()->get('search') . '%')->paginate(25);
         return view('admin.roads.index', $data);
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name'  => 'required|string|max:255'
+            'number'  => 'required|string|max:21|unique:roads,number',
         ]);
 
         Road::create([
-            'name' => $request->name,
+            'number' => $request->number,
         ]);
 
         return redirect()->route('admin.roads.index')->with('success', 'Road created successfully.');
@@ -36,11 +39,11 @@ class RoadController extends Controller
     {
 
         $request->validate([
-            'name' => 'required|string|max:255',
+            'number' => 'required|string|max:21|unique:roads,number,' . $id,
         ]);
 
         Road::findOrFail($id)->update([
-            'name' => $request->name,
+            'number' => $request->number,
         ]);
 
         return redirect()->route('admin.roads.index')->with('success', 'Road updated successfully.');
@@ -48,8 +51,19 @@ class RoadController extends Controller
 
     public function destroy($id)
     {
-        Road::findOrFail($id)->delete();
-        return redirect()->route('admin.roads.index')->with('success', 'Road deleted successfully.');
+         try {
+            Road::findOrFail($id)->delete();
+
+            return redirect()
+                ->route('admin.roads.index')
+                ->with('success', 'Road deleted successfully.');
+
+        } catch (Exception $e) {
+
+            return redirect()
+                ->route('admin.roads.index')
+                ->with('error', 'This road cannot be deleted because it is already associated with plot and unit records.');
+        }
     }
 
 }

@@ -13,8 +13,15 @@ return new class extends Migration
     {
         Schema::create('roads', function (Blueprint $table) {
             $table->id();
-            $table->string('collector_id')->nullable();
-            $table->string('name')->nullable();
+
+            $table->foreignId('collector_id')
+                ->nullable()
+                ->constrained('users')
+                ->cascadeOnUpdate()
+                ->restrictOnDelete();
+
+            $table->string('number', 21)->unique();
+
             $table->timestamps();
         });
     }

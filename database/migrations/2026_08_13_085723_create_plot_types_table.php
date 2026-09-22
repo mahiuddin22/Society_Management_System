@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('plot_types', function (Blueprint $table) {
             $table->id();
-            
-            $table->string('name')->nullable();
-            $table->integer('amount')->nullable();
-            $table->tinyInteger('status')->default(1);
+        
+            $table->string('name', 50)->unique();
+            $table->string('slug', 50)->unique();
+            $table->text('description')->nullable();
+            $table->decimal('fees', 10, 2);
+            $table->string('status', 11)->default('Active')->comment('Status: Active/Inactive');
 
             $table->timestamps();
         });

@@ -9,7 +9,7 @@
             <h3>Add Types</h3>
         </div>
 
-        <form action="{{ route('admin.type.store') }}" method="POST" autocomplete="off">
+        <form action="{{ route('admin.plot_type.store') }}" method="POST" autocomplete="off">
             @csrf
 
             <div class="row g-3">
@@ -39,7 +39,7 @@
             </div>
 
             <div class="mt-4 d-flex gap-2">
-                <a href="{{ route('admin.type.index') }}" class="btn btn-secondary">Cancel</a>
+                <a href="{{ route('admin.plot_type.index') }}" class="btn btn-secondary">Cancel</a>
                 <button type="submit" class="btn btn-primary">Save Types</button>
             </div>
 
