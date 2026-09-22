@@ -4,44 +4,64 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePlotAndUnitRequest;
 use App\Http\Requests\UpdatePlotAndUnitRequest;
+use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\DB;
 use App\Imports\MembersImport;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use App\Models\PlotAndUnit;
-use App\Models\Member;
 use App\Models\PlotType;
 use App\Models\Road;
 use App\Models\User;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Support\Str;
 
 class PlotAndUnitController extends Controller
 {
     public function index(Request $request)
     {
-        $holding_no      = $request->holding_no;
-        $building_type   = $request->building_type;
-        $collection_type = $request->collection_type;
+        $query = PlotAndUnit::with(['road', 'plotType'])->orderByDesc('id');
 
-        $plotAndUnits = PlotAndUnit::with(['road', 'plotType'])->orderBy('id', 'desc');
-
-        if (!empty($holding_no)) {
-            $plotAndUnits->where('holding_no', 'LIKE', '%' . $holding_no . '%');
+        // 1. Keyword Search: Holding No, Contact Name, Phone, or UID
+        if ($request->filled('search')) {
+            $search = trim($request->search);
+            $query->where(function ($q) use ($search) {
+                $q->where('holding_no', 'LIKE', "%{$search}%")
+                ->orWhere('name', 'LIKE', "%{$search}%")
+                ->orWhere('phone', 'LIKE', "%{$search}%")
+                ->orWhere('unique_id', 'LIKE', "%{$search}%");
+            });
         }
 
-        if (!empty($building_type)) {
-            $plotAndUnits->where('building_type', $building_type);
+        // Road Filter (by road number from input or datalist)
+        if ($request->filled('road_number')) {
+            $roadNum = trim($request->road_number);
+            $query->whereHas('road', function ($q) use ($roadNum) {
+                $q->where('number', 'LIKE', "%{$roadNum}%");
+            });
         }
 
-        if (!empty($collection_type)) {
-            $plotAndUnits->where('collection_type', $collection_type);
+        // 3. Plot Type Filter
+        if ($request->filled('plot_type_id')) {
+            $query->where('plot_type_id', $request->plot_type_id);
         }
 
-        $plotAndUnits = $plotAndUnits->paginate(30);
-        $plot_types = PlotType::where('status', true)->get();
-        return view('admin.plot_and_units.index', compact('plotAndUnits', 'plot_types'));
+        // 4. Collection Mode Filter
+        if ($request->filled('collection_type')) {
+            $query->where('collection_type', $request->collection_type);
+        }
+
+        // 5. Status Filter
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $plotAndUnits = $query->paginate(30)->withQueryString();
+        
+        // Auxiliary data for filter dropdowns & metric cards
+        $plotTypes = PlotType::withCount('plotAndUnits')->get();
+        $roads     = Road::orderBy('number')->get();
+
+        return view('admin.plot_and_units.index', compact('plotAndUnits', 'plotTypes', 'roads'));
     }
 
     public function create()
