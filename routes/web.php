@@ -171,11 +171,8 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
     // SMS Managements
     Route::controller(BulkSmsController::class)->prefix('bulksms')->name('bulksms.')->group(function () {
         Route::get('/', 'index')->name('index');
-        Route::get('/receipt/{id}', 'receipt')->name('receipt');
-        Route::get('{id}/edit', 'edit')->name('edit');
-        Route::put('{id}', 'update')->name('update');
-        Route::patch('change-status/{id}', 'changeStatus')->name('change.status');
-        Route::delete('{id}/destroy', 'destroy')->name('destroy');
+        Route::get('/draft-sms', 'DraftSMS')->name('draftsms');
+        Route::get('{sms-history', 'SMSHistory')->name('smshistory');
     });
 
     // Collectors

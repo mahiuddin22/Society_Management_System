@@ -102,7 +102,8 @@
         <div class="nav-group">
             <div class="nav-group-label">SMS Management</div>
             @if(hasPermission('collections'))
-            <a class="nav-item {{ request()->routeIs('admin.bulksms.*') ? 'active' : '' }}" href="{{ route('admin.bulksms.index') }}" data-panel="payments">
+            @endif
+            <a class="nav-item {{ request()->routeIs('admin.bulksms') ? 'active' : '' }}" href="{{ route('admin.bulksms.index') }}" data-panel="payments">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="2" y="6" width="20" height="13" rx="2" />
                     <path d="M2 10h20" />
@@ -110,17 +111,24 @@
                 </svg>
                 Bulk SMS
             </a>
-            @if(hasPermission('collectors'))
-            @endif
-            <a class="nav-item {{ request()->routeIs('admin.collectors.*') ? 'active' : '' }}" href="{{ route('admin.collectors.index') }}" data-panel="owners">
+            
+            <a class="nav-item {{ request()->routeIs('admin.bulksms.draftsms') ? 'active' : '' }}" href="{{ route('admin.bulksms.draftsms') }}" data-panel="owners">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="8" r="4" />
                     <path d="M4 21c1-4 5-6 8-6s7 2 8 6" />
                 </svg>
-                Collectors
+                Draft SMS
+            </a>
+            
+            <a class="nav-item {{ request()->routeIs('admin.bulksms.smshistory') ? 'active' : '' }}" href="{{ route('admin.bulksms.smshistory') }}" data-panel="owners">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="8" r="4" />
+                    <path d="M4 21c1-4 5-6 8-6s7 2 8 6" />
+                </svg>
+                SMS History
             </a>
         </div>
-        @endif
+        
 
         @if (hasPermission('activities') || hasPermission('roles') || hasPermission('permissions'))
         <div class="nav-group">

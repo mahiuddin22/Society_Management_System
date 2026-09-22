@@ -1,6 +1,45 @@
 @extends('admin.layouts.app')
 @section('content')
+@push('styles')
+<style>
+    .loading-dots {
+        display: inline-flex;
+        gap: 4px;
+        align-items: center;
+    }
 
+    .loading-dots i {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: currentColor;
+        animation: loadingDots 1.2s infinite ease-in-out;
+    }
+
+    .loading-dots i:nth-child(2) {
+        animation-delay: .15s;
+    }
+
+    .loading-dots i:nth-child(3) {
+        animation-delay: .3s;
+    }
+
+    @keyframes loadingDots {
+
+        0%,
+        80%,
+        100% {
+            opacity: .3;
+            transform: scale(.7);
+        }
+
+        40% {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+</style>
+@endpush
 <section class="panel active" id="panel-sms">
 
     <!-- SMS Summary -->
@@ -34,8 +73,10 @@
         <div class="col-6 col-md-3">
             <div class="card stat-card p-3 h-100">
                 <div class="label">Sent This Month</div>
-                <div class="value">{{$totalsent}}</div>
-                <div class="delta up">▲ Total sms sent in this {{now()->format('F')}}</div>
+                <div class="value" id="totalSent">
+                    <div class="value" id="totalSent"><span class="loading-dots"><i></i><i></i><i></i></span></div>
+                </div>
+                <div class="delta up">▲ Total sms sent in this {{ now()->format('F') }}</div>
             </div>
         </div>
 
@@ -49,7 +90,6 @@
             </div>
         </div>
 
-
     </div>
 
     <!-- SMS Tabs -->
@@ -57,8 +97,6 @@
     <div class="filter-bar">
         <div class="d-flex align-items-center gap-2 flex-wrap">
             <button type="button" class="btn btn-primary sms-tab-btn active" data-sms-tab="smsCompose">Compose Campaign</button>
-            <button type="button" class="btn btn-secondary sms-tab-btn" data-sms-tab="smsDrafts">Drafts</button>
-            <button type="button" class="btn btn-secondary sms-tab-btn" data-sms-tab="smsReports">Delivery Reports</button>
             <button type="button" class="btn btn-secondary sms-tab-btn" data-sms-tab="smsRecharge">Recharge & Settings</button>
         </div>
     </div>
@@ -79,8 +117,8 @@
                         <div class="card-header bg-white border-bottom px-4 py-3">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h5 class="mb-1 fw-semibold">New Campaign</h5>
-                                    <small class="text-body-secondary">Create and send a personalized SMS campaign</small>
+                                    <h5 class="mb-1 fw-semibold">New Message</h5>
+                                    <small class="text-body-secondary">Create and send a message</small>
                                 </div>
 
                                 <span class="badge rounded-pill bg-light text-success border px-3 py-2">
@@ -90,7 +128,7 @@
                         </div>
 
                         <div class="card-body p-4">
-                            
+
                             <!-- SMS Type -->
                             <div class="mb-4">
 
@@ -209,7 +247,7 @@
                             <!-- Action -->
                             <div class="border-top pt-4">
 
-                                <button type="button" class="btn btn-primary btn-lg w-100">
+                                <button type="button" class="btn btn-primary btn-lg w-100 text-center">
                                     <i class="bi bi-send me-2"></i>Review & Send Campaign
                                 </button>
 
@@ -364,246 +402,6 @@
 
         </div>
 
-        <!-- DRAFTS -->
-        <div id="smsDrafts" class="sms-tab-pane d-none">
-
-            <div class="card">
-
-                <div class="card-head">
-                    <h3>Saved Drafts</h3>
-
-                    <button class="btn btn-primary btn-sm">
-                        + New Draft
-                    </button>
-                </div>
-
-                <div class="table-wrap">
-
-                    <table class="ledger text-nowrap">
-
-                        <thead>
-                            <tr>
-                                <th>Purpose</th>
-                                <th>Draft Name</th>
-                                <th>Language</th>
-                                <th>Length</th>
-                                <th>Last Edited</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-
-                            <tr>
-                                <td><span class="badge badge-paid">Invoice</span></td>
-                                <td>Monthly Invoice Notice</td>
-                                <td>বাংলা</td>
-                                <td>112 chars · 2 SMS</td>
-                                <td>2 days ago</td>
-                                <td>
-                                    <button class="btn btn-secondary btn-sm">Edit</button>
-                                    <button class="btn btn-primary btn-sm">Use</button>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td><span class="badge badge-partial">Reminder</span></td>
-                                <td>Payment Reminder — Due</td>
-                                <td>English</td>
-                                <td>148 chars · 1 SMS</td>
-                                <td>5 days ago</td>
-                                <td>
-                                    <button class="btn btn-secondary btn-sm">Edit</button>
-                                    <button class="btn btn-primary btn-sm">Use</button>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td><span class="badge badge-neutral">Invitation</span></td>
-                                <td>Cultural Program Invitation</td>
-                                <td>বাংলা</td>
-                                <td>205 chars · 4 SMS</td>
-                                <td>1 week ago</td>
-                                <td>
-                                    <button class="btn btn-secondary btn-sm">Edit</button>
-                                    <button class="btn btn-primary btn-sm">Use</button>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td><span class="badge badge-neutral">Invitation</span></td>
-                                <td>Medical Camp Announcement</td>
-                                <td>English</td>
-                                <td>165 chars · 2 SMS</td>
-                                <td>2 weeks ago</td>
-                                <td>
-                                    <button class="btn btn-secondary btn-sm">Edit</button>
-                                    <button class="btn btn-primary btn-sm">Use</button>
-                                </td>
-                            </tr>
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- DELIVERY REPORTS -->
-        <div id="smsReports" class="sms-tab-pane d-none">
-
-            <div class="card mb-3">
-
-                <div class="card-head">
-                    <h3>Campaign History</h3>
-                    <span class="hint">SMS delivery summary</span>
-                </div>
-
-                <div class="table-wrap">
-
-                    <table class="ledger text-nowrap">
-
-                        <thead>
-                            <tr>
-                                <th>Campaign</th>
-                                <th>Sent</th>
-                                <th>Recipients</th>
-                                <th>Delivered</th>
-                                <th>Failed</th>
-                                <th>Pending</th>
-                                <th>Cost</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-
-                            <tr>
-                                <td>July Invoice Notice</td>
-                                <td>23 Jul, 10:02 AM</td>
-                                <td>148</td>
-                                <td>142</td>
-                                <td>3</td>
-                                <td>3</td>
-                                <td>৳148.00</td>
-                                <td>
-                                    <span class="badge badge-partial">In Progress</span>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td>Payment Reminder — Round 2</td>
-                                <td>18 Jul, 4:30 PM</td>
-                                <td>41</td>
-                                <td>39</td>
-                                <td>2</td>
-                                <td>0</td>
-                                <td>৳41.00</td>
-                                <td>
-                                    <span class="badge badge-paid">Completed</span>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td>Annual Picnic Invitation</td>
-                                <td>10 Jul, 9:15 AM</td>
-                                <td>248</td>
-                                <td>246</td>
-                                <td>2</td>
-                                <td>0</td>
-                                <td>৳496.00</td>
-                                <td>
-                                    <span class="badge badge-paid">Completed</span>
-                                </td>
-                            </tr>
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-            </div>
-
-
-            <!-- Delivery Log -->
-
-            <div class="card">
-
-                <div class="card-head">
-                    <h3>July Invoice Notice — Delivery Log</h3>
-                    <span class="hint">148 recipients</span>
-                </div>
-
-                <div class="table-wrap">
-
-                    <table class="ledger text-nowrap">
-
-                        <thead>
-                            <tr>
-                                <th>Resident</th>
-                                <th>Unit</th>
-                                <th>Mobile</th>
-                                <th>Status</th>
-                                <th>Delivered At</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-
-                            <tr>
-                                <td>Kamal Hossain</td>
-                                <td>A-04B</td>
-                                <td>01711-223344</td>
-                                <td>
-                                    <span class="badge badge-paid">Delivered</span>
-                                </td>
-                                <td>10:02 AM</td>
-                            </tr>
-
-                            <tr>
-                                <td>Fahmida Begum</td>
-                                <td>A-01A</td>
-                                <td>01822-556677</td>
-                                <td>
-                                    <span class="badge badge-paid">Delivered</span>
-                                </td>
-                                <td>10:02 AM</td>
-                            </tr>
-
-                            <tr>
-                                <td>Shahidul Islam</td>
-                                <td>B-06C</td>
-                                <td>01933-889900</td>
-                                <td>
-                                    <span class="badge badge-due">Failed</span>
-                                </td>
-                                <td>—</td>
-                            </tr>
-
-                            <tr>
-                                <td>Delwar Hossain</td>
-                                <td>D-03B</td>
-                                <td>01655-112233</td>
-                                <td>
-                                    <span class="badge badge-partial">Pending</span>
-                                </td>
-                                <td>—</td>
-                            </tr>
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-            </div>
-
-        </div>
-
         <!-- RECHARGE & SETTINGS -->
         <div id="smsRecharge" class="sms-tab-pane d-none">
 
@@ -736,6 +534,22 @@
 </section>
 @endsection
 @push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        fetch('http://103.230.63.50/bulksms/api/sent-sms-this-month')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('totalSent').textContent = data.this_month ?? 0;
+            })
+            .catch(error => {
+                document.getElementById('totalSent').textContent = '0';
+                console.error(error);
+            });
+
+    });
+</script>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
 
