@@ -26,7 +26,12 @@
         <div class="nav-group">
             <div class="nav-group-label">People</div>
             @if (hasPermission('plot_and_units'))
-            @php $plot_activity = request()->routeIs('admin.plot-and-units.index') || request()->routeIs('admin.plot-and-units.create') || request()->routeIs('admin.plot-and-units.edit') @endphp
+                @php 
+                    $plot_activity = request()->routeIs('admin.plot-and-units.index') 
+                                    || request()->routeIs('admin.plot-and-units.create') 
+                                    || request()->routeIs('admin.plot-and-units.edit') 
+                                    || request()->routeIs('admin.plot-and-units.show')
+                @endphp
             <a class="nav-item {{ $plot_activity ? 'active' : '' }}" href="{{ route('admin.plot-and-units.index') }}" data-panel="units">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M3 21V9l9-6 9 6v12" />

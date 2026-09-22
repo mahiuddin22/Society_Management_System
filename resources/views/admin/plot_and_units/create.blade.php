@@ -196,8 +196,8 @@
               <div class="row g-3">
                 {{-- Contact Person Flat No --}}
                 <div class="col-12 col-sm-6" id="personFlatNo">
-                  <label for="person_flat_no" class="form-label fw-semibold small mb-1">Flat No <span class="text-danger">*</span></label>
-                  <input type="text" class="input w-100 flat-no" name="flat_no" id="person_flat_no" value="{{ old('flat_no') }}" placeholder="e.g. 4B" required>
+                  <label for="person_flat_no" class="form-label fw-semibold small mb-1">Flat No</label>
+                  <input type="text" class="input w-100 flat-no" name="flat_no" id="person_flat_no" value="{{ old('flat_no') }}" placeholder="e.g. 4B">
                 </div>
 
                 {{-- Contact Name --}}

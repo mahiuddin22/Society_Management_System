@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePlotAndUnitRequest;
+use App\Http\Requests\UpdatePlotAndUnitRequest;
 use App\Imports\MembersImport;
 use App\Models\PlotAndUnit;
 use App\Models\Member;
@@ -11,6 +12,7 @@ use App\Models\Road;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Str;
@@ -54,238 +56,144 @@ class PlotAndUnitController extends Controller
     public function store(StorePlotAndUnitRequest $request)
     {
         $validated = $request->validated();
+        $road = Road::find($validated['road']);
 
-        // $validatedData = $request->validate([
-        //     'road'              => 'required',
-        //     'holding_no'        => 'required|string|max:255',
-        //     'building_type'     => 'required',
-        //     'total_flat'        => 'nullable|integer|min:0',
-        //     'occupied_flat'     => 'nullable|integer|min:0|lte:total_flat',
-        //     'building_name'     => 'nullable|string',
-        //     'collection_type'   => 'nullable',
-        //     'collection_rate'   => 'required_if:building_type,9|nullable|numeric|min:0',
-        //     'collection_amount' => 'required_if:building_type,9|nullable|numeric|min:0',
-        //     'discount'          => 'nullable|numeric|min:0',
-        //     'name'              => 'nullable',
-        //     'flat_no'           => 'nullable|max:255',
-        //     'number'            => 'nullable|string|max:255',
-        //     'email'             => 'nullable|email|max:255',
-        //     'date'              => 'required|date',
-        //     'status'            => 'required|in:0,1',
-        // ]);
+        try {
+            DB::transaction(function () use ($validated, $road) {
+                PlotAndUnit::create([
+                    'plot_type_id'    => $validated['plot_type'],
+                    'road_id'         => $validated['road'],
+                    'holding_no'      => $validated['holding_no'],
+                    'building_name'   => $validated['building_name'] ?? null,
+                    'total_flat'      => $validated['total_flat'] ?? 0,
+                    'occupied_flat'   => $validated['occupied_flat'] ?? 0,
+                    'flat_numbers'    => $validated['flat_numbers'] ?? null,
+                    'collection_type' => $validated['collection_type'] ?? null,
 
-        // $plotAndUnit                    = new PlotAndUnit();
-        // $plotAndUnit->road              = $validatedData['road'];
-        // $plotAndUnit->holding_no        = $validatedData['holding_no'];
-        // $plotAndUnit->building_type     = $validatedData['building_type'];
-        // $plotAndUnit->total_flat        = $validatedData['total_flat'] ?? 0;
-        // $plotAndUnit->occupied_flat     = $validatedData['occupied_flat'] ?? 0;
-        // $plotAndUnit->building_name     = $validatedData['building_name'] ?? 'N/A';
-        // $plotAndUnit->collection_type   = $validatedData['collection_type'];
-        // $plotAndUnit->name              = $validatedData['name'];
-        // $plotAndUnit->flat_no           = $validatedData['flat_no'];
-        // $plotAndUnit->collection_rate   = $validatedData['collection_rate'] ?? 0;
-        // $plotAndUnit->discount          = $validatedData['discount'] ?? 0;
-        // $plotAndUnit->collection_amount = $validatedData['collection_amount'] ?? 0;
-        // $plotAndUnit->date              = Carbon::createFromFormat('d-m-Y', $request->date)->format('Y-m-d') ?? null;
-        // $plotAndUnit->status            = $validatedData['status'];
+                    // Contact Representative
+                    'name'            => $validated['name'] ?? 'N/A',
+                    'flat_no'         => $validated['flat_no'] ?? null,
+                    'phone'           => $validated['phone'] ?? 'N/A',
+                    'email'           => $validated['email'] ?? null,
+                    'unique_id'       => 'UTR03'
+                                        . '-'
+                                        . $road->number
+                                        . $validated['holding_no']
+                                        . '-'
+                                        . match (true) {
+                                            ($validated['occupied_flat'] == 0 || $validated['occupied_flat'] == null) && $validated['plot_type'] == 2 => 'CONS',
+                                            ($validated['occupied_flat'] == 0 || $validated['occupied_flat'] == null) && $validated['plot_type'] == 1 => 'LAND',
+                                            default => $validated['flat_no'],
+                                        },
 
-        $plotUnit = PlotAndUnit::create([
-            'plot_type_id'    => $validated['plot_type'],
-            'road_id'         => $validated['road'],
-            'holding_no'      => $validated['holding_no'],
-            'building_name'   => $validated['building_name'] ?? null,
-            'total_flat'      => $validated['total_flat'] ?? 0,
-            'occupied_flat'   => $validated['occupied_flat'] ?? 0,
-            'flat_numbers'    => $validated['flat_numbers'] ?? null,
-            'collection_type' => $validated['collection_type'] ?? null,
+                    // Financials
+                    'collection_rate' => $validated['collection_rate'] ?? 0,
+                    'discount'        => $validated['discount'] ?? 0,
+                    'total_amount'    => $validated['collection_amount'] ?? 0,
 
-            // Contact Representative
-            'name'            => $validated['name'] ?? 'N/A',
-            'flat_no'         => $validated['flat_no'] ?? null,
-            'phone'           => $validated['phone'] ?? 'N/A',
-            'email'           => $validated['email'] ?? null,
-            'unique_id' => 'UTR-03'
-                            . $validated['road']
-                            . '-'
-                            . $validated['holding_no']
-                            . '-'
-                            . match (true) {
-                                $validated['occupied_flat'] == 0 && $validated['plot_type'] === 'under_construction' => 'CONS',
-                                $validated['occupied_flat'] == 0 && $validated['plot_type'] === 'land' => 'LAND',
-                                default => $validated['flat_no'],
-                            },
+                    'status'          => $validated['status'],
+                ]);
 
-            // Financials
-            'collection_rate' => $validated['collection_rate'] ?? 0,
-            'discount'        => $validated['discount'] ?? 0,
-            'total_amount'    => $validated['collection_amount'] ?? 0,
+                User::updateOrCreate(
+                    ['phone' => $validated['phone']],
+                    [
+                        'role'  => 7,
+                        'name'  => $validated['name'],
+                        'email' => $validated['email'],
+                        'password' => Hash::make(Str::random(10)),
+                        'phone' => $validated['phone'],
+                    ]
+                );
+            });
+        } catch (\Throwable $e) {
+            report($e);
+            return back()->withInput()->with('error', $e->getMessage());
+        }
 
-            'status'          => $validated['status'],
-        ]);
-
-        // dd($plotUnit);
-
-        // if ($request->date) {
-        //     $issue_date = Carbon::createFromFormat('d-m-Y', $request->date)->format('F Y');
-        // }
-
-        // // Normalize phone number
-        // $number = preg_replace('/\s+/', '', $validatedData['number']);
-
-        // if (!str_starts_with($number, '88')) {
-        //     $number = '88' . $number;
-        // }
-
-        // $plotAndUnit->number = $number;
-        // $plotAndUnit->email  = $validatedData['email'] ?? null;
-        // $plotAndUnit->save();
-
-        // $plotAndUnit->unique_id = 'UT03'
-        //     . $validatedData['road']
-        //     . $validatedData['holding_no']
-        //     . $plotAndUnit->id
-        //     . $validatedData['total_flat'];
-
-        // $plotAndUnit->save();
-
-        User::updateOrCreate(
-            ['phone' => $validated['phone']],
-            [
-                'role' => 7,
-                'name' => $validated['name'],
-                'email' => $validated['email'],
-                'phone' => $validated['phone']
-            ]
-        );
         return redirect()->route('admin.plot-and-units.index')->with('success', 'Data created successfully.');
     }
 
-    public function edit($id)
+    public function edit(int $id)
     {
-        $data           = PlotAndUnit::where('id',$id)->first();
-        $plot_types     = PlotType::where('status', true)->get();
-        $rates          = $plot_types->pluck('amount', 'id')->toArray();
-        $roads          = Road::all();
-        return view('admin.plot_and_units.edit', compact('data', 'plot_types', 'rates', 'roads'));
+        $pageTitle = '';
+        $plotAndUnit = PlotAndUnit::findOrFail($id);
+        $plotTypes   = PlotType::where('status', 'Active')->get(['id', 'name', 'slug', 'fees']);
+        $rates       = $plotTypes->pluck('fees', 'id')->toArray();
+        $roads       = Road::all();
+
+        return view('admin.plot_and_units.edit', compact('plotAndUnit', 'plotTypes', 'rates', 'roads', 'pageTitle'));
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdatePlotAndUnitRequest $request, int $id)
     {
-        $validatedData = $request->validate([
-            'road'              => 'required',
-            'holding_no'        => 'required|string|max:255',
-            'building_type'     => 'required',
-            'total_flat'        => 'nullable|integer|min:0',
-            'occupied_flat'     => 'nullable|integer|min:0|lte:total_flat',
-            'building_name'     => 'nullable|string',
-            'collection_type'   => 'nullable',
-            'collection_rate'   => 'required_if:building_type,9|nullable|numeric|min:0',
-            'collection_amount' => 'required_if:building_type,9|nullable|numeric|min:0',
-            'discount'          => 'nullable|numeric|min:0',
-            'name'              => 'nullable',
-            'flat_no'           => 'nullable|max:255',
-            'number'            => 'nullable|string|max:255',
-            'email'             => 'nullable|email|max:255',
-            'date'              => 'required|date',
-            'status'            => 'required|in:0,1',
-        ]);
+        
+        #TODO::Some infomation can't update when payment cycle started.
 
-        // Normalize phone number
-        $number = preg_replace('/\s+/', '', $validatedData['number']);
-
-        if (!str_starts_with($number, '88')) {
-            $number = '88' . $number;
-        }
-
+        $validated = $request->validated();
         $plotAndUnit = PlotAndUnit::findOrFail($id);
+        $road = Road::find($validated['road']);
 
-        if ($plotAndUnit->building_type != $validatedData['building_type']) {
+        try {
+            DB::transaction(function () use ($validated, $plotAndUnit, $road) {
+                $plotAndUnit->update([
+                    'plot_type_id'    => $validated['plot_type'],
+                    'road_id'         => $validated['road'],
+                    'holding_no'      => $validated['holding_no'],
+                    'building_name'   => $validated['building_name'] ?? null,
+                    'total_flat'      => $validated['total_flat'] ?? 0,
+                    'occupied_flat'   => $validated['occupied_flat'] ?? 0,
+                    'flat_numbers'    => $validated['flat_numbers'] ?? null,
+                    'collection_type' => $validated['collection_type'] ?? null,
 
-            // Create new PlotAndUnit
-            $newplot = new PlotAndUnit();
+                    // Contact Representative
+                    'name'            => $validated['name'],
+                    'flat_no'         => $validated['flat_no'] ?? null,
+                    'phone'           => $validated['phone'],
+                    'email'           => $validated['email'] ?? null,
 
-            $newplot->road              = $validatedData['road'];
-            $newplot->holding_no        = $validatedData['holding_no'];
-            $newplot->building_type     = $validatedData['building_type'];
-            $newplot->total_flat        = $validatedData['total_flat'] ?? 0;
-            $newplot->occupied_flat     = $validatedData['occupied_flat'] ?? 0;
-            $plotAndUnit->building_name = $validatedData['building_name'] ?? 'N/A';
-            $newplot->collection_type   = $validatedData['collection_type'];
-            $newplot->name              = $validatedData['name'];
-            $newplot->flat_no           = $validatedData['flat_no'];
-            $plotAndUnit->number        = $number;
-            $plotAndUnit->email         = $validatedData['email'];
-            $newplot->collection_rate   = $validatedData['collection_rate'] ?? 0;
-            $newplot->discount          = $validatedData['discount'] ?? 0;
-            $newplot->collection_amount = $validatedData['collection_amount'] ?? 0;
-            $newplot->date              = Carbon::createFromFormat('d-m-Y', $request->date)->format('Y-m-d') ?? null;
-            $newplot->status            = $validatedData['status'];
+                    'unique_id'       => 'UTR03'
+                                        . '-'
+                                        . $road->number
+                                        . $validated['holding_no']
+                                        . '-'
+                                        . match (true) {
+                                            ($validated['occupied_flat'] == 0 || $validated['occupied_flat'] == null) && $validated['plot_type'] == 2 => 'CONS',
+                                            ($validated['occupied_flat'] == 0 || $validated['occupied_flat'] == null) && $validated['plot_type'] == 1 => 'LAND',
+                                            default => $validated['flat_no'],
+                                        },
 
-            // Disable old PlotAndUnit
-            $plotAndUnit->status = 0;
-            $plotAndUnit->save();
-            $newplot->save();
+                    // Financials
+                    'collection_rate' => $validated['collection_rate'] ?? 0,
+                    'discount'        => $validated['discount'] ?? 0,
+                    'total_amount'    => $validated['collection_amount'] ?? 0,
+                    'status'          => $validated['status'],
+                ]);
 
-            // IMPORTANT:
-            // From now on, use the new plot
-            $plotAndUnit = $newplot;
-            User::updateOrCreate(
-                ['phone' => $number],
-                [
-                    'role'      => 'member',
-                    'name'      => $validatedData['name'],
-                    'username'  => strtolower(preg_replace('/\s+/', '', $validatedData['name'])),
-                    'email'     => $validatedData['email'],
-                    'phone'     => $number,
-                    'uid'       => 'UT03' . $validatedData['road'] . $validatedData['holding_no'] . $plotAndUnit->id . $validatedData['total_flat'],
-                    'password'     => Hash::make('123456'),
-                ]
-            );
-        } else {
-
-            // Update existing PlotAndUnit
-            $plotAndUnit->road              = $validatedData['road'];
-            $plotAndUnit->holding_no        = $validatedData['holding_no'];
-            $plotAndUnit->building_type     = $validatedData['building_type'];
-            $plotAndUnit->total_flat        = $validatedData['total_flat'] ?? 0;
-            $plotAndUnit->occupied_flat     = $validatedData['occupied_flat'] ?? 0;
-            $plotAndUnit->building_name     = $validatedData['building_name'] ?? 'N/A';
-            $plotAndUnit->collection_type   = $validatedData['collection_type'];
-            $plotAndUnit->name              = $validatedData['name'];
-            $plotAndUnit->flat_no           = $validatedData['flat_no'];
-            $plotAndUnit->number            = $number;
-            $plotAndUnit->email             = $validatedData['email'];
-            $plotAndUnit->collection_rate   = $validatedData['collection_rate'] ?? 0;
-            $plotAndUnit->discount          = $validatedData['discount'] ?? 0;
-            $plotAndUnit->collection_amount = $validatedData['collection_amount'] ?? 0;
-            $plotAndUnit->date              = Carbon::createFromFormat('d-m-Y', $request->date)->format('Y-m-d') ?? null;
-            $plotAndUnit->status            = $validatedData['status'];
-            $plotAndUnit->save();
-            User::updateOrCreate(
-                ['phone' => $number],
-                [
-                    'role'      => 'member',
-                    'name'      => $validatedData['name'],
-                    'username'  => strtolower(preg_replace('/\s+/', '', $validatedData['name'])),
-                    'email'     => $validatedData['email'],
-                    'phone'     => $number,
-                    'uid'       => 'UT03' . $validatedData['road'] . $validatedData['holding_no'] . $plotAndUnit->id . $validatedData['total_flat'],
-                    'password'     => Hash::make('123456'),
-                ]
-            );
+                // Sync User record
+                User::updateOrCreate(
+                    ['phone' => $validated['phone']],
+                    [
+                        'role'  => 7,
+                        'name'  => $validated['name'],
+                        'email' => $validated['email'] ?? null,
+                    ]
+                );
+            });
+        } catch (\Throwable $e) {
+            report($e);
+            return back()->withInput()->with('error', $e->getMessage());
         }
 
-        return redirect()->route('admin.plot-and-units.index')->with('success', 'Data updated successfully.');
+        return redirect()->route('admin.plot-and-units.show', $id)->with('success', 'Building updated successfully.');
     }
 
-    public function view($id)
+    public function view(int $id)
     {
-        $plotAndUnit = PlotAndUnit::findOrFail($id);
+        $plotAndUnit = PlotAndUnit::with(['road', 'plotType'])->findOrFail($id);
         return view('admin.plot_and_units.view', compact('plotAndUnit'));
     }
 
-    public function destroy($id)
+    public function destroy(int $id)
     {
         $plotAndUnit = PlotAndUnit::findOrFail($id);
         $plotAndUnit->sector_collenctions()->delete();
