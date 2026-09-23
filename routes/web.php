@@ -5,6 +5,7 @@ use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\CollectorController;
 use App\Http\Controllers\AjaxController;
 use App\Http\Controllers\BulkSmsController;
+use App\Http\Controllers\DraftController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\PermissionsController;
@@ -172,8 +173,24 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
     // SMS Managements
     Route::controller(BulkSmsController::class)->prefix('bulksms')->name('bulksms.')->group(function () {
         Route::get('/', 'index')->name('index');
+        Route::get('/sms-history', 'SMSHistory')->name('smshistory');
+    });
+    
+    // Draft Managements
+    Route::controller(DraftController::class)->prefix('draft')->name('draft.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/create', 'create')->name('create');
+        Route::post('/store', 'store')->name('store');
+        Route::get('/{id}/edit', 'edit')->name('edit');
+        Route::put('/{id}', 'update')->name('update');
+        Route::delete('/{id}/destroy', 'destroy')->name('destroy');
+    });
+    
+    // SMS Managements
+    Route::controller(BulkSmsController::class)->prefix('bulksms')->name('bulksms.')->group(function () {
+        Route::get('/', 'index')->name('index');
         Route::get('/draft-sms', 'DraftSMS')->name('draftsms');
-        Route::get('{sms-history', 'SMSHistory')->name('smshistory');
+        Route::get('/sms-history', 'SMSHistory')->name('smshistory');
     });
 
     // Collectors

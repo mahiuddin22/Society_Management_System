@@ -117,7 +117,7 @@
                 Bulk SMS
             </a>
             
-            <a class="nav-item {{ request()->routeIs('admin.bulksms.draftsms') ? 'active' : '' }}" href="{{ route('admin.bulksms.draftsms') }}" data-panel="owners">
+            <a class="nav-item {{ request()->routeIs('admin.draft.*') ? 'active' : '' }}" href="{{ route('admin.draft.index') }}" data-panel="owners">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="8" r="4" />
                     <path d="M4 21c1-4 5-6 8-6s7 2 8 6" />
