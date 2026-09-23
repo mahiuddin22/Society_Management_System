@@ -1,5 +1,7 @@
 <?php
 
+#TODO:: Need to work on User 
+
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePlotAndUnitRequest;
@@ -195,6 +197,7 @@ class PlotAndUnitController extends Controller
                     [
                         'role'  => 7,
                         'name'  => $validated['name'],
+                        'password' => Hash::make(Str::random(10)),
                         'email' => $validated['email'] ?? null,
                     ]
                 );

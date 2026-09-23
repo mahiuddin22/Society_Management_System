@@ -195,4 +195,21 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
         Route::put('email-update', 'emailUpdate')->name('email.update');
         Route::put('password-update', 'passwordUpdate')->name('password.update');
     });
+
+    
 });
+
+
+
+Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+        // Existing Plot & Unit routes ...
+
+        // Billing Engine Routes
+        Route::get('/bills', [App\Http\Controllers\BillController::class, 'index'])->name('bills.index');
+        Route::post('/bills/generate', [App\Http\Controllers\BillController::class, 'generate'])->name('bills.generate');
+        Route::post('/bills/{bill}/pay', [App\Http\Controllers\BillController::class, 'pay'])->name('bills.pay');
+
+        Route::get('/payments', [App\Http\Controllers\PaymentController::class, 'index'])->name('payments.index');
+    });
+
+    

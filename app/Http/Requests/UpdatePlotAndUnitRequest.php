@@ -78,7 +78,7 @@ class UpdatePlotAndUnitRequest extends FormRequest
             'flat_no'            => ['nullable', 'string', 'max:30'],
             'name'               => ['required', 'string', 'max:100'],
             'phone'              => ['required', 'string', 'max:20'],
-            'email'              => ['nullable', 'email:rfc,dns', 'max:254'],
+            'email'              => ['nullable', 'email', 'max:254'],
             'status'             => ['required', Rule::in(['Active', 'Inactive'])],
 
             // 4. Financial Calculations

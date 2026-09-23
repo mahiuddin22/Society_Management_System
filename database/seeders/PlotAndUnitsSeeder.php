@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -33,7 +34,7 @@ class PlotAndUnitsSeeder extends Seeder
                 'name'            => 'Abdul Mannan',
                 'phone'           => '01644444444',
                 'email'           => null,
-                'unique_id'       => 'UTR-034-09-LAND',
+                'unique_id'       => 'UTR03-0409-LAND',
                 'collection_rate' => 0.00,
                 'discount'        => 0.00,
                 'total_amount'    => 0.00,
@@ -56,13 +57,13 @@ class PlotAndUnitsSeeder extends Seeder
                 'name'            => 'Engr. Kamal Hossain',
                 'phone'           => '01822222222',
                 'email'           => 'kamal@example.com',
-                'unique_id'       => 'UTR-031-07-CONS',
+                'unique_id'       => 'UTR03-0107-CONS',
                 'collection_rate' => 1500.00,
                 'discount'        => 0.00,
                 'total_amount'    => 1500.00, // 1500 * 1 - 0
                 'status'          => 'Active',
-                'created_at'      => now(),
-                'updated_at'      => now(),
+                'created_at' => Carbon::now()->subDays(100),
+                'updated_at' => Carbon::now()->subDays(100),
             ],
             [
                 'plot_type_id'    => 2, // Under Construction
@@ -77,7 +78,7 @@ class PlotAndUnitsSeeder extends Seeder
                 'name'            => 'Barrister Shahriar Kabir',
                 'phone'           => '01945678901',
                 'email'           => 'shahriar@kabir-law.com',
-                'unique_id'       => 'UTR-035-18/C-CONS',
+                'unique_id'       => 'UTR03-0518/C-CONS',
                 'collection_rate' => 1500.00,
                 'discount'        => 0.00,
                 'total_amount'    => 1500.00, // 1500 * 1 - 0
@@ -100,7 +101,7 @@ class PlotAndUnitsSeeder extends Seeder
                 'name'            => 'Md. Rahim Uddin',
                 'phone'           => '01711111111',
                 'email'           => 'rahim@example.com',
-                'unique_id'       => 'UTR-031-12/A-1A',
+                'unique_id'       => 'UTR03-0112/A-1A',
                 'collection_rate' => 250.00,
                 'discount'        => 50.00,
                 'total_amount'    => 1700.00, // (250 * 7) - 50 = 1700.00
@@ -121,7 +122,7 @@ class PlotAndUnitsSeeder extends Seeder
                 'name'            => 'Fatema Khatun',
                 'phone'           => '01933333333',
                 'email'           => 'fatema@example.com',
-                'unique_id'       => 'UTR-032-25/B-3B',
+                'unique_id'       => 'UTR03-0225/B-3B',
                 'collection_rate' => 250.00,
                 'discount'        => 0.00,
                 'total_amount'    => 2500.00, // (250 * 10) - 0 = 2500.00
@@ -142,7 +143,7 @@ class PlotAndUnitsSeeder extends Seeder
                 'name'            => 'Nusrat Jahan',
                 'phone'           => '01555555555',
                 'email'           => 'nusrat@example.com',
-                'unique_id'       => 'UTR-033-05-2A',
+                'unique_id'       => 'UTR0-3305-2A',
                 'collection_rate' => 250.00,
                 'discount'        => 500.00,
                 'total_amount'    => 4000.00, // (250 * 18) - 500 = 4000.00
@@ -163,7 +164,7 @@ class PlotAndUnitsSeeder extends Seeder
                 'name'            => 'Mahbubur Rahman',
                 'phone'           => '01567890123',
                 'email'           => 'mahbub.rahman@example.com',
-                'unique_id'       => 'UTR-036-03-3A',
+                'unique_id'       => 'UTR03-0603-3A',
                 'collection_rate' => 250.00,
                 'discount'        => 200.00,
                 'total_amount'    => 1800.00, // (250 * 8) - 200 = 1800.00
@@ -186,7 +187,7 @@ class PlotAndUnitsSeeder extends Seeder
                 'name'            => 'Imtiaz Ahmed Khan',
                 'phone'           => '01834567890',
                 'email'           => 'imtiaz.khan@example.com',
-                'unique_id'       => 'UTR-032-08-2A',
+                'unique_id'       => 'UTR03-0208-2A',
                 'collection_rate' => 250.00,
                 'discount'        => 0.00,
                 'total_amount'    => 1000.00, // (250 * 4) - 0 = 1000.00
@@ -201,13 +202,13 @@ class PlotAndUnitsSeeder extends Seeder
                 'building_name'   => 'Chowdhury Villa',
                 'total_flat'      => 2,
                 'occupied_flat'   => 2,
-                'flat_numbers'    => 'Unit-1,Unit-2',
+                'flat_numbers'    => '2A,2B',
                 'collection_type' => 'Individual',
-                'flat_no'         => 'Unit-1',
+                'flat_no'         => '2B',
                 'name'            => 'Kabir Chowdhury',
                 'phone'           => '01799887766',
                 'email'           => 'kabir.chowdhury@example.com',
-                'unique_id'       => 'UTR-037-02-Unit-1',
+                'unique_id'       => 'UTR03-0702-2B',
                 'collection_rate' => 250.00,
                 'discount'        => 0.00,
                 'total_amount'    => 500.00, // (250 * 2) - 0 = 500.00
@@ -226,11 +227,11 @@ class PlotAndUnitsSeeder extends Seeder
                 'occupied_flat'   => 5,
                 'flat_numbers'    => 'Shop-1,Shop-2,Office-1,Office-2,Office-3',
                 'collection_type' => 'Group',
-                'flat_no'         => 'Office-1',
+                'flat_no'         => '7C',
                 'name'            => 'Tariqul Islam',
                 'phone'           => '01712345678',
                 'email'           => 'tariqul@commercial.com',
-                'unique_id'       => 'UTR-033-14-Office-1',
+                'unique_id'       => 'UTR03-0314-7C',
                 'collection_rate' => 1500.00,
                 'discount'        => 500.00,
                 'total_amount'    => 7000.00, // (1500 * 5) - 500 = 7000.00

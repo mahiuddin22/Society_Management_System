@@ -12,18 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('payments', function (Blueprint $table) {
-            $table->id();
-
-            $table->foreignId('bill_id')->constrained()->cascadeOnUpdate()->restrictOnDelete();
-            $table->foreignId('collector_id')->constrained('users'); // Society collector/admin
-            
-            $table->decimal('amount', 12, 2);
-            $table->string('payment_method', 30)->comment('Cash, bKash, Bank Transfer, Nagad');
-            $table->string('transaction_id', 100)->nullable();
+           $table->id();
+            $table->foreignId('bill_id')->constrained('bills')->cascadeOnDelete();
+            $table->string('payment_number', 50)->unique();
+            $table->decimal('amount', 10, 2);
             $table->date('payment_date');
-            $table->string('receipt_no', 30)->unique();
-            $table->text('remarks')->nullable();
-            
+            $table->enum('method', ['Cash', 'bKash', 'Nagad', 'Bank Transfer', 'Cheque'])->default('Cash');
+            $table->string('transaction_ref', 100)->nullable();
+            $table->foreignId('received_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }

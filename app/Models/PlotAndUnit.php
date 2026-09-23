@@ -21,4 +21,8 @@ class PlotAndUnit extends Model
         return $this->belongsTo(PlotType::class);
     }
     
+    public function bills(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Bill::class);
+    }
 }

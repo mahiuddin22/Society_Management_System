@@ -13,28 +13,26 @@ return new class extends Migration
     {
         Schema::create('bills', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('plot_and_unit_id')->constrained()->cascadeOnUpdate()->restrictOnDelete();
-            
-            // Billing Period
-            $table->date('billing_month')->comment("'2026-10-01' (Always store first of month)");
-            $table->date('due_date')->comment('2026-10-15');
-            
-            // Financial Snapshot at Time of Generation
-            $table->decimal('rate', 10, 2);
-            $table->unsignedSmallInteger('billing_units')->default(1);
-            $table->decimal('discount', 12, 2)->default(0);
-            $table->decimal('amount', 12, 2)->comment('(rate * billing_units) - discount');      
-            $table->decimal('paid_amount', 12, 2)->default(0);
-            $table->decimal('due_amount', 12, 2)->comment('amount - paid_amount');
+            $table->foreignId('plot_and_unit_id')->constrained('plot_and_units')->cascadeOnDelete();
+            $table->string('bill_number', 50)->unique();
+            $table->string('billing_month', 7); // Format: 'YYYY-MM' (e.g., '2026-09')
+            $table->date('due_date');
 
-            // Status
-            $table->enum('status', ['Unpaid', 'Partial', 'Paid'])->default('Unpaid');
-            $table->string('invoice_no', 30)->unique()->comment('INV-202610-UTR03...');
+            // Snapshot attributes at the exact time of billing
+            $table->string('plot_type_name', 50);
+            $table->unsignedInteger('billing_units')->default(1);
+            $table->decimal('rate_snapshot', 10, 2)->default(0.00);
+            $table->decimal('discount_snapshot', 10, 2)->default(0.00);
+            $table->decimal('gross_amount', 10, 2)->default(0.00);
+            $table->decimal('net_amount', 10, 2)->default(0.00);
+            $table->decimal('paid_amount', 10, 2)->default(0.00);
             
+            // Status: Unpaid, Partial, Paid, Overdue
+            $table->enum('status', ['Unpaid', 'Partial', 'Paid', 'Overdue'])->default('Unpaid');
             $table->timestamps();
 
             // Prevent duplicate bills for the same property in the same month
-            $table->unique(['plot_and_unit_id', 'billing_month']);
+            $table->unique(['plot_and_unit_id', 'billing_month'], 'uniq_property_month_bill');
             $table->index(['billing_month', 'status']);
         });
     }
