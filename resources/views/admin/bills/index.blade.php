@@ -73,7 +73,7 @@
       border: 1px solid var(--forest-200, var(--line-strong));
     }
 
-    /* Custom Calendar Date Picker (Payment Date) */
+    /* Custom Calendar Date Picker (Payment Date & Due Date) */
     .date-picker-popup {
       font-size: 12.5px;
     }
@@ -675,7 +675,7 @@
           <tr>
             <th>Bill / Date</th>
             <th>Resident / Contact</th>
-            <th>Type</th>
+            <th>Road / Holding</th>
             <th>Units &amp; Rate</th>
             <th class="num">Net Due</th>
             <th>Status</th>
@@ -767,7 +767,7 @@
 
 </section>
 
-{{-- Modal 1: Generate Billing Run (With Formatted Displays) --}}
+{{-- Modal 1: Generate Billing Run (With Formatted Displays & Custom Due Date Picker) --}}
 <div class="modal fade" id="generateModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered" style="max-width: 420px;">
     <form action="{{ route('admin.bills.generate') }}" method="POST" class="modal-content border-0 shadow">
@@ -808,33 +808,61 @@
           </div>
         </div>
 
-        {{-- Due Date with Visible Human-Readable Formatting --}}
+        {{-- Due Date: Custom Calendar Picker (Same custom grid design) --}}
         <div class="mb-3">
           <label class="form-label small fw-semibold mb-1">Due Date</label>
-          <div class="position-relative w-100">
+          <div class="position-relative date-picker-container w-100" id="genDueDatePickerWrapper">
             <input
               type="text"
               id="displayDueDate"
               class="input w-100"
-              style="padding-right: 34px; background-color: var(--card); cursor: pointer;"
+              placeholder="Select Date"
+              autocomplete="off"
               readonly
+              style="cursor: pointer; padding-right: 28px; background-color: var(--card); font-size: 12.5px; color: var(--ink-700); user-select: none;"
             >
-            <span class="position-absolute top-50 translate-middle-y text-muted" style="right: 11px; pointer-events: none; z-index: 1;">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                <line x1="16" y1="2" x2="16" y2="6"></line>
-                <line x1="8" y1="2" x2="8" y2="6"></line>
-                <line x1="3" y1="10" x2="21" y2="10"></line>
+            <span class="position-absolute top-50 end-0 translate-middle-y pe-2 text-muted" style="pointer-events: none; opacity: .65;">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="m6 9 6 6 6-6"/>
               </svg>
             </span>
-            <input
-              type="date"
-              name="due_date"
-              id="nativeDueDate"
-              value="{{ now()->addMonth()->startOfMonth()->addDays(9)->toDateString() }}"
-              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 2;"
-              required
+
+            <div
+              id="genDueDateDropdown"
+              class="date-picker-popup road-custom-popup"
+              style="
+                display: none;
+                position: absolute;
+                top: calc(100% + 4px);
+                left: 0;
+                width: 240px;
+                max-width: 90vw;
+                background: var(--card);
+                border: 1px solid var(--line);
+                border-radius: var(--radius-s);
+                box-shadow: 0 4px 14px rgba(23, 56, 34, 0.08);
+                z-index: 1075;
+                padding: 10px;
+              "
             >
+              <div class="d-flex align-items-center justify-content-between mb-2">
+                <button type="button" class="dp-nav-btn" id="genDueDatePrev">&laquo;</button>
+                <span class="fw-semibold" id="genDueDateMonthYearLabel" style="font-size: 13px; color: var(--ink-900);"></span>
+                <button type="button" class="dp-nav-btn" id="genDueDateNext">&raquo;</button>
+              </div>
+              <div class="dp-weekday-row">
+                <span class="dp-weekday">Su</span>
+                <span class="dp-weekday">Mo</span>
+                <span class="dp-weekday">Tu</span>
+                <span class="dp-weekday">We</span>
+                <span class="dp-weekday">Th</span>
+                <span class="dp-weekday">Fr</span>
+                <span class="dp-weekday">Sa</span>
+              </div>
+              <div class="dp-day-grid" id="genDueDateGrid"></div>
+            </div>
+
+            <input type="hidden" name="due_date" id="nativeDueDate" value="{{ now()->addMonth()->startOfMonth()->addDays(9)->toDateString() }}">
           </div>
         </div>
 
@@ -1084,7 +1112,6 @@
           if (isVisible) {
             closeDropdown();
           } else {
-            // Close other open custom select dropdowns
             document.querySelectorAll('.road-custom-popup').forEach(p => {
               if (p !== menu && !p.classList.contains('month-year-popup') && !p.classList.contains('date-picker-popup')) {
                 p.style.display = 'none';
@@ -1152,7 +1179,7 @@
         containerClass: 'plot-type-picker-container'
       });
 
-      // 3. Payment Status Dropdown (Customized)
+      // 3. Payment Status Dropdown
       setupCustomSelect({
         inputId: 'statusSearchInput',
         hiddenId: 'statusHiddenValue',
@@ -1316,7 +1343,7 @@
       });
 
       // ===================================================
-      // Custom Calendar Date Picker (used for Payment Date)
+      // Custom Calendar Date Picker (used for Payment Date & Due Date)
       // ===================================================
       function initDatePicker({ wrapperId, displayId, dropdownId, gridId, monthYearLabelId, prevBtnId, nextBtnId, hiddenId, closeOnSelect = true }) {
         const wrapper   = document.getElementById(wrapperId);
@@ -1473,6 +1500,7 @@
         };
       }
 
+      // 1. Payment Date Picker
       const paymentDatePicker = initDatePicker({
         wrapperId:         'payDatePickerWrapper',
         displayId:         'displayPaymentDate',
@@ -1486,13 +1514,25 @@
 
       window.__paymentDatePicker = paymentDatePicker;
 
+      // 2. Generate Modal Due Date Picker (Customized to match theme & mobile layout)
+      const genDueDatePicker = initDatePicker({
+        wrapperId:         'genDueDatePickerWrapper',
+        displayId:         'displayDueDate',
+        dropdownId:        'genDueDateDropdown',
+        gridId:            'genDueDateGrid',
+        monthYearLabelId:  'genDueDateMonthYearLabel',
+        prevBtnId:         'genDueDatePrev',
+        nextBtnId:         'genDueDateNext',
+        hiddenId:          'nativeDueDate',
+      });
+
+      window.__genDueDatePicker = genDueDatePicker;
+
       // ===================================================
-      // Generate Modal Displays Sync
+      // Generate Modal Month Display Sync
       // ===================================================
       const nativeMonth  = document.getElementById('nativeBillingMonth');
       const displayMonth = document.getElementById('displayBillingMonth');
-      const nativeDate   = document.getElementById('nativeDueDate');
-      const displayDate  = document.getElementById('displayDueDate');
 
       function formatMonthDisplay(val) {
         if (!val) return '';
@@ -1501,36 +1541,22 @@
         return `${year}-${monthNames[mIndex] || month}`;
       }
 
-      function formatDateDisplay(val) {
-        if (!val) return '';
-        const [year, month, day] = val.split('-');
-        const mIndex = parseInt(month, 10) - 1;
-        return `${parseInt(day, 10)} ${monthNames[mIndex] || month}, ${year}`;
-      }
-
       function syncGenMonth() {
         if (nativeMonth && displayMonth) {
           displayMonth.value = formatMonthDisplay(nativeMonth.value);
         }
       }
 
-      function syncGenDate() {
-        if (nativeDate && displayDate) {
-          displayDate.value = formatDateDisplay(nativeDate.value);
-        }
-      }
-
       if (nativeMonth) nativeMonth.addEventListener('change', syncGenMonth);
-      if (nativeDate)  nativeDate.addEventListener('change', syncGenDate);
-
       syncGenMonth();
-      syncGenDate();
 
       const generateModal = document.getElementById('generateModal');
       if (generateModal) {
         generateModal.addEventListener('show.bs.modal', function () {
           syncGenMonth();
-          syncGenDate();
+          if (window.__genDueDatePicker && typeof window.__genDueDatePicker.refresh === 'function') {
+            window.__genDueDatePicker.refresh();
+          }
         });
       }
 
