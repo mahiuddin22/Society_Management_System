@@ -33,7 +33,7 @@
       request()->filled('filter_data') ||
       request()->filled('filter_status')
       )
-      <a href="{{ route('admin.collection.index') }}" class="btn btn-secondary">Reset</a>
+      <a href="{{ route('admin.payments.index') }}" class="btn btn-secondary">Reset</a>
       @endif
 
     </form>
