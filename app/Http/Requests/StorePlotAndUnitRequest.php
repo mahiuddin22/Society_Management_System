@@ -68,7 +68,7 @@ class StorePlotAndUnitRequest extends FormRequest
             // 2. Flats & Occupancy
             'total_flat'    => ['required_if:plot_type,3,4,5', 'nullable', 'integer', 'min:0', 'max:65535'],
             'occupied_flat' => ['required_if:plot_type,3,4,5', 'nullable', 'integer', 'min:0', 'lte:total_flat'],
-            'collection_type'    => ['required', Rule::in(['Group', 'Individual'])],
+            'collection_type' => ['nullable', 'required_if:plot_type,2,3,4,5', Rule::in(['Group', 'Individual'])],
             'flat_numbers'       => ['nullable', 'string'],
 
             // 3. Contact Representative

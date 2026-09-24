@@ -139,7 +139,7 @@
             {{-- Collection Type --}}
             <div class="col-12 col-md-4" id="collectionTypeGroup">
               <label for="collection_type" class="form-label fw-semibold small mb-1">
-                Collection Mode <span class="text-danger">*</span>
+                Collection Mode <span class="text-danger collection-type-required-star">*</span>
               </label>
               <select class="select w-100" id="collection_type" name="collection_type" required>
                 <option value="">Select Mode</option>
@@ -423,34 +423,45 @@
   const rateHint           = document.getElementById('rateHint');
   const totalFlat          = document.getElementById('total_flat');
   const occupiedFlat       = document.getElementById('occupied_flat');
+  const collectionType     = document.getElementById('collection_type');
   const discount           = document.getElementById('discount');
   const collectionAmount   = document.getElementById('collection_amount');
   const flatRequiredStars  = document.querySelectorAll('.flat-required-star');
+  const collectionTypeRequiredStar  = document.querySelector('.collection-type-required-star');
 
   // Slugs that do NOT strictly require flat counts
-  const exemptSlugs = ['under-construction', 'land'];
+  const exemptSlugs = ['under-construction', 'empty-plot'];
 
   function updateFlatRequirements() {
-    const selectedOption = plotTypeSelect.options[plotTypeSelect.selectedIndex];
-    const slug = selectedOption ? selectedOption.getAttribute('data-slug') : '';
+      const selectedOption = plotTypeSelect.options[plotTypeSelect.selectedIndex];
+      const slug = selectedOption ? selectedOption.getAttribute('data-slug') : '';
 
-    const isExempt = exemptSlugs.includes(slug);
+      const isExempt = exemptSlugs.includes(slug);
 
-    if (isExempt) {
-      // Remove required attribute
-      totalFlat.removeAttribute('required');
-      occupiedFlat.removeAttribute('required');
+      if (isExempt) {
+          // Remove required attribute
+          totalFlat.removeAttribute('required');
+          occupiedFlat.removeAttribute('required');
 
-      // Hide red asterisk (*) in label
-      flatRequiredStars.forEach(el => el.style.display = 'none');
-    } else {
-      // Re-apply required attribute
-      totalFlat.setAttribute('required', 'required');
-      occupiedFlat.setAttribute('required', 'required');
+          // Hide red asterisk (*) in label
+          flatRequiredStars.forEach(el => el.style.display = 'none');
+      } else {
+          // Re-apply required attribute
+          totalFlat.setAttribute('required', 'required');
+          occupiedFlat.setAttribute('required', 'required');
 
-      // Show red asterisk (*) in label
-      flatRequiredStars.forEach(el => el.style.display = 'inline');
-    }
+          // Show red asterisk (*) in label
+          flatRequiredStars.forEach(el => el.style.display = 'inline');
+      }
+
+      // --- Only this part is new: collection_type not required for empty-plot ---
+      if (slug === 'empty-plot') {
+          collectionType.removeAttribute('required');
+          collectionTypeRequiredStar.style.display = 'none';
+      } else {
+          collectionType.setAttribute('required', 'required');
+          collectionTypeRequiredStar.style.display = 'inline';
+      }
   }
 
   function getEffectiveRate() {

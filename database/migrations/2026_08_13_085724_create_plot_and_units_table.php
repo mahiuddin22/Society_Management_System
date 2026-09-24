@@ -25,7 +25,7 @@ return new class extends Migration
                 ->cascadeOnUpdate()
                 ->restrictOnDelete();
 
-            $table->string('unique_id', 30)->unique();
+            $table->string('unique_id', 30);
 
             $table->string('name', 100)->index();
             $table->string('email', 254)->nullable();
@@ -43,7 +43,7 @@ return new class extends Migration
             $table->enum('collection_type', [
                 'Group',
                 'Individual',
-            ]);
+            ])->nullable();
 
             $table->decimal('collection_rate', 10, 2)->default(0);
             $table->decimal('total_amount', 12, 2)->default(0); // form sends name="collection_amount"

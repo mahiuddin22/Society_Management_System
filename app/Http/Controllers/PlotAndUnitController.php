@@ -1,5 +1,7 @@
 <?php
 
+#TODO:: Need to work on User 
+
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePlotAndUnitRequest;
@@ -79,8 +81,8 @@ class PlotAndUnitController extends Controller
         $road = Road::find($validated['road']);
 
         try {
-            DB::transaction(function () use ($validated, $road) {
-                PlotAndUnit::create([
+            $plotAndUnit = DB::transaction(function () use ($validated, $road) {
+                $plotAndUnit = PlotAndUnit::create([
                     'plot_type_id'    => $validated['plot_type'],
                     'road_id'         => $validated['road'],
                     'holding_no'      => $validated['holding_no'],
@@ -102,7 +104,7 @@ class PlotAndUnitController extends Controller
                                         . '-'
                                         . match (true) {
                                             ($validated['occupied_flat'] == 0 || $validated['occupied_flat'] == null) && $validated['plot_type'] == 2 => 'CONS',
-                                            ($validated['occupied_flat'] == 0 || $validated['occupied_flat'] == null) && $validated['plot_type'] == 1 => 'LAND',
+                                            ($validated['occupied_flat'] == 0 || $validated['occupied_flat'] == null) && $validated['plot_type'] == 1 => 'EMT',
                                             default => $validated['flat_no'],
                                         },
 
@@ -124,13 +126,17 @@ class PlotAndUnitController extends Controller
                         'phone' => $validated['phone'],
                     ]
                 );
+                
+                return $plotAndUnit;
+
             });
         } catch (\Throwable $e) {
             report($e);
             return back()->withInput()->with('error', $e->getMessage());
         }
 
-        return redirect()->route('admin.plot-and-units.index')->with('success', 'Data created successfully.');
+         return redirect()->route('admin.plot-and-units.show', $plotAndUnit->id)->with('success', 'Building updated successfully.');
+        // return redirect()->route('admin.plot-and-units.index')->with('success', 'Data created successfully.');
     }
 
     public function edit(int $id)
@@ -178,7 +184,7 @@ class PlotAndUnitController extends Controller
                                         . '-'
                                         . match (true) {
                                             ($validated['occupied_flat'] == 0 || $validated['occupied_flat'] == null) && $validated['plot_type'] == 2 => 'CONS',
-                                            ($validated['occupied_flat'] == 0 || $validated['occupied_flat'] == null) && $validated['plot_type'] == 1 => 'LAND',
+                                            ($validated['occupied_flat'] == 0 || $validated['occupied_flat'] == null) && $validated['plot_type'] == 1 => 'EMT',
                                             default => $validated['flat_no'],
                                         },
 
@@ -195,6 +201,7 @@ class PlotAndUnitController extends Controller
                     [
                         'role'  => 7,
                         'name'  => $validated['name'],
+                        'password' => Hash::make(Str::random(10)),
                         'email' => $validated['email'] ?? null,
                     ]
                 );
@@ -207,7 +214,7 @@ class PlotAndUnitController extends Controller
         return redirect()->route('admin.plot-and-units.show', $id)->with('success', 'Building updated successfully.');
     }
 
-    public function view(int $id)
+    public function show(int $id)
     {
         $plotAndUnit = PlotAndUnit::with(['road', 'plotType'])->findOrFail($id);
         return view('admin.plot_and_units.view', compact('plotAndUnit'));
