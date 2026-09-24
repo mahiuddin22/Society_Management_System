@@ -76,6 +76,23 @@
       color: var(--forest-800) !important;
       background-color: var(--forest-50) !important;
     }
+
+    /* Mobile Responsive Modal Dialog Fix */
+    @media (max-width: 576px) {
+      #payModal .modal-dialog,
+      #generateModal .modal-dialog {
+        margin: 0.75rem auto !important;
+        max-width: calc(100% - 1.25rem) !important;
+      }
+      #payModal .modal-footer,
+      #generateModal .modal-footer {
+        padding-right: 1rem !important;
+      }
+      #payModal .modal-footer .btn-primary,
+      #generateModal .modal-footer .btn-primary {
+        margin-right: 0 !important;
+      }
+    }
   </style>
 @endpush
 
@@ -390,7 +407,7 @@
           <span class="fw-bold" style="font-size: 16px; color: var(--forest-800);">
             {{ $collectionPercentage }}%
           </span>
-          <span class="hint small" style="font-size: 10px; color: var(--ink-500);">released</span>
+          <span class="hint small" style="font-size: 10px; color: var(--ink-500);">realized</span>
         </div>
       </div>
     </div>
@@ -511,15 +528,15 @@
         {{-- Billing Month with Visible Human-Readable Formatting --}}
         <div class="mb-3">
           <label class="form-label small fw-semibold mb-1">Billing Month</label>
-          <div class="position-relative">
+          <div class="position-relative w-100">
             <input 
               type="text" 
               id="displayBillingMonth" 
               class="input w-100" 
-              style="cursor: pointer; padding-right: 36px;" 
+              style="padding-right: 34px; background-color: var(--card); cursor: pointer;" 
               readonly
             >
-            <span class="position-absolute end-0 top-50 translate-middle-y me-2 text-muted" style="pointer-events: none;">
+            <span class="position-absolute top-50 translate-middle-y text-muted" style="right: 11px; pointer-events: none; z-index: 1;">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                 <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -527,12 +544,13 @@
                 <line x1="3" y1="10" x2="21" y2="10"></line>
               </svg>
             </span>
+            {{-- Native Full-Width Hidden Overlay for clean touch triggers --}}
             <input 
               type="month" 
               name="billing_month" 
               id="nativeBillingMonth" 
               value="{{ now()->format('Y-m') }}" 
-              style="position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0;"
+              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 2;"
               required
             >
           </div>
@@ -541,15 +559,15 @@
         {{-- Due Date with Visible Human-Readable Formatting --}}
         <div class="mb-3">
           <label class="form-label small fw-semibold mb-1">Due Date</label>
-          <div class="position-relative">
+          <div class="position-relative w-100">
             <input 
               type="text" 
               id="displayDueDate" 
               class="input w-100" 
-              style="cursor: pointer; padding-right: 36px;" 
+              style="padding-right: 34px; background-color: var(--card); cursor: pointer;" 
               readonly
             >
-            <span class="position-absolute end-0 top-50 translate-middle-y me-2 text-muted" style="pointer-events: none;">
+            <span class="position-absolute top-50 translate-middle-y text-muted" style="right: 11px; pointer-events: none; z-index: 1;">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                 <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -557,12 +575,13 @@
                 <line x1="3" y1="10" x2="21" y2="10"></line>
               </svg>
             </span>
+            {{-- Native Full-Width Hidden Overlay for clean touch triggers --}}
             <input 
               type="date" 
               name="due_date" 
               id="nativeDueDate" 
               value="{{ now()->addMonth()->startOfMonth()->addDays(9)->toDateString() }}" 
-              style="position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0;"
+              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 2;"
               required
             >
           </div>
@@ -604,10 +623,10 @@
               id="displayPaymentDate" 
               class="input w-100" 
               placeholder="DD/MM/YYYY"
-              style="cursor: pointer; padding-right: 34px;" 
+              style="padding-right: 34px; background-color: var(--card); cursor: pointer;" 
               readonly
             >
-            <span class="position-absolute end-0 top-50 translate-middle-y me-2 text-muted" style="pointer-events: none;">
+            <span class="position-absolute top-50 translate-middle-y text-muted" style="right: 11px; pointer-events: none; z-index: 1;">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                 <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -615,12 +634,13 @@
                 <line x1="3" y1="10" x2="21" y2="10"></line>
               </svg>
             </span>
+            {{-- Native Full-Width Hidden Overlay: Device native calendar centers automatically --}}
             <input 
               type="date" 
               name="payment_date" 
               id="nativePaymentDate" 
               value="{{ now()->toDateString() }}" 
-              style="position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0;"
+              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 2;"
               required
             >
           </div>
@@ -823,25 +843,11 @@
         }
       }
 
-      if (displayMonth && nativeMonth) {
-        displayMonth.addEventListener('click', () => {
-          try {
-            nativeMonth.showPicker();
-          } catch (e) {
-            nativeMonth.focus();
-          }
-        });
+      if (nativeMonth) {
         nativeMonth.addEventListener('change', syncMonth);
       }
 
-      if (displayDate && nativeDate) {
-        displayDate.addEventListener('click', () => {
-          try {
-            nativeDate.showPicker();
-          } catch (e) {
-            nativeDate.focus();
-          }
-        });
+      if (nativeDate) {
         nativeDate.addEventListener('change', syncDate);
       }
 
@@ -867,14 +873,7 @@
         }
       };
 
-      if (displayPayDate && nativePayDate) {
-        displayPayDate.addEventListener('click', () => {
-          try {
-            nativePayDate.showPicker();
-          } catch (e) {
-            nativePayDate.focus();
-          }
-        });
+      if (nativePayDate) {
         nativePayDate.addEventListener('change', window.syncPaymentDateDisplay);
       }
 
