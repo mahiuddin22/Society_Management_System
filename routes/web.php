@@ -6,6 +6,7 @@ use App\Http\Controllers\CollectorController;
 use App\Http\Controllers\AjaxController;
 use App\Http\Controllers\BillController;
 use App\Http\Controllers\BulkSmsController;
+use App\Http\Controllers\DraftController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\PaymentController;
@@ -41,13 +42,15 @@ Route::get('testsms', function () {
     $contentType = 1;
     curl_setopt($ch, CURLOPT_URL, $apiUrl);
     curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, "authUser=Sector-03&authAccess=Sector@0309&destination=" . $number . "&text=" . urlencode($text) . "&requestId=" . $requesteid . " &contentType=" . $contentType);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, "authUser=Sector-test&authAccess=Sector@0309&destination=" . $number . "&text=" . urlencode($text) . "&requestId=" . $requesteid . " &contentType=" . $contentType);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $server_output = curl_exec($ch);
     curl_close($ch);
     ////------------------ No change Needed-------------------
     //
     ////FOR DEBUG
+    $data = json_decode($server_output);
+    dd($data->reply[0]->statuscode);
     var_dump($server_output);
 });
 Route::middleware('auth')->prefix('member')->as('member.')->group(function () {
@@ -174,8 +177,24 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
     // SMS Managements
     Route::controller(BulkSmsController::class)->prefix('bulksms')->name('bulksms.')->group(function () {
         Route::get('/', 'index')->name('index');
+        Route::get('/sms-history', 'SMSHistory')->name('smshistory');
+    });
+    
+    // Draft Managements
+    Route::controller(DraftController::class)->prefix('draft')->name('draft.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/create', 'create')->name('create');
+        Route::post('/store', 'store')->name('store');
+        Route::get('/{id}/edit', 'edit')->name('edit');
+        Route::put('/{id}', 'update')->name('update');
+        Route::delete('/{id}/destroy', 'destroy')->name('destroy');
+    });
+    
+    // SMS Managements
+    Route::controller(BulkSmsController::class)->prefix('bulksms')->name('bulksms.')->group(function () {
+        Route::get('/', 'index')->name('index');
         Route::get('/draft-sms', 'DraftSMS')->name('draftsms');
-        Route::get('{sms-history', 'SMSHistory')->name('smshistory');
+        Route::get('/sms-history', 'SMSHistory')->name('smshistory');
     });
 
     // Collectors

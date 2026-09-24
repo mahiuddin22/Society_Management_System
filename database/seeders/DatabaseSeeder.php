@@ -23,7 +23,8 @@ class DatabaseSeeder extends Seeder
             RolesSeeder::class,
             RolePermissionsSeeder::class,
             SectorCollenctionsSeeder::class,
-            SettingsSeeder::class
+            SettingsSeeder::class,
+            DraftSeeder::class
         ]);
     }
 }
