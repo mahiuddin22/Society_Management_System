@@ -40,13 +40,15 @@ Route::get('testsms', function () {
     $contentType = 1;
     curl_setopt($ch, CURLOPT_URL, $apiUrl);
     curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, "authUser=Sector-03&authAccess=Sector@0309&destination=" . $number . "&text=" . urlencode($text) . "&requestId=" . $requesteid . " &contentType=" . $contentType);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, "authUser=Sector-test&authAccess=Sector@0309&destination=" . $number . "&text=" . urlencode($text) . "&requestId=" . $requesteid . " &contentType=" . $contentType);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $server_output = curl_exec($ch);
     curl_close($ch);
     ////------------------ No change Needed-------------------
     //
     ////FOR DEBUG
+    $data = json_decode($server_output);
+    dd($data->reply[0]->statuscode);
     var_dump($server_output);
 });
 Route::middleware('auth')->prefix('member')->as('member.')->group(function () {

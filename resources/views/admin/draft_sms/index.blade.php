@@ -74,20 +74,12 @@
           <td>
             <div class="d-flex justify-content-center gap-2">
 
-              <a href="{{ route('admin.draft.edit', $draft->id) }}"
-                class="btn btn-secondary btn-sm">
-                Edit
-              </a>
+              <a href="{{ route('admin.draft.edit', $draft->id) }}" class="btn btn-outline-primary btn-sm"> <i class="bi bi-pencil"></i> </a>
 
-              <form action="{{ route('admin.draft.destroy', $draft->id) }}"
-                method="POST"
-                id="delete-form-{{ $draft->id }}">
+              <form action="{{ route('admin.draft.destroy', $draft->id) }}" method="POST" id="delete-form-{{ $draft->id }}">
                 @csrf
                 @method('DELETE')
-
-                <button type="submit" class="btn btn-primary btn-sm">
-                  Delete
-                </button>
+                <button type="submit" class="btn btn-outline-danger btn-sm"> <i class="bi bi-trash"></i> </button>
               </form>
 
             </div>
