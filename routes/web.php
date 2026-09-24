@@ -4,10 +4,12 @@ use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\CollectorController;
 use App\Http\Controllers\AjaxController;
+use App\Http\Controllers\BillController;
 use App\Http\Controllers\BulkSmsController;
 use App\Http\Controllers\DraftController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PermissionsController;
 use App\Http\Controllers\PlotAndUnitController;
 use App\Http\Controllers\PlotTypeController;
@@ -163,14 +165,14 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
     });
 
     // Collections
-    Route::controller(CollectionController::class)->prefix('collection')->name('collection.')->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::get('/receipt/{id}', 'receipt')->name('receipt');
-        Route::get('{id}/edit', 'edit')->name('edit');
-        Route::put('{id}', 'update')->name('update');
-        Route::patch('change-status/{id}', 'changeStatus')->name('change.status');
-        Route::delete('{id}/destroy', 'destroy')->name('destroy');
-    });
+    // Route::controller(CollectionController::class)->prefix('collection')->name('collection.')->group(function () {
+    //     Route::get('/', 'index')->name('index');
+    //     Route::get('/receipt/{id}', 'receipt')->name('receipt');
+    //     Route::get('{id}/edit', 'edit')->name('edit');
+    //     Route::put('{id}', 'update')->name('update');
+    //     Route::patch('change-status/{id}', 'changeStatus')->name('change.status');
+    //     Route::delete('{id}/destroy', 'destroy')->name('destroy');
+    // });
 
     // SMS Managements
     Route::controller(BulkSmsController::class)->prefix('bulksms')->name('bulksms.')->group(function () {
@@ -215,20 +217,15 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
         Route::put('password-update', 'passwordUpdate')->name('password.update');
     });
 
+    // Billing Engine Routes
+    Route::controller(BillController::class)->prefix('bills')->name('bills.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('generate', 'generate')->name('generate');
+        Route::post('{bill}/pay', 'pay')->name('pay');
+    });
+
+    Route::get('/collections', [PaymentController::class, 'index'])->name('payments.index');
     
 });
-
-
-
-Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
-        // Existing Plot & Unit routes ...
-
-        // Billing Engine Routes
-        Route::get('/bills', [App\Http\Controllers\BillController::class, 'index'])->name('bills.index');
-        Route::post('/bills/generate', [App\Http\Controllers\BillController::class, 'generate'])->name('bills.generate');
-        Route::post('/bills/{bill}/pay', [App\Http\Controllers\BillController::class, 'pay'])->name('bills.pay');
-
-        Route::get('/payments', [App\Http\Controllers\PaymentController::class, 'index'])->name('payments.index');
-    });
 
     
