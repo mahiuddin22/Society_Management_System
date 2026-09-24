@@ -11,7 +11,7 @@ class PlotAndUnitsSeeder extends Seeder
     /**
      * Run the database seeds.
      * Exact DB fees:
-     * 1. Land               -> 0.00
+     * 1. Empty Plot               -> 0.00
      * 2. Under Construction -> 1500.00
      * 3. Apartment          -> 250.00
      * 4. Owner              -> 250.00
@@ -20,9 +20,9 @@ class PlotAndUnitsSeeder extends Seeder
     public function run(): void
     {
         DB::table('plot_and_units')->insert([
-            // ==================== 1. LAND (1-ta: ID 1 | Fee: 0.00) ====================
+            // ==================== 1. Empty Plot (1-ta: ID 1 | Fee: 0.00) ====================
             [
-                'plot_type_id'    => 1, // Land
+                'plot_type_id'    => 1, // Empty Plot
                 'road_id'         => 4,
                 'holding_no'      => '09',
                 'building_name'   => null,
@@ -34,7 +34,7 @@ class PlotAndUnitsSeeder extends Seeder
                 'name'            => 'Abdul Mannan',
                 'phone'           => '01644444444',
                 'email'           => null,
-                'unique_id'       => 'UTR03-0409-LAND',
+                'unique_id'       => 'UTR03-0409-EMT',
                 'collection_rate' => 0.00,
                 'discount'        => 0.00,
                 'total_amount'    => 0.00,

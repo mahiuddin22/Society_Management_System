@@ -49,7 +49,7 @@ class UpdatePlotAndUnitRequest extends FormRequest
     public function rules(): array
     {
         $selectedPlotType = PlotType::find($this->plot_type);
-        $isExempt = in_array($selectedPlotType?->slug, ['under-construction', 'land']);
+        $isExempt = in_array($selectedPlotType?->slug, ['under-construction', 'empty-plot']);
 
         return [
             // 1. Property Identity & Location
@@ -71,7 +71,8 @@ class UpdatePlotAndUnitRequest extends FormRequest
                 'min:0',
                 'lte:total_flat',
             ],
-            'collection_type'    => ['required', Rule::in(['Group', 'Individual'])],
+            'collection_type' => ['nullable', 'required_if:plot_type,2,3,4,5', Rule::in(['Group', 'Individual'])],
+
             'flat_numbers'       => ['nullable', 'string'],
 
             // 3. Contact Representative

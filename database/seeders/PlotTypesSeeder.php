@@ -16,8 +16,8 @@ class PlotTypesSeeder extends Seeder
         DB::table('plot_types')->insert([
             [
                 'id' => 1,
-                'name' => 'Land',
-                'slug' => 'land',
+                'name' => 'Empty Plot',
+                'slug' => 'empty-plot',
                 'description' => 'Vacant ground awaiting building development',
                 'fees' => 0,
                 'status' => 'Active',

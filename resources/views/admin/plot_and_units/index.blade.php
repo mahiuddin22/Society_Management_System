@@ -225,11 +225,13 @@
           </div>
 
           {{-- Action Buttons --}}
-          <div class="d-flex align-items-center gap-1 flex-shrink-0">
+          <div class="d-flex align-items-center gap-2 flex-shrink-0">
             <button type="submit" class="btn btn-primary px-3" style="height: 38px;">Search</button>
 
             @if(request()->hasAny(['search', 'road_number', 'plot_type_id', 'collection_type', 'status']))
-              <a href="{{ route('admin.plot-and-units.index') }}" class="btn btn-ghost px-2 text-danger" title="Clear all filters" style="height: 38px; line-height: 24px;">Reset</a>
+              <a href="{{ route('admin.plot-and-units.index') }}" class="btn btn-secondary px-2" title="Clear all filters" style="height: 38px; line-height: 24px;">Reset</a>
+
+              
             @endif
           </div>
 
@@ -305,14 +307,14 @@
           <tr>
             {{-- Holding & Road --}}
             <td>
-              <div class="fw-medium text-dark">{{ $unit->holding_no }}</div>
+              <div class="fw-medium text-dark">Holding - {{ $unit->holding_no }}</div>
               <span class="hint small">Road - {{ $unit->road->number ?? 'N/A' }}</span>
             </td>
 
             {{-- Type & Mode --}}
             <td>
               <div>{{ $unit->plotType->name ?? 'N/A' }}</div>
-              <span class="hint small" style="font-size: 10px;">{{ $unit->collection_type ?? 'Standard' }}</span>
+              <span class="hint small" style="font-size: 10px;">{{ $unit->collection_type ?? '—' }}</span>
             </td>
 
             {{-- Flats Occupancy --}}

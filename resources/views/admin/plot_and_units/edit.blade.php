@@ -143,7 +143,7 @@
             {{-- Collection Type --}}
             <div class="col-12 col-md-4" id="collectionTypeGroup">
               <label for="collection_type" class="form-label fw-semibold small mb-1">
-                Collection Mode <span class="text-danger">*</span>
+                Collection Mode <span class="text-danger collection-type-star">*</span>
               </label>
               <select class="select w-100" id="collection_type" name="collection_type" required>
                 <option value="">Select Mode</option>
@@ -433,11 +433,13 @@
   const rateHint           = document.getElementById('rateHint');
   const totalFlat          = document.getElementById('total_flat');
   const occupiedFlat       = document.getElementById('occupied_flat');
+  const collectionType     = document.getElementById('collection_type');
   const discount           = document.getElementById('discount');
   const collectionAmount   = document.getElementById('collection_amount');
   const flatRequiredStars  = document.querySelectorAll('.flat-required-star');
+  const collectionTypeStar = document.querySelector('.collection-type-star');
 
-  const exemptSlugs = ['under-construction', 'land'];
+  const exemptSlugs = ['under-construction', 'empty-plot'];
 
   function updateFlatRequirements() {
     const selectedOption = plotTypeSelect.options[plotTypeSelect.selectedIndex];
@@ -452,6 +454,15 @@
       totalFlat.setAttribute('required', 'required');
       occupiedFlat.setAttribute('required', 'required');
       flatRequiredStars.forEach(el => el.style.display = 'inline');
+    }
+
+    // Collection Mode not required only for empty-plot
+    if (slug === 'empty-plot') {
+      collectionType.removeAttribute('required');
+      if (collectionTypeStar) collectionTypeStar.style.display = 'none';
+    } else {
+      collectionType.setAttribute('required', 'required');
+      if (collectionTypeStar) collectionTypeStar.style.display = 'inline';
     }
   }
 
@@ -469,7 +480,6 @@
     const occupiedCount = parseInt(occupiedFlat.value, 10) || 0;
     const discountVal   = parseFloat(discount.value) || 0;
 
-    // Fallback to 1 unit if vacant or under construction (0 occupied flats)
     const billingUnits = occupiedCount > 0 ? occupiedCount : 1;
 
     const grossTotal = rate * billingUnits;

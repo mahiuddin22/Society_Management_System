@@ -53,7 +53,7 @@ class BillingService
         return DB::transaction(function () use ($property, $month, $dueDate) {
             // Access via camelCase relation: plotType
             $slug = $property->plotType?->slug ?? '';
-            $isExempt = in_array($slug, ['under-construction', 'land']);
+            $isExempt = in_array($slug, ['under-construction', 'empty-plot']);
 
             // Business Rules:
             // Land / Under-Construction -> strictly 1 billing unit (0 occupied flats)
