@@ -4,6 +4,8 @@ use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\CollectorController;
 use App\Http\Controllers\AjaxController;
+use App\Http\Controllers\BulkSmsController;
+use App\Http\Controllers\DraftController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\PermissionsController;
@@ -38,13 +40,15 @@ Route::get('testsms', function () {
     $contentType = 1;
     curl_setopt($ch, CURLOPT_URL, $apiUrl);
     curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, "authUser=Sector-03&authAccess=Sector@0309&destination=" . $number . "&text=" . urlencode($text) . "&requestId=" . $requesteid . " &contentType=" . $contentType);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, "authUser=Sector-test&authAccess=Sector@0309&destination=" . $number . "&text=" . urlencode($text) . "&requestId=" . $requesteid . " &contentType=" . $contentType);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $server_output = curl_exec($ch);
     curl_close($ch);
     ////------------------ No change Needed-------------------
     //
     ////FOR DEBUG
+    $data = json_decode($server_output);
+    dd($data->reply[0]->statuscode);
     var_dump($server_output);
 });
 Route::middleware('auth')->prefix('member')->as('member.')->group(function () {
@@ -134,20 +138,21 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
 
     // Plot and Units
     Route::controller(PlotAndUnitController::class)->prefix('plot-and-units')->name('plot-and-units.')->group(function () {
+        
+        Route::get('bulk-upload', 'bulkUpload')->name('bulk-upload');
+        Route::post('bulk-upload', 'bulkUploadStore')->name('bulk-upload.store');
+
         Route::get('/', 'index')->name('index');
         Route::get('create', 'create')->name('create');
         Route::post('store', 'store')->name('store');
-        Route::get('view/{id}', 'view')->name('view');
+        Route::get('{id}', 'show')->name('show');
         Route::get('{id}/edit', 'edit')->name('edit');
         Route::put('{id}', 'update')->name('update');
         Route::delete('{id}/destroy', 'destroy')->name('destroy');
-
-        Route::get('/bulk-upload', 'bulkUpload')->name('bulk-upload');
-        Route::post('/bulk-upload', 'bulkUploadStore')->name('bulk-upload.store');
     });
 
     // Plote Types
-    Route::controller(PlotTypeController::class)->prefix('type')->name('type.')->group(function () {
+    Route::controller(PlotTypeController::class)->prefix('plot-type')->name('plot_type.')->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('/create', 'create')->name('create');
         Route::post('store', 'store')->name('store');
@@ -165,6 +170,29 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
         Route::put('{id}', 'update')->name('update');
         Route::patch('change-status/{id}', 'changeStatus')->name('change.status');
         Route::delete('{id}/destroy', 'destroy')->name('destroy');
+    });
+
+    // SMS Managements
+    Route::controller(BulkSmsController::class)->prefix('bulksms')->name('bulksms.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/sms-history', 'SMSHistory')->name('smshistory');
+    });
+    
+    // Draft Managements
+    Route::controller(DraftController::class)->prefix('draft')->name('draft.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/create', 'create')->name('create');
+        Route::post('/store', 'store')->name('store');
+        Route::get('/{id}/edit', 'edit')->name('edit');
+        Route::put('/{id}', 'update')->name('update');
+        Route::delete('/{id}/destroy', 'destroy')->name('destroy');
+    });
+    
+    // SMS Managements
+    Route::controller(BulkSmsController::class)->prefix('bulksms')->name('bulksms.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/draft-sms', 'DraftSMS')->name('draftsms');
+        Route::get('/sms-history', 'SMSHistory')->name('smshistory');
     });
 
     // Collectors
@@ -186,4 +214,21 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
         Route::put('email-update', 'emailUpdate')->name('email.update');
         Route::put('password-update', 'passwordUpdate')->name('password.update');
     });
+
+    
 });
+
+
+
+Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+        // Existing Plot & Unit routes ...
+
+        // Billing Engine Routes
+        Route::get('/bills', [App\Http\Controllers\BillController::class, 'index'])->name('bills.index');
+        Route::post('/bills/generate', [App\Http\Controllers\BillController::class, 'generate'])->name('bills.generate');
+        Route::post('/bills/{bill}/pay', [App\Http\Controllers\BillController::class, 'pay'])->name('bills.pay');
+
+        Route::get('/payments', [App\Http\Controllers\PaymentController::class, 'index'])->name('payments.index');
+    });
+
+    

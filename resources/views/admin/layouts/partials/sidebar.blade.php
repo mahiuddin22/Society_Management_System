@@ -26,7 +26,12 @@
         <div class="nav-group">
             <div class="nav-group-label">People</div>
             @if (hasPermission('plot_and_units'))
-            @php $plot_activity = request()->routeIs('admin.plot-and-units.index') || request()->routeIs('admin.plot-and-units.create') || request()->routeIs('admin.plot-and-units.edit') @endphp
+                @php 
+                    $plot_activity = request()->routeIs('admin.plot-and-units.index') 
+                                    || request()->routeIs('admin.plot-and-units.create') 
+                                    || request()->routeIs('admin.plot-and-units.edit') 
+                                    || request()->routeIs('admin.plot-and-units.show')
+                @endphp
             <a class="nav-item {{ $plot_activity ? 'active' : '' }}" href="{{ route('admin.plot-and-units.index') }}" data-panel="units">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M3 21V9l9-6 9 6v12" />
@@ -74,27 +79,72 @@
         @if(hasPermission('collections') || hasPermission('Collectors'))
         <div class="nav-group">
             <div class="nav-group-label">Collection Management</div>
-            @if(hasPermission('collections'))
-            <a class="nav-item {{ request()->routeIs('admin.collection.*') ? 'active' : '' }}" href="{{ route('admin.collection.index') }}" data-panel="payments">
+            
+            <a class="nav-item {{ request()->routeIs('admin.bills.*') ? 'active' : '' }}" href="{{ route('admin.bills.index') }}" data-panel="payments">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="2" y="6" width="20" height="13" rx="2" />
                     <path d="M2 10h20" />
                     <path d="M6 15h4" />
                 </svg>
+                Bill Generator
+            </a>
+  
+            @if(hasPermission('collections'))
+            <a class="nav-item {{ request()->routeIs('admin.payments.*') ? 'active' : '' }}" href="{{ route('admin.payments.index') }}" data-panel="payments">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="6" width="20" height="13" rx="2" />
+                    <text x="10.5" y="16" font-size="10" font-weight="bold" fill="currentColor" stroke="none" text-anchor="middle" font-family="sans-serif">৳</text>
+                    <path d="M15 10h4" />
+                    <path d="M15 14h4" />
+                </svg>
                 Collections
             </a>
             @endif
             @if(hasPermission('collectors'))
-            <!-- <a class="nav-item {{ request()->routeIs('admin.collectors.*') ? 'active' : '' }}" href="{{ route('admin.collectors.index') }}" data-panel="owners">
+            <a class="nav-item {{ request()->routeIs('admin.collectors.*') ? 'active' : '' }}" href="{{ route('admin.collectors.index') }}" data-panel="owners">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="8" r="4" />
                     <path d="M4 21c1-4 5-6 8-6s7 2 8 6" />
                 </svg>
                 Collectors
-            </a> -->
+            </a>
             @endif
         </div>
         @endif
+
+        <!-- SMS Management -->
+        @if(hasPermission('collections') || hasPermission('Collectors'))
+        @endif
+        <div class="nav-group">
+            <div class="nav-group-label">SMS Management</div>
+            @if(hasPermission('collections'))
+            @endif
+            <a class="nav-item {{ request()->routeIs('admin.bulksms') ? 'active' : '' }}" href="{{ route('admin.bulksms.index') }}" data-panel="payments">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="6" width="20" height="13" rx="2" />
+                    <path d="M2 10h20" />
+                    <path d="M6 15h4" />
+                </svg>
+                Bulk SMS
+            </a>
+            
+            <a class="nav-item {{ request()->routeIs('admin.draft.*') ? 'active' : '' }}" href="{{ route('admin.draft.index') }}" data-panel="owners">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="8" r="4" />
+                    <path d="M4 21c1-4 5-6 8-6s7 2 8 6" />
+                </svg>
+                Draft SMS
+            </a>
+            
+            <a class="nav-item {{ request()->routeIs('admin.bulksms.smshistory') ? 'active' : '' }}" href="{{ route('admin.bulksms.smshistory') }}" data-panel="owners">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="8" r="4" />
+                    <path d="M4 21c1-4 5-6 8-6s7 2 8 6" />
+                </svg>
+                SMS History
+            </a>
+        </div>
+        
 
         @if (hasPermission('activities') || hasPermission('roles') || hasPermission('permissions'))
         <div class="nav-group">
@@ -129,7 +179,7 @@
         <div class="nav-group">
             <div class="nav-group-label">Settings</div>
             @if(hasPermission('plot_types'))
-            <a class="nav-item {{ request()->routeIs('admin.type.*') ? 'active' : '' }}" href="{{ route('admin.type.index') }}"><i class="bi bi-person-circle"></i> Plot Types</a>
+            <a class="nav-item {{ request()->routeIs('admin.plot_type.*') ? 'active' : '' }}" href="{{ route('admin.plot_type.index') }}"><i class="bi bi-person-circle"></i> Plot Types</a>
             @endif
             @if(hasPermission('site_settings'))
             <a class="nav-item {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}" href="{{ route('admin.settings.edit') }}"><i class="bi bi-person-circle"></i> Site Settings</a>

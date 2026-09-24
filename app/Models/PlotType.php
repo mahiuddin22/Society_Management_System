@@ -9,4 +9,9 @@ class PlotType extends Model
 {
     use HasFactory;
     protected $fillable = ['name','amount','status'];
+
+    public function plotAndUnits()
+    {
+        return $this->hasMany(PlotAndUnit::class);
+    }
 }

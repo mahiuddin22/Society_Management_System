@@ -14,9 +14,9 @@
         <!-- ================= MAIN ================= -->
         <div class="main">
             @include('admin.layouts.partials.header')
-            @include('admin.layouts.partials.message')
-
+    
             <main class="content">
+                @include('admin.layouts.partials.message')
                 @yield('content')
             </main>
 

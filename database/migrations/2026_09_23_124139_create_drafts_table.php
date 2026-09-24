@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('roads', function (Blueprint $table) {
+        Schema::create('drafts', function (Blueprint $table) {
             $table->id();
-            $table->string('collector_id')->nullable();
-            $table->string('name')->nullable();
+            $table->string('type')->nullable();
+            $table->text('message')->nullable();
+            $table->enum('language',['Bangla','English'])->nullable();
+            $table->integer('length')->nullable();
             $table->timestamps();
         });
     }
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('roads');
+        Schema::dropIfExists('drafts');
     }
 };

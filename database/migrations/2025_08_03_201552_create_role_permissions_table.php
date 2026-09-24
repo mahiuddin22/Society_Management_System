@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('permission_id')->nullable();
             $table->integer('activity_id')->nullable();
-            $table->integer('menu_key')->nullable();
+            $table->string('menu_key')->nullable();
             $table->foreign('permission_id')->references('id')->on('permissions')->onDelete('cascade');
             $table->timestamps();
         });

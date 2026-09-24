@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PlotType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class PlotTypeController extends Controller
 {
@@ -33,40 +34,42 @@ class PlotTypeController extends Controller
 
     public function store(Request $request)
     {
+        #TODO::Add validation
         $plot_type = new PlotType();
-        $plot_type->name    = $request->name;
-        $plot_type->amount  = $request->amount;
+        $plot_type->name = $request->name;
+        $plot_type->slug = Str::slug($request->name);
+        $plot_type->fees = $request->fees;
         $plot_type->status  = $request->status;
         $plot_type->save();
-        return redirect()->route('admin.type.index')->with('success', 'Data Added Successfully');
+        return redirect()->route('admin.plot_type.index')->with('success', 'Data Added Successfully');
     }
 
     public function edit($id)
     {
-
         $plot_type = PlotType::where('id', $id)->first();
         return view('admin.plot_types.edit', compact('plot_type'));
     }
 
     public function update(Request $request, $id)
     {
-
+        #TODO::Add validation
         $plot_type = PlotType::where('id', $id)->first();
-        $plot_type->name    = $request->name;
-        $plot_type->amount  = $request->amount;
-        $plot_type->status  = $request->status;
+        $plot_type->name = $request->name;
+        $plot_type->slug = Str::slug($request->name);
+        $plot_type->fees = $request->fees;
+        $plot_type->status = $request->status;
         $plot_type->save();
 
-        return redirect()->route('admin.type.index')->with('success', 'Data Updated Successfully');
+        return redirect()->route('admin.plot_type.index')->with('success', 'Data Updated Successfully');
     }
 
     public function changeStatus($id)
     {
         $data = PlotType::findOrFail($id);
-        if ($data->status == 0) {
-            $data->status = 1;
+        if ($data->status == 'Inactive') {
+            $data->status = 'Active';
         } else {
-            $data->status = 0;
+            $data->status = 'Inactive';
         }
         $data->save();
 
@@ -76,7 +79,8 @@ class PlotTypeController extends Controller
 
     public function destroy($id)
     {
+        #TODO::Check if any member is connected with type plot type
         PlotType::where('id', $id)->first()->delete();
-        return redirect()->route('admin.type.index')->with('success', 'Data Deleted Successfully');
+        return redirect()->route('admin.plot_type.index')->with('success', 'Data Deleted Successfully');
     }
 }

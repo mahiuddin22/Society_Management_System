@@ -1,5 +1,5 @@
 @php
-$pageTitle = \Illuminate\Support\Str::headline($current_request ?: 'dashboard');
+$pageTitle = isset($pageTitle) ? $pageTitle : \Illuminate\Support\Str::headline($current_request ?: 'dashboard');
 $user = auth()->user();
 @endphp
 <style>
@@ -49,7 +49,6 @@ $user = auth()->user();
     </button>
 
     <div class="page-heading">
-        <!-- <div class="page-eyebrow">Administration</div> -->
         <div class="page-title">{{ $pageTitle }}</div>
     </div>
 
