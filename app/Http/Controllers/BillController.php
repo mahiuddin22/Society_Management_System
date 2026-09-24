@@ -68,7 +68,7 @@ class BillController extends Controller
         );
 
         return redirect()->route('admin.bills.index', ['month' => $validated['billing_month']])
-            ->with('success', "Billing Complete: {$result['generated']} generated, {$result['skipped']} skipped.");
+            ->with('success', $result['generated'] > 0 ? "Billing Generation: {$result['generated']} newly generated" : 'All the bill already generated');
     }
 
     public function pay(Request $request, Bill $bill)

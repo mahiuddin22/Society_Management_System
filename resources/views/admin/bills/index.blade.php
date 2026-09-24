@@ -390,7 +390,7 @@
           <span class="fw-bold" style="font-size: 16px; color: var(--forest-800);">
             {{ $collectionPercentage }}%
           </span>
-          <span class="hint small" style="font-size: 10px; color: var(--ink-500);">realized</span>
+          <span class="hint small" style="font-size: 10px; color: var(--ink-500);">released</span>
         </div>
       </div>
     </div>
@@ -594,10 +594,38 @@
           <label class="form-label small fw-semibold">Payment Amount (৳)</label>
           <input type="number" step="0.01" name="amount" id="payAmountInput" class="input w-100" required>
         </div>
+
+        {{-- Payment Date with Visible Human-Readable Formatting (DD/MM/YYYY) --}}
         <div class="mb-2">
-          <label class="form-label small fw-semibold">Payment Date</label>
-          <input type="date" name="payment_date" class="input w-100" value="{{ now()->toDateString() }}" required>
+          <label class="form-label small fw-semibold mb-1">Payment Date</label>
+          <div class="position-relative w-100">
+            <input 
+              type="text" 
+              id="displayPaymentDate" 
+              class="input w-100" 
+              placeholder="DD/MM/YYYY"
+              style="cursor: pointer; padding-right: 34px;" 
+              readonly
+            >
+            <span class="position-absolute end-0 top-50 translate-middle-y me-2 text-muted" style="pointer-events: none;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+            </span>
+            <input 
+              type="date" 
+              name="payment_date" 
+              id="nativePaymentDate" 
+              value="{{ now()->toDateString() }}" 
+              style="position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0;"
+              required
+            >
+          </div>
         </div>
+
         <div class="mb-2">
           <label class="form-label small fw-semibold">Method</label>
           <select name="method" class="select w-100" required>
@@ -608,6 +636,7 @@
             <option value="Cheque">Cheque</option>
           </select>
         </div>
+
         <div class="mb-1">
           <label class="form-label small fw-semibold mb-1">
             Transaction / Slip Ref
@@ -826,6 +855,30 @@
           syncDate();
         });
       }
+
+      // Payment Modal Date Formatter (DD/MM/YYYY)
+      const nativePayDate  = document.getElementById('nativePaymentDate');
+      const displayPayDate = document.getElementById('displayPaymentDate');
+
+      window.syncPaymentDateDisplay = function() {
+        if (nativePayDate && displayPayDate && nativePayDate.value) {
+          const [year, month, day] = nativePayDate.value.split('-');
+          displayPayDate.value = `${day}/${month}/${year}`;
+        }
+      };
+
+      if (displayPayDate && nativePayDate) {
+        displayPayDate.addEventListener('click', () => {
+          try {
+            nativePayDate.showPicker();
+          } catch (e) {
+            nativePayDate.focus();
+          }
+        });
+        nativePayDate.addEventListener('change', window.syncPaymentDateDisplay);
+      }
+
+      window.syncPaymentDateDisplay();
     });
 
     function openPaymentModal(billId, billNumber, dueBalance) {
@@ -837,7 +890,16 @@
       amountInput.value = dueBalance.toFixed(2);
       amountInput.max = dueBalance;
 
-      // Start empty so operator is not obstructed; can type, click icon to generate, or leave blank
+      // Sync payment date to current date display
+      const nativePayDate = document.getElementById('nativePaymentDate');
+      if (nativePayDate) {
+        nativePayDate.value = new Date().toISOString().slice(0, 10);
+        if (typeof window.syncPaymentDateDisplay === 'function') {
+          window.syncPaymentDateDisplay();
+        }
+      }
+
+      // Start empty so operator is not obstructed
       const refInput = document.getElementById('payTrxRefInput');
       if (refInput) {
         refInput.value = '';
