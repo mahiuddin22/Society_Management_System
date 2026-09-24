@@ -30,6 +30,17 @@ Route::get('/', function () {
     return redirect('/login');
 });
 
+use Illuminate\Support\Facades\Artisan;
+
+Route::get('/clear-cache', function () {
+
+    Artisan::call('optimize:clear');
+    Artisan::call('cache:clear');
+    Artisan::call('view:clear');
+
+    return 'Cache, optimized files and views cleared successfully.';
+});
+
 Route::get('testsms', function () {
     //MSISDN with country code
     $number = "8801610440622";
