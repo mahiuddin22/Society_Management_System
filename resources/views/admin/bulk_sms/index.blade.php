@@ -127,140 +127,134 @@
                             </div>
                         </div>
 
-                        <div class="card-body p-4">
+                        <form action="">
+                            <div class="card-body p-4">
+                                <!-- SMS Type -->
+                                <div class="mb-4">
 
-                            <!-- SMS Type -->
-                            <div class="mb-4">
+                                    <label class="form-label fw-semibold d-block mb-2">Message Source</label>
 
-                                <label class="form-label fw-semibold d-block mb-2">Message Source</label>
+                                    <div class="row g-2">
 
-                                <div class="row g-2">
+                                        <div class="col-md-6">
+                                            <label class="border rounded-3 p-3 w-100 h-100 d-flex align-items-center gap-3" style="cursor:pointer;">
+                                                <input type="radio" class="form-check-input mt-0" name="sms_type" value="custom" checked onclick="customSms()">
+                                                <div>
+                                                    <div class="fw-semibold">Custom Message</div>
+                                                    <small class="text-body-secondary">Write a new message</small>
+                                                </div>
 
-                                    <div class="col-md-6">
-                                        <label class="border rounded-3 p-3 w-100 h-100 d-flex align-items-center gap-3" style="cursor:pointer;">
-                                            <input type="radio" class="form-check-input mt-0" name="sms_type" value="custom" checked onclick="customSms()">
-                                            <div>
-                                                <div class="fw-semibold">Custom Message</div>
-                                                <small class="text-body-secondary">Write a new message</small>
-                                            </div>
+                                            </label>
+                                        </div>
 
-                                        </label>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <label class="border rounded-3 p-3 w-100 h-100 d-flex align-items-center gap-3" style="cursor:pointer;">
-                                            <input type="radio" class="form-check-input mt-0" name="sms_type" value="draft" onclick="draftSms()">
-                                            <div>
-                                                <div class="fw-semibold">Draft Message</div>
-                                                <small class="text-body-secondary">Use an existing draft</small>
-                                            </div>
-                                        </label>
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                            <!-- Draft -->
-                            <div class="mb-4" id="draftSmsBox" style="display:none;">
-
-                                <label class="form-label fw-semibold">Start From Draft</label>
-                                <select class="form-select" id="draftSMS">
-                                    <option value="">Start from a draft…</option>
-                                    <option value="Monthly Invoice Notice">Monthly Invoice Notice</option>
-                                    <option value="Payment Reminder">Payment Reminder</option>
-                                    <option value="Event Invitation">Event Invitation</option>
-                                </select>
-
-                            </div>
-
-                            <!-- Message -->
-                            <div class="mb-4">
-
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-
-                                    <label class="form-label fw-semibold mb-0">
-                                        Message
-                                    </label>
-
-                                    <div class="btn-group btn-group-sm">
-
-                                        <button type="button" class="btn btn-primary active" data-lang="en">English
-                                            <span class="opacity-75">· 160/SMS</span>
-                                        </button>
-
-                                        <button type="button" class="btn btn-outline-secondary" data-lang="bn"> বাংলা
-                                            <span class="opacity-75">· 67/SMS</span>
-                                        </button>
-
-                                    </div>
-
-                                </div>
-
-                                <div class="border rounded-3 overflow-hidden">
-
-                                    <textarea id="customSMS" class="form-control border-0 rounded-0 shadow-none" rows="7"
-                                        placeholder="Type your SMS message here..." required></textarea>
-
-                                    <div class="bg-light border-top px-3 py-2">
-
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <span id="smsCharCountBs" class="small text-body-secondary">0 characters</span>
-                                            <span id="smsCountBadgeBs" class="badge bg-white text-body-secondary border">0 SMS / recipient</span>
+                                        <div class="col-md-6">
+                                            <label class="border rounded-3 p-3 w-100 h-100 d-flex align-items-center gap-3" style="cursor:pointer;">
+                                                <input type="radio" class="form-check-input mt-0" name="sms_type" value="draft" onclick="draftSms()">
+                                                <div>
+                                                    <div class="fw-semibold">Draft Message</div>
+                                                    <small class="text-body-secondary">Use an existing draft</small>
+                                                </div>
+                                            </label>
                                         </div>
 
                                     </div>
 
                                 </div>
 
-                            </div>
+                                <!-- Draft -->
+                                <div class="mb-4" id="draftSmsBox" style="display:none;">
 
-                            <!-- Sending -->
-                            <div class="mb-4">
+                                    <label class="form-label fw-semibold">Start From Draft</label>
+                                    <select class="form-select" name="draft_id" id="draftSMS">
+                                        <option value="">Start from a draft…</option>
+                                        @foreach ($drafts as $draft)
+                                        <option value="{{$draft->id}}">{{$draft->type}}</option>
+                                        @endforeach
+                                    </select>
 
-                                <label class="form-label fw-semibold mb-2"> Sending Options </label>
+                                </div>
 
-                                <div class="row g-3">
+                                <!-- Message -->
+                                <div class="mb-4">
 
-                                    <div class="col-md-5">
-                                        <select class="form-select">
-                                            <option>Send now</option>
-                                            <option>Schedule for later</option>
-                                        </select>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+
+                                        <label class="form-label fw-semibold mb-0">Message</label>
+
+                                        <div class="btn-group btn-group-sm" role="group">
+
+                                            <input type="radio" class="btn-check" name="language" id="languageEnglish" value="English" checked>
+                                            <label class="btn btn-outline-primary" for="languageEnglish">English<span class="opacity-75">· 160/SMS</span></label>
+
+                                            <input type="radio" class="btn-check" name="language" id="languageBangla" value="Bangla">
+                                            <label class="btn btn-outline-secondary" for="languageBangla"> বাংলা <span class="opacity-75">· 67/SMS</span></label>
+
+                                        </div>
+
                                     </div>
 
-                                    <div class="col-md-7">
+                                    <div class="border rounded-3 overflow-hidden">
 
-                                        <div class="input-group">
-                                            <span class="input-group-text bg-light">
-                                                <i class="bi bi-calendar-event"></i>
-                                            </span>
-                                            <input type="datetime-local" class="form-control">
+                                        <textarea id="customSMS" name="custom_sms" class="form-control border-0 rounded-0 shadow-none" rows="7"
+                                            placeholder="Type your SMS message here..." required></textarea>
+
+                                        <div class="bg-light border-top px-3 py-2">
+
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span id="smsCharCountBs" class="small text-body-secondary">0 characters</span>
+                                                <span id="smsCountBadgeBs" class="badge bg-white text-body-secondary border">0 SMS / recipient</span>
+                                            </div>
+
                                         </div>
 
                                     </div>
 
                                 </div>
 
-                            </div>
+                                <!-- Sending -->
+                                <div class="mb-4">
 
-                            <!-- Action -->
-                            <div class="border-top pt-4">
+                                    <label class="form-label fw-semibold mb-2"> Sending Options </label>
 
-                                <button type="button" class="btn btn-primary btn-lg w-100 text-center">
-                                    <i class="bi bi-send me-2"></i>Review & Send Campaign
-                                </button>
+                                    <div class="row g-3">
 
-                                <div class="text-center mt-2">
-                                    <small class="text-body-secondary">
-                                        You can review recipients and message details before sending.
-                                    </small>
+                                        <div class="col-md-5">
+                                            <select class="form-select" name="sending_method">
+                                                <option>Send now</option>
+                                                <option>Schedule for later</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-7">
+
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-light"><i class="bi bi-calendar-event"></i></span>
+                                                <input type="datetime-local" name="schedule_time" class="form-control" id="datepicker">
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <!-- Action -->
+                                <div class="border-top pt-4">
+
+                                    <button type="button" class="btn btn-primary btn-lg w-100 text-center">
+                                        <i class="bi bi-send me-2"></i>Review & Send Campaign
+                                    </button>
+
+                                    <div class="text-center mt-2">
+                                        <small class="text-body-secondary">
+                                            You can review recipients and message details before sending.
+                                        </small>
+                                    </div>
+
                                 </div>
 
                             </div>
-
-                        </div>
-
+                        </form>
                     </div>
 
                 </div>
@@ -534,6 +528,7 @@
 </section>
 @endsection
 @push('scripts')
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
 
