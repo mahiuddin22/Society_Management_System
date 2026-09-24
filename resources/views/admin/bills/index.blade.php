@@ -71,10 +71,11 @@
       border-color: var(--line);
       opacity: 0.6;
     }
+
     #regenerateTrxBtn:hover {
-  color: var(--forest-800) !important;
-  background-color: var(--forest-50) !important;
-}
+      color: var(--forest-800) !important;
+      background-color: var(--forest-50) !important;
+    }
   </style>
 @endpush
 
@@ -271,11 +272,11 @@
           </div>
 
           {{-- Search & Reset Buttons --}}
-          <div class="d-flex align-items-center gap-1 flex-shrink-0">
+          <div class="d-flex align-items-center gap-2 flex-shrink-0">
             <button type="submit" class="btn btn-primary px-3" style="height: 38px;">Search</button>
 
             @if(request()->hasAny(['search', 'month', 'status', 'road_number', 'plot_type_id']))
-              <a href="{{ route('admin.bills.index') }}" class="btn btn-ghost px-2 text-danger" title="Clear all filters" style="height: 38px; line-height: 24px;">Reset</a>
+              <a href="{{ route('admin.bills.index') }}" class="btn btn-secondary px-2" title="Clear all filters" style="height: 38px; line-height: 24px;">Reset</a>
             @endif
           </div>
 
@@ -376,7 +377,7 @@
       <div class="card p-2 h-100 d-flex flex-column justify-content-between" style="background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-s);">
         @php
           $collectionPercentage = ($stats['total_billed'] ?? 0) > 0 
-            ? round((($stats['total_paid'] ?? 0) /$stats['total_billed']) * 100, 1) 
+            ? round((($stats['total_paid'] ?? 0) / $stats['total_billed']) * 100, 1) 
             : 0;
         @endphp
         <div class="d-flex align-items-center justify-content-between mb-1">
@@ -417,13 +418,12 @@
             {{-- 1. Bill / Date --}}
             <td>
               <div class="fw-bold font-monospace" style="color: var(--forest-900);">{{ $bill->bill_number }}</div>
-              <span class="hint small" style="font-size: 11px;">Month: {{ $bill->billing_month }} &bull; Due: {{$bill->due_date->format('d M') }}</span>
+              <span class="hint small" style="font-size: 11px;">Month: {{ $bill->billing_month }} &bull; Due: {{ $bill->due_date->format('d M') }}</span>
             </td>
 
-            {{-- 2. Holding & Road --}}
+            {{-- 2. Holding & Resident --}}
             <td>
               <div class="fw-medium text-dark">{{ $bill->plotAndUnit->name ?? '—' }}</div>
-              {{-- <span class="hint small">{{ $bill->plotAndUnit->holding_no ?? '—' }} &bull; Road {{ $bill->plotAndUnit->road->number ?? '-' }}  </span> --}}
               <span class="hint small">{{ $bill->plotAndUnit->phone ?? '—' }}</span>
             </td>
 
@@ -435,7 +435,7 @@
 
             {{-- 4. Units & Rate --}}
             <td>
-              <div>{{ $bill->billing_units }} unit(s) &times; ৳{{ number_format($bill->rate_snapshot) }}</div>
+              <div>{{ $bill->billing_units }} unit(s) &times; {{ number_format($bill->rate_snapshot) }}৳</div>
               @if($bill->discount_snapshot > 0)
                 <div class="text-muted" style="font-size: 10px;">Disc: -৳{{ number_format($bill->discount_snapshot) }}</div>
               @endif
@@ -443,8 +443,8 @@
 
             {{-- 5. Net Due --}}
             <td class="num">
-              <div class="fw-bold">৳{{ number_format($bill->due_balance, 2) }}</div>
-              <div class="hint" style="font-size: 10px;">Paid: ৳{{ number_format($bill->paid_amount, 2) }}</div>
+              <div><span class="fw-bold">{{ number_format($bill->due_balance, 2) }}</span>৳</div>
+              <div class="hint" style="font-size: 10px;">Paid: {{ number_format($bill->paid_amount, 2) }}৳</div>
             </td>
 
             {{-- 6. Status --}}
@@ -464,7 +464,7 @@
                 <button type="button" 
                         class="btn btn-primary btn-sm py-1 px-2" 
                         style="font-size: 12px;"
-                        onclick="openPaymentModal({{ $bill->id }}, '{{ $bill->bill_number }}', {{$bill->due_balance }})">
+                        onclick="openPaymentModal({{ $bill->id }}, '{{ $bill->bill_number }}', {{ $bill->due_balance }})">
                   Collect
                 </button>
               @else
@@ -497,9 +497,9 @@
 
 </section>
 
-{{-- Modal 1: Generate Billing Run --}}
+{{-- Modal 1: Generate Billing Run (With Formatted Displays) --}}
 <div class="modal fade" id="generateModal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 420px;">
     <form action="{{ route('admin.bills.generate') }}" method="POST" class="modal-content border-0 shadow">
       @csrf
       <div class="modal-header py-2 px-3 border-bottom" style="background: var(--paper-100);">
@@ -507,19 +507,72 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body p-3">
+        
+        {{-- Billing Month with Visible Human-Readable Formatting --}}
         <div class="mb-3">
-          <label class="form-label small fw-semibold">Billing Month</label>
-          <input type="month" name="billing_month" class="input w-100" value="{{ now()->format('Y-m') }}" required>
+          <label class="form-label small fw-semibold mb-1">Billing Month</label>
+          <div class="position-relative">
+            <input 
+              type="text" 
+              id="displayBillingMonth" 
+              class="input w-100" 
+              style="cursor: pointer; padding-right: 36px;" 
+              readonly
+            >
+            <span class="position-absolute end-0 top-50 translate-middle-y me-2 text-muted" style="pointer-events: none;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+            </span>
+            <input 
+              type="month" 
+              name="billing_month" 
+              id="nativeBillingMonth" 
+              value="{{ now()->format('Y-m') }}" 
+              style="position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0;"
+              required
+            >
+          </div>
         </div>
+
+        {{-- Due Date with Visible Human-Readable Formatting --}}
         <div class="mb-3">
-          <label class="form-label small fw-semibold">Due Date</label>
-          <input type="date" name="due_date" class="input w-100" value="{{ now()->addDays(15)->toDateString() }}" required>
+          <label class="form-label small fw-semibold mb-1">Due Date</label>
+          <div class="position-relative">
+            <input 
+              type="text" 
+              id="displayDueDate" 
+              class="input w-100" 
+              style="cursor: pointer; padding-right: 36px;" 
+              readonly
+            >
+            <span class="position-absolute end-0 top-50 translate-middle-y me-2 text-muted" style="pointer-events: none;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+            </span>
+            <input 
+              type="date" 
+              name="due_date" 
+              id="nativeDueDate" 
+              value="{{ now()->addMonth()->startOfMonth()->addDays(9)->toDateString() }}" 
+              style="position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0;"
+              required
+            >
+          </div>
         </div>
+
         <p class="hint small mb-0" style="font-size: 11.5px;">Existing holdings for this month are automatically skipped to avoid double invoicing.</p>
       </div>
-      <div class="modal-footer py-2 px-3 border-top">
+      <div class="modal-footer py-2 px-3 border-top d-flex justify-content-end align-items-center gap-2">
         <button type="button" class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button>
-        <button type="submit" class="btn btn-primary">Run Generation</button>
+        <button type="submit" class="btn btn-primary m-0">Run Generation</button>
       </div>
     </form>
   </div>
@@ -535,7 +588,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
 
-      {{-- Modal Body with exact px-3 padding --}}
+      {{-- Modal Body --}}
       <div class="modal-body p-3">
         <div class="mb-2">
           <label class="form-label small fw-semibold">Payment Amount (৳)</label>
@@ -556,22 +609,24 @@
           </select>
         </div>
         <div class="mb-1">
-          <label class="form-label small fw-semibold mb-1">Transaction / Slip Ref</label>
+          <label class="form-label small fw-semibold mb-1">
+            Transaction / Slip Ref
+            <span class="text-muted fw-normal" style="font-size: 11px;">(Optional)</span>
+          </label>
           <div class="position-relative w-100">
             <input 
               type="text" 
               name="transaction_ref" 
               id="payTrxRefInput" 
               class="input w-100 font-monospace" 
-              placeholder="e.g. TRX-20260923-XXXX"
+              placeholder="Auto-generated if left blank"
               style="padding-right: 32px;"
-              required
             >
             <button 
               type="button" 
               id="regenerateTrxBtn"
               onclick="generateTrxRef()" 
-              title="Regenerate Reference"
+              title="Generate reference"
               tabindex="-1"
               style="
                 position: absolute;
@@ -596,11 +651,11 @@
               <i class="bi bi-arrow-clockwise" style="font-size: 15px; line-height: 1;"></i>
             </button>
           </div>
-          <span class="hint small text-muted" style="font-size: 10.5px;">Unique reference (editable if bank/bKash TrxID is provided).</span>
+          <span class="hint small text-muted" style="font-size: 10.5px;">Click the icon to generate, enter a reference, or leave blank to auto-generate.</span>
         </div>
       </div>
 
-      {{-- Modal Footer: uses exact px-3 to align with modal-body's px-3 --}}
+      {{-- Modal Footer: Flush right alignment with inputs --}}
       <div class="modal-footer py-2 px-3 border-top d-flex justify-content-end align-items-center gap-2" style="padding-right: 1rem !important;">
         <button type="button" class="btn btn-ghost" data-bs-dismiss="modal">Close</button>
         <button type="submit" class="btn btn-primary m-0" style="margin-right: 0 !important;">Save Payment</button>
@@ -701,40 +756,117 @@
           }
         });
       }
+
+      // Generate Modal Date & Month Formatters (Human-readable displays)
+      const monthNames = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+      ];
+
+      const nativeMonth  = document.getElementById('nativeBillingMonth');
+      const displayMonth = document.getElementById('displayBillingMonth');
+      const nativeDate   = document.getElementById('nativeDueDate');
+      const displayDate  = document.getElementById('displayDueDate');
+
+      function formatMonthDisplay(val) {
+        if (!val) return '';
+        const [year, month] = val.split('-');
+        const mIndex = parseInt(month, 10) - 1;
+        return `${year}-${monthNames[mIndex] || month}`;
+      }
+
+      function formatDateDisplay(val) {
+        if (!val) return '';
+        const [year, month, day] = val.split('-');
+        const mIndex = parseInt(month, 10) - 1;
+        return `${parseInt(day, 10)} ${monthNames[mIndex] || month}, ${year}`;
+      }
+
+      function syncMonth() {
+        if (nativeMonth && displayMonth) {
+          displayMonth.value = formatMonthDisplay(nativeMonth.value);
+        }
+      }
+
+      function syncDate() {
+        if (nativeDate && displayDate) {
+          displayDate.value = formatDateDisplay(nativeDate.value);
+        }
+      }
+
+      if (displayMonth && nativeMonth) {
+        displayMonth.addEventListener('click', () => {
+          try {
+            nativeMonth.showPicker();
+          } catch (e) {
+            nativeMonth.focus();
+          }
+        });
+        nativeMonth.addEventListener('change', syncMonth);
+      }
+
+      if (displayDate && nativeDate) {
+        displayDate.addEventListener('click', () => {
+          try {
+            nativeDate.showPicker();
+          } catch (e) {
+            nativeDate.focus();
+          }
+        });
+        nativeDate.addEventListener('change', syncDate);
+      }
+
+      syncMonth();
+      syncDate();
+
+      const generateModal = document.getElementById('generateModal');
+      if (generateModal) {
+        generateModal.addEventListener('show.bs.modal', function () {
+          syncMonth();
+          syncDate();
+        });
+      }
     });
 
     function openPaymentModal(billId, billNumber, dueBalance) {
       const form = document.getElementById('payForm');
       form.action = `/admin/bills/${billId}/pay`;
       document.getElementById('payModalTitle').innerText = `Pay: ${billNumber}`;
+      
       const amountInput = document.getElementById('payAmountInput');
       amountInput.value = dueBalance.toFixed(2);
       amountInput.max = dueBalance;
-      
+
+      // Start empty so operator is not obstructed; can type, click icon to generate, or leave blank
+      const refInput = document.getElementById('payTrxRefInput');
+      if (refInput) {
+        refInput.value = '';
+      }
+
       new bootstrap.Modal(document.getElementById('payModal')).show();
     }
+
     function generateTrxRef() {
-        const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-        const randomChars = Math.random().toString(36).substring(2, 7).toUpperCase();
-        const refInput = document.getElementById('payTrxRefInput');
-        const btn = document.getElementById('regenerateTrxBtn');
+      const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+      const randomChars = Math.random().toString(36).substring(2, 7).toUpperCase();
+      const refInput = document.getElementById('payTrxRefInput');
+      const btn = document.getElementById('regenerateTrxBtn');
 
-        if (refInput) {
-            refInput.value = `TRX-${dateStr}-${randomChars}`;
-        }
+      if (refInput) {
+        refInput.value = `TRX-${dateStr}-${randomChars}`;
+      }
 
-        // Micro-interaction: brief spin animation on click
-        if (btn) {
-            const icon = btn.querySelector('i');
-            if (icon) {
-            icon.style.transition = 'transform 0.35s ease';
-            icon.style.transform = 'rotate(360deg)';
-            setTimeout(() => {
-                icon.style.transition = 'none';
-                icon.style.transform = 'rotate(0deg)';
-            }, 350);
-            }
+      if (btn) {
+        const icon = btn.querySelector('i');
+        if (icon) {
+          icon.style.transition = 'transform 0.35s ease';
+          icon.style.transform = 'rotate(360deg)';
+          setTimeout(() => {
+            icon.style.transition = 'none';
+            icon.style.transform = 'rotate(0deg)';
+          }, 350);
         }
-        }
+      }
+    }
   </script>
 @endpush

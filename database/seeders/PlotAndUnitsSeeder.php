@@ -143,7 +143,7 @@ class PlotAndUnitsSeeder extends Seeder
                 'name'            => 'Nusrat Jahan',
                 'phone'           => '01555555555',
                 'email'           => 'nusrat@example.com',
-                'unique_id'       => 'UTR0-3305-2A',
+                'unique_id'       => 'UTR03-0305-2A',
                 'collection_rate' => 250.00,
                 'discount'        => 500.00,
                 'total_amount'    => 4000.00, // (250 * 18) - 500 = 4000.00

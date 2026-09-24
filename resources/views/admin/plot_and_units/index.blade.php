@@ -331,8 +331,8 @@
 
             {{-- Financial Metric --}}
             <td class="num">
-              <span class="fw-medium text-dark">{{ number_format($unit->total_amount ?? 0) }} ৳</span>
-              <div class="text-muted small" style="font-size: 10.5px;">{{ number_format($unit->collection_rate ?? 0) }} ৳</div>
+              <span class="fw-medium text-dark">{{ number_format($unit->total_amount ?? 0) }}৳</span>
+              <div class="text-muted small" style="font-size: 10.5px;">{{ number_format($unit->collection_rate ?? 0) }}৳</div>
             </td>
 
             {{-- Status --}}

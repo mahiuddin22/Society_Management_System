@@ -79,12 +79,23 @@
         @if(hasPermission('collections') || hasPermission('Collectors'))
         <div class="nav-group">
             <div class="nav-group-label">Collection Management</div>
-            @if(hasPermission('collections'))
-            <a class="nav-item {{ request()->routeIs('admin.collection.*') ? 'active' : '' }}" href="{{ route('admin.collection.index') }}" data-panel="payments">
+            
+            <a class="nav-item {{ request()->routeIs('admin.bills.*') ? 'active' : '' }}" href="{{ route('admin.bills.index') }}" data-panel="payments">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="2" y="6" width="20" height="13" rx="2" />
                     <path d="M2 10h20" />
                     <path d="M6 15h4" />
+                </svg>
+                Bill Generator
+            </a>
+  
+            @if(hasPermission('collections'))
+            <a class="nav-item {{ request()->routeIs('admin.payments.*') ? 'active' : '' }}" href="{{ route('admin.payments.index') }}" data-panel="payments">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="6" width="20" height="13" rx="2" />
+                    <text x="10.5" y="16" font-size="10" font-weight="bold" fill="currentColor" stroke="none" text-anchor="middle" font-family="sans-serif">৳</text>
+                    <path d="M15 10h4" />
+                    <path d="M15 14h4" />
                 </svg>
                 Collections
             </a>
