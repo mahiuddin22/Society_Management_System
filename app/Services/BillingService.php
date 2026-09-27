@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Bill;
 use App\Models\Payment;
 use App\Models\PlotAndUnit;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -68,12 +69,18 @@ class BillingService
             $grossAmount = $rate * $billingUnits;
             $netAmount   = max(0.00, $grossAmount - $discount);
 
-            // Bill number format: BIL-YYYYMM-Holding-Random
-            $cleanHolding = Str::slug($property->holding_no ?: '00');
+            // Convert YYYY-MM (e.g. 2026-09) -> MMYYYY (e.g. 092026)
+            $monthYear = Carbon::parse($month)->format('mY');
+
+            // Preserve slashes in holding number (e.g. 09/B) without converting to dash
+            $cleanHolding = strtoupper(preg_replace('/[^A-Za-z0-9\/]/', '', $property->holding_no ?: '00'));
+
+            // Bill number format: BIL-MMYYYY-Holding-Random
+            // Output example: BIL-092026-09/B-XC2Z
             $billNumber = sprintf(
                 'BIL-%s-%s-%s',
-                str_replace('-', '', $month),
-                strtoupper($cleanHolding),
+                $monthYear,
+                $cleanHolding,
                 strtoupper(Str::random(4))
             );
 
