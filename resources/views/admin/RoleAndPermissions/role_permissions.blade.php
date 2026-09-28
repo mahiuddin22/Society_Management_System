@@ -14,7 +14,7 @@
                     <select name="role" id="role_id" class="form-select" required>
                         <option value="">Select Role</option>
                         @foreach ($roles as $role)
-                        <option value="{{ $role }}">{{ $role }}</option>
+                        <option value="{{ $role->name }}">{{ $role->name }}</option>
                         @endforeach
                     </select>
                     <div class="invalid-feedback">Please select a role.</div>

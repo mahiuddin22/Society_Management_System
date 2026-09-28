@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Activity;
 use App\Models\Permission;
+use App\Models\Role;
 use App\Models\RolePermission;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -13,7 +14,7 @@ class RolePermissionController extends Controller
     // Main page: only send roles
     public function index()
     {
-        $roles = User::distinct('role')->pluck('role')->toArray();
+        $roles = Role::all();
         return view('admin.RoleAndPermissions.role_permissions', compact('roles'));
     }
 
