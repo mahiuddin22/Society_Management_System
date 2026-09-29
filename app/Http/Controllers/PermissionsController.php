@@ -10,9 +10,9 @@ class PermissionsController extends Controller
 {
     public function index(Request $request)
     {
-        $name = $request->input('name');
-        $permissionId = $request->input('permission_id');
-        $menu_type = $request->input('menu_type');
+        $name           = $request->input('name');
+        $permissionId   = $request->input('permission_id');
+        $menu_type      = $request->input('menu_type');
 
         $data['permissionsearch']   = Permission::all();
         $permissions                = Permission::orderBy('order_no', 'asc');

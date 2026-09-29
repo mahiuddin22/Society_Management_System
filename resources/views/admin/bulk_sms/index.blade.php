@@ -127,7 +127,9 @@
                             </div>
                         </div>
 
-                        <form action="">
+                        <form action="{{route('admin.bulksms.store')}}" method="POST" autocomplete="off">
+                            @csrf
+                            @method('POST')
                             <div class="card-body p-4">
                                 <!-- SMS Type -->
                                 <div class="mb-4">
@@ -143,7 +145,6 @@
                                                     <div class="fw-semibold">Custom Message</div>
                                                     <small class="text-body-secondary">Write a new message</small>
                                                 </div>
-
                                             </label>
                                         </div>
 
@@ -175,7 +176,7 @@
                                 </div>
 
                                 <!-- Message -->
-                                <div class="mb-4">
+                                <div class="mb-4" id="CustomSmsArea">
 
                                     <div class="d-flex justify-content-between align-items-center mb-2">
 
@@ -196,7 +197,7 @@
                                     <div class="border rounded-3 overflow-hidden">
 
                                         <textarea id="customSMS" name="custom_sms" class="form-control border-0 rounded-0 shadow-none" rows="7"
-                                            placeholder="Type your SMS message here..." required></textarea>
+                                            placeholder="Type your SMS message here..."></textarea>
 
                                         <div class="bg-light border-top px-3 py-2">
 
@@ -220,8 +221,8 @@
 
                                         <div class="col-md-5">
                                             <select class="form-select" name="sending_method">
-                                                <option>Send now</option>
-                                                <option>Schedule for later</option>
+                                                <option value="send_now">Send now</option>
+                                                <option value="scheduled_message">Schedule for later</option>
                                             </select>
                                         </div>
 
@@ -229,7 +230,7 @@
 
                                             <div class="input-group">
                                                 <span class="input-group-text bg-light"><i class="bi bi-calendar-event"></i></span>
-                                                <input type="datetime-local" name="schedule_time" class="form-control" id="datepicker">
+                                                <input type="text" name="schedule_time" class="form-control" id="datepicker" placeholder="Select date & time">
                                             </div>
 
                                         </div>
@@ -241,7 +242,7 @@
                                 <!-- Action -->
                                 <div class="border-top pt-4">
 
-                                    <button type="button" class="btn btn-primary btn-lg w-100 text-center">
+                                    <button type="submit" class="btn btn-primary btn-lg w-100 text-center">
                                         <i class="bi bi-send me-2"></i>Review & Send Campaign
                                     </button>
 
@@ -529,6 +530,21 @@
 @endsection
 @push('scripts')
 
+<!-- Datetime Picker Scripts -->
+<script>
+$(document).ready(function() {
+    flatpickr('#datepicker', {
+        enableTime: true,
+        dateFormat: 'Y-m-d H:i',
+        minDate: 'today',
+        time_24hr: true,
+        minuteIncrement: 5,
+        disableMobile: true
+    });
+});
+</script>
+
+<!-- Fetching Data Scripts -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
 
@@ -545,6 +561,7 @@
     });
 </script>
 
+<!-- Tab Changeing Scripts -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
 
@@ -599,7 +616,7 @@
     let smsLimit = 160;
 
     function customSms() {
-        document.getElementById('customSMS').style.display = 'block';
+        document.getElementById('CustomSmsArea').style.display = 'block';
         document.getElementById('customSMS').required = true;
 
         document.getElementById('draftSmsBox').style.display = 'none';
@@ -607,7 +624,7 @@
     }
 
     function draftSms() {
-        document.getElementById('customSMS').style.display = 'none';
+        document.getElementById('CustomSmsArea').style.display = 'none';
         document.getElementById('customSMS').required = false;
 
         document.getElementById('draftSmsBox').style.display = 'block';
