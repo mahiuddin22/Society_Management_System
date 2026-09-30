@@ -43,29 +43,6 @@ class BulkSmsController extends Controller
             'status' => 'pending',
         ]);
 
-        // Get SMS message
-        if ($request->sms_type == 'custom') {
-            $sms = $request->custom_sms;
-        } else {
-            $sms = $bulkSms->draftsms->message;
-        }
-
-        // Sending method
-        if ($request->sending_method == 'scheduled_message') {
-
-            // Save only.
-            // Artisan scheduler will send it when schedule_time arrives.
-
-        } else {
-
-            // Send SMS immediately
-            // SMS API here
-
-            $bulkSms->update([
-                'status' => 'sent',
-            ]);
-        }
-
         return redirect()->back()->with('success', 'Data Inserted Successfully');
     }
 
