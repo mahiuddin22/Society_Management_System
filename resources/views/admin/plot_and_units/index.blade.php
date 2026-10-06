@@ -40,28 +40,14 @@
   {{-- 1. Filter Bar & Actions Header --}}
   <div class="row align-items-center g-2 mb-4">
     
-    {{-- Search & Filters Column (col-12 on mobile, col-md-8 on desktop) --}}
-    <div class="col-12 col-md-8">
+    {{-- Filter Trigger Anchor Column --}}
+    <div class="col-12 col-md-7">
       <form action="{{ route('admin.plot-and-units.index') }}" method="GET" autocomplete="off" id="filterForm">
-        <div class="d-flex align-items-center gap-2 flex-wrap flex-sm-nowrap">
-          
-          {{-- Primary Search Input --}}
-          <div class="search flex-grow-1" style="min-width: 0;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6d7469" stroke-width="2">
-              <circle cx="11" cy="11" r="7" />
-              <path d="m21 21-4.3-4.3" />
-            </svg>
-            <input 
-              class="input w-100" 
-              name="search" 
-              value="{{ request('search') }}" 
-              placeholder="Search holding, resident, phone..."
-            >
-          </div>
+        <div class="d-flex align-items-center gap-2">
 
           {{-- Active Filter Counter --}}
           @php
-            $activeAdvancedFiltersCount = collect(['road_number', 'plot_type_id', 'collection_type', 'status'])
+            $activeAdvancedFiltersCount = collect(['search', 'road_number', 'plot_type_id', 'collection_type', 'status'])
                 ->filter(fn($key) => request()->filled($key))
                 ->count();
           @endphp
@@ -70,7 +56,7 @@
           <div class="position-relative flex-shrink-0" id="filterPopoverWrapper">
             <button 
               type="button" 
-              class="btn {{ $activeAdvancedFiltersCount > 0 ? 'btn-primary' : 'btn-ghost' }} d-inline-flex align-items-center gap-1 px-2" 
+              class="btn {{ $activeAdvancedFiltersCount > 0 ? 'btn-primary' : 'btn-ghost' }} d-inline-flex align-items-center gap-2 px-3" 
               id="toggleFilterPopupBtn"
               title="Toggle filters"
               style="border: 1px solid {{ $activeAdvancedFiltersCount > 0 ? 'transparent' : 'var(--line)' }}; height: 38px;"
@@ -86,7 +72,7 @@
                 <line x1="9" y1="8" x2="15" y2="8"></line>
                 <line x1="17" y1="16" x2="23" y2="16"></line>
               </svg>
-              <span class="d-none d-sm-inline">Filters</span>
+              <span>Filters</span>
 
               @if($activeAdvancedFiltersCount > 0)
                 <span class="badge rounded-pill bg-white text-dark ms-1" style="font-size: 10px; padding: 2px 5px;">
@@ -103,9 +89,9 @@
                 display: none;
                 position: absolute;
                 top: calc(100% + 8px);
-                right: 0;
-                left: auto;
-                width: 280px;
+                left: 0;
+                right: auto;
+                width: 290px;
                 max-width: 90vw;
                 background: var(--card);
                 border: 1px solid var(--line-strong);
@@ -114,14 +100,36 @@
               "
             >
               <div class="d-flex align-items-center justify-content-between pb-2 mb-3 border-bottom">
-                <span class="fw-bold small" style="color: var(--ink-900); font-size: 13px;">Filter Attributes</span>
+                <span class="fw-bold small" style="color: var(--ink-900); font-size: 13px;">Filter &amp; Search</span>
                 <button type="button" class="btn btn-ghost p-0 border-0 text-muted" id="closeFilterPopupBtn" style="font-size: 18px; line-height: 1;">
                   &times;
                 </button>
               </div>
 
               <div class="d-flex flex-column gap-3">
-                {{-- Road Picker --}}
+
+                {{-- 1. Search Query Input (Placed right before Road) --}}
+                <div>
+                  <label class="form-label fw-semibold small mb-1" style="font-size: 11.5px; color: var(--ink-800);">Search</label>
+                  <div class="position-relative w-100">
+                    <input 
+                      type="text"
+                      class="input w-100" 
+                      name="search" 
+                      value="{{ request('search') }}" 
+                      placeholder="Holding, resident, phone..."
+                      style="font-size: 12.5px; padding-left: 28px;"
+                    >
+                    <span class="position-absolute top-50 start-0 translate-middle-y ps-2 text-muted" style="pointer-events: none;">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="7" />
+                        <path d="m21 21-4.3-4.3" />
+                      </svg>
+                    </span>
+                  </div>
+                </div>
+
+                {{-- 2. Road Picker --}}
                 <div>
                   <label class="form-label fw-semibold small mb-1" style="font-size: 11.5px; color: var(--ink-800);">Road</label>
                   <div class="position-relative road-picker-container w-100">
@@ -181,7 +189,7 @@
                   </div>
                 </div>
 
-                {{-- Plot Type --}}
+                {{-- 3. Plot Type --}}
                 <div>
                   <label class="form-label fw-semibold small mb-1" style="font-size: 11.5px; color: var(--ink-800);">Plot Type</label>
                   <select class="select w-100" name="plot_type_id" style="font-size: 12.5px;">
@@ -194,7 +202,7 @@
                   </select>
                 </div>
 
-                {{-- Collection Mode --}}
+                {{-- 4. Collection Mode --}}
                 <div>
                   <label class="form-label fw-semibold small mb-1" style="font-size: 11.5px; color: var(--ink-800);">Collection Mode</label>
                   <select class="select w-100" name="collection_type" style="font-size: 12.5px;">
@@ -204,7 +212,7 @@
                   </select>
                 </div>
 
-                {{-- Status --}}
+                {{-- 5. Status --}}
                 <div>
                   <label class="form-label fw-semibold small mb-1" style="font-size: 11.5px; color: var(--ink-800);">Status</label>
                   <select class="select w-100" name="status" style="font-size: 12.5px;">
@@ -214,43 +222,61 @@
                   </select>
                 </div>
 
-                {{-- Apply Inside Popup --}}
-                <div class="pt-2 border-top">
+                {{-- Apply & Reset Buttons Inside Popup --}}
+                <div class="pt-2 border-top d-flex gap-2">
                   <button type="submit" class="btn btn-primary w-100 justify-content-center py-2 small" style="font-size: 13px;">
                     Apply Filters
                   </button>
+                  @if($activeAdvancedFiltersCount > 0)
+                    <a href="{{ route('admin.plot-and-units.index') }}" class="btn btn-secondary justify-content-center py-2 px-3 small" title="Clear all filters" style="font-size: 13px;">
+                      Reset
+                    </a>
+                  @endif
                 </div>
+
               </div>
             </div>
           </div>
 
-          {{-- Action Buttons --}}
-          <div class="d-flex align-items-center gap-2 flex-shrink-0">
-            <button type="submit" class="btn btn-primary px-3" style="height: 38px;">Search</button>
-
-            @if(request()->hasAny(['search', 'road_number', 'plot_type_id', 'collection_type', 'status']))
-              <a href="{{ route('admin.plot-and-units.index') }}" class="btn btn-secondary px-2" title="Clear all filters" style="height: 38px; line-height: 24px;">Reset</a>
-
-              
-            @endif
-          </div>
+          {{-- Quick Clear Link outside (visible only if filters are applied) --}}
+          @if($activeAdvancedFiltersCount > 0)
+            <a href="{{ route('admin.plot-and-units.index') }}" class="btn btn-ghost px-2 text-muted" title="Clear all filters" style="height: 38px; line-height: 24px; font-size: 13px;">
+              Reset
+            </a>
+          @endif
 
         </div>
       </form>
     </div>
 
-    {{-- Add Building Button (Full-width on mobile, right-aligned on desktop) --}}
-    <div class="col-12 col-md-4 text-md-end mt-2 mt-md-0">
-      @if (hasPermission('plot_and_units', 'create'))
-        {{-- After: 100% width on mobile, natural shrink-to-fit on desktop --}}
-        <a href="{{ route('admin.plot-and-units.create') }}" class="btn btn-primary d-flex d-md-inline-flex justify-content-center align-items-center gap-2 text-nowrap" style="height: 38px;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <line x1="12" y1="5" x2="12" y2="19"></line>
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-          </svg>
-          <span>Add Building</span>
-        </a>
-      @endif
+    {{-- Header Action Buttons (Upload & Add Building) --}}
+    <div class="col-12 col-md-5 text-md-end mt-2 mt-md-0">
+      <div class="d-flex align-items-center justify-content-start justify-content-md-end gap-2 flex-wrap">
+        
+        {{-- Upload Button --}}
+        @if (hasPermission('plot_and_units', 'create'))
+          <a href="{{ route('admin.plot-and-units.bulk-upload') }}" class="btn btn-ghost d-inline-flex justify-content-center align-items-center gap-2 text-nowrap" style="height: 38px; border: 1px solid var(--line);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <span>Upload</span>
+          </a>
+        @endif
+
+        {{-- Add Building Button --}}
+        @if (hasPermission('plot_and_units', 'create'))
+          <a href="{{ route('admin.plot-and-units.create') }}" class="btn btn-primary d-inline-flex justify-content-center align-items-center gap-2 text-nowrap" style="height: 38px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span>Add Plot</span>
+          </a>
+        @endif
+
+      </div>
     </div>
 
   </div>
@@ -407,7 +433,6 @@
       const toggleBtn   = document.getElementById('toggleFilterPopupBtn');
       const closeBtn    = document.getElementById('closeFilterPopupBtn');
       const popupPanel  = document.getElementById('filterPopupPanel');
-      const wrapper     = document.getElementById('filterPopoverWrapper');
 
       // Toggle filter popup
       if (toggleBtn && popupPanel) {

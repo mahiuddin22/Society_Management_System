@@ -63,7 +63,9 @@ class PlotAndUnitController extends Controller
         $plotTypes = PlotType::withCount('plotAndUnits')->get();
         $roads     = Road::orderBy('number')->get();
 
-        return view('admin.plot_and_units.index', compact('plotAndUnits', 'plotTypes', 'roads'));
+         $pageTitle = 'Plot Management';
+
+        return view('admin.plot_and_units.index', compact('plotAndUnits', 'plotTypes', 'roads', 'pageTitle'));
     }
 
     public function create()

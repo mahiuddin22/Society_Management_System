@@ -28,7 +28,7 @@
         <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4">
         <div>
             <h3 class="mb-1" style="font-family: var(--font-display); font-size: 22px; color: var(--ink-900);">
-            Add Building / Unit
+            Add Plot
             </h3>
             <span class="hint">Register property location, unit details, and collection terms.</span>
         </div>
@@ -42,7 +42,7 @@
                 <polyline points="17 21 17 13 7 13 7 21"></polyline>
                 <polyline points="7 3 7 8 15 8"></polyline>
             </svg>
-            Save Building
+            Save Plot
             </button>
         </div>
         </div>

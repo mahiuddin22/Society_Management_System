@@ -24,7 +24,7 @@
         <!-- Collection -->
         @if(hasPermission('plot_and_units') || hasPermission('upload_members'))
         <div class="nav-group">
-            <div class="nav-group-label">People</div>
+            <div class="nav-group-label">Plot Managerment</div>
             @if (hasPermission('plot_and_units'))
                 @php 
                     $plot_activity = request()->routeIs('admin.plot-and-units.index') 
@@ -37,10 +37,10 @@
                     <path d="M3 21V9l9-6 9 6v12" />
                     <path d="M9 21v-8h6v8" />
                 </svg>
-                Plot &amp; Units
+                Plot
             </a>
             @endif
-            @if (hasPermission('upload_members'))
+            {{-- @if (hasPermission('upload_members'))
             <a class="nav-item {{ request()->routeIs('admin.plot-and-units.bulk-upload*') ? 'active' : '' }}" href="{{ route('admin.plot-and-units.bulk-upload') }}" data-panel="members">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="2" y="6" width="20" height="13" rx="2" />
@@ -49,13 +49,13 @@
                 </svg>
                 Upload Members
             </a>
-            @endif
+            @endif --}}
 
         </div>
         @endif
 
         <!-- Member Payment Managaments -->
-        @if(hasPermission('my_payments') || hasPermission('payments_report'))
+        {{-- @if(hasPermission('my_payments') || hasPermission('payments_report'))
         <div class="nav-group">
             <div class="nav-group-label">Payment Management</div>
 
@@ -73,7 +73,7 @@
             </a>
             @endif
         </div>
-        @endif
+        @endif --}}
 
         <!-- Collection Management -->
         @if(hasPermission('collections') || hasPermission('Collectors'))
