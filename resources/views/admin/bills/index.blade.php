@@ -702,7 +702,7 @@
           <span class="fw-bold" style="font-size: 16px; color: var(--forest-800);">
             {{ $collectionPercentage }}%
           </span>
-          <span class="hint small" style="font-size: 10px; color: var(--ink-500);">realized</span>
+          <span class="hint small" style="font-size: 10px; color: var(--ink-500);">released</span>
         </div>
       </div>
     </div>
