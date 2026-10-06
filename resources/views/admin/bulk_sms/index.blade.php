@@ -131,7 +131,7 @@
                             @csrf
                             @method('POST')
 
-                            <input type="hidden" name="recipient_ids" id="recipientIds">
+                            <!-- <input type="hidden" name="recipient_ids" id="recipientIds"> -->
                             <div class="card-body p-4">
                                 <!-- SMS Type -->
                                 <div class="mb-4">
@@ -162,6 +162,13 @@
 
                                     </div>
 
+                                </div>
+                                <div class="mb-4"><label class="form-label fw-semibold d-block mb-2">Enter Phone Number</label>
+                                    <div class="col-md-6">
+                                        <div class="input-group"><span class="input-group-text bg-light"><i class="bi bi-telephone"></i></span>
+                                        <input type="tel" class="form-control" name="phone_number" placeholder="Enter phone number"></div>
+                                        <small class="text-body-secondary mt-1 d-block">Enter the recipient's phone number</small>
+                                    </div>
                                 </div>
 
                                 <!-- Draft -->
