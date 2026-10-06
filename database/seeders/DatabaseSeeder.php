@@ -21,10 +21,13 @@ class DatabaseSeeder extends Seeder
             PlotTypesSeeder::class,
             PlotAndUnitsSeeder::class,
             RolesSeeder::class,
-            RolePermissionsSeeder::class,
             SectorCollenctionsSeeder::class,
             SettingsSeeder::class,
-            DraftSeeder::class
+            DraftSeeder::class,
+            ActivitySeeder::class,
+            PermissionSeeder::class,
+            RolePermissionsSeeder::class,
+
         ]);
     }
 }
