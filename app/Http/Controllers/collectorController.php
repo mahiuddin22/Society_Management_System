@@ -31,7 +31,7 @@ class CollectorController extends Controller
 
     public function update(Request $request, $id)
     {
-        $collector = User::findOrFail($id); //Find the collector by ID
+        $collector = User::findOrFail($id);
 
         $request->validate([
             'name'      => 'required|string|max:255',
