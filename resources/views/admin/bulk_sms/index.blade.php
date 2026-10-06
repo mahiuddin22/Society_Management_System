@@ -127,7 +127,11 @@
                             </div>
                         </div>
 
-                        <form action="">
+                        <form action="{{route('admin.bulksms.store')}}" method="POST" autocomplete="off">
+                            @csrf
+                            @method('POST')
+
+                            <input type="hidden" name="recipient_ids" id="recipientIds">
                             <div class="card-body p-4">
                                 <!-- SMS Type -->
                                 <div class="mb-4">
@@ -143,7 +147,6 @@
                                                     <div class="fw-semibold">Custom Message</div>
                                                     <small class="text-body-secondary">Write a new message</small>
                                                 </div>
-
                                             </label>
                                         </div>
 
@@ -175,7 +178,7 @@
                                 </div>
 
                                 <!-- Message -->
-                                <div class="mb-4">
+                                <div class="mb-4" id="CustomSmsArea">
 
                                     <div class="d-flex justify-content-between align-items-center mb-2">
 
@@ -196,7 +199,7 @@
                                     <div class="border rounded-3 overflow-hidden">
 
                                         <textarea id="customSMS" name="custom_sms" class="form-control border-0 rounded-0 shadow-none" rows="7"
-                                            placeholder="Type your SMS message here..." required></textarea>
+                                            placeholder="Type your SMS message here..."></textarea>
 
                                         <div class="bg-light border-top px-3 py-2">
 
@@ -212,7 +215,7 @@
                                 </div>
 
                                 <!-- Sending -->
-                                <div class="mb-4">
+                                <!-- <div class="mb-4">
 
                                     <label class="form-label fw-semibold mb-2"> Sending Options </label>
 
@@ -220,8 +223,8 @@
 
                                         <div class="col-md-5">
                                             <select class="form-select" name="sending_method">
-                                                <option>Send now</option>
-                                                <option>Schedule for later</option>
+                                                <option value="send_now">Send now</option>
+                                                <option value="scheduled_message">Schedule for later</option>
                                             </select>
                                         </div>
 
@@ -229,24 +232,24 @@
 
                                             <div class="input-group">
                                                 <span class="input-group-text bg-light"><i class="bi bi-calendar-event"></i></span>
-                                                <input type="datetime-local" name="schedule_time" class="form-control" id="datepicker">
+                                                <input type="text" name="schedule_time" class="form-control" id="datepicker" placeholder="Select date & time">
                                             </div>
 
                                         </div>
 
                                     </div>
 
-                                </div>
+                                </div> -->
 
                                 <!-- Action -->
                                 <div class="border-top pt-4">
 
-                                    <button type="button" class="btn btn-primary btn-lg w-100 text-center">
-                                        <i class="bi bi-send me-2"></i>Review & Send Campaign
+                                    <button type="submit" class="btn btn-primary btn-lg w-100 text-center">
+                                        <i class="bi bi-send me-2"></i>Send Message
                                     </button>
 
-                                    <div class="text-center mt-2">
-                                        <small class="text-body-secondary">
+                                    <div class="justify-content-center text-center mt-2">
+                                        <small class="text-center">
                                             You can review recipients and message details before sending.
                                         </small>
                                     </div>
@@ -266,83 +269,111 @@
                     <div class="card mb-3">
 
                         <div class="card-head">
-                            <h3>Recipients</h3>
-                            <span class="hint">148 selected</span>
+                            <div>
+                                <h3>Recipients</h3>
+                                <span class="hint" id="recipientSummaryBs">0 selected</span>
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <button type="button" class="btn btn-sm btn-outline-primary" id="selectAllRecipients">
+                                    Select All
+                                </button>
+
+                                <button type="button" class="btn btn-sm btn-outline-secondary" id="clearAllRecipients">
+                                    Clear All
+                                </button>
+                            </div>
                         </div>
 
                         <div class="p-3">
 
-                            <div class="btn-group w-100 mb-3">
-                                <button type="button" class="btn btn-secondary">Single</button>
-                                <button type="button" class="btn btn-secondary">Multiple</button>
-                                <button type="button" class="btn btn-primary">All Residents</button>
+                            <!-- Selected Recipients -->
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">
+                                    Selected Recipients
+                                </label>
+
+                                <div id="selectedRecipients"
+                                    class="border rounded-3 p-2 d-flex flex-wrap gap-2"
+                                    style="min-height: 48px;">
+
+                                    <span id="noRecipientText"
+                                        class="text-body-secondary small align-self-center">
+                                        No recipients selected
+                                    </span>
+
+                                </div>
                             </div>
 
-                            <div class="row g-2 mb-3">
+                            <!-- Recipient Search -->
+                            <div class="position-relative">
 
-                                <div class="col-md-6">
-                                    <select class="form-select">
-                                        <option>All buildings</option>
-                                        <option>Building A</option>
-                                        <option>Building B</option>
-                                    </select>
+                                <input type="text"
+                                    class="form-control"
+                                    id="recipientSearch"
+                                    placeholder="Search name, phone or UID..."
+                                    autocomplete="off">
+
+                                <!-- Dropdown -->
+                                <div id="recipientDropdown"
+                                    class="position-absolute bg-white border rounded-3 shadow-sm w-100 mt-1 d-none"
+                                    style="z-index: 1050; max-height: 300px; overflow-y: auto;">
+
+                                    @foreach($members as $member)
+
+                                    <div class="recipient-option px-3 py-2 border-bottom"
+                                        data-name="{{ strtolower($member->name) }}"
+                                        data-phone="{{ $member->phone }}"
+                                        data-uid="{{ strtolower($member->unique_id) }}"
+                                        data-id="{{ $member->id }}">
+
+                                        <div class="d-flex align-items-center gap-2">
+
+                                            <input type="checkbox"
+                                                class="recipient-checkbox"
+                                                name="recipients[]"
+                                                value="{{ $member->id }}"
+                                                id="recipient{{ $member->id }}"
+                                                data-name="{{ $member->name }}"
+                                                data-phone="{{ $member->phone }}"
+                                                data-uid="{{ $member->unique_id }}">
+
+                                            <label class="flex-grow-1 mb-0"
+                                                for="recipient{{ $member->id }}"
+                                                style="cursor:pointer;">
+
+                                                <div class="fw-semibold">
+                                                    {{ $member->name }}
+                                                </div>
+
+                                                <div class="small text-body-secondary">
+                                                    {{ $member->phone }}
+                                                    <span class="mx-1">·</span>
+                                                    {{ $member->unique_id }}
+                                                </div>
+
+                                            </label>
+
+                                        </div>
+
+                                    </div>
+
+                                    @endforeach
+
                                 </div>
-
-                                <div class="col-md-6">
-                                    <select class="form-select">
-                                        <option>All statuses</option>
-                                        <option>Due only</option>
-                                        <option>Paid</option>
-                                    </select>
-                                </div>
-
-                            </div>
-
-                            <div class="table-wrap">
-
-                                <table class="ledger text-nowrap">
-                                    <thead>
-                                        <tr>
-                                            <th></th>
-                                            <th>Resident</th>
-                                            <th>Unit</th>
-                                            <th>Mobile</th>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        <tr>
-                                            <td><input type="checkbox" checked></td>
-                                            <td>Kamal Hossain</td>
-                                            <td>A-04B</td>
-                                            <td>01711-223344</td>
-                                        </tr>
-
-                                        <tr>
-                                            <td><input type="checkbox" checked></td>
-                                            <td>Fahmida Begum</td>
-                                            <td>A-01A</td>
-                                            <td>01822-556677</td>
-                                        </tr>
-
-                                        <tr>
-                                            <td><input type="checkbox" checked></td>
-                                            <td>Shahidul Islam</td>
-                                            <td>B-06C</td>
-                                            <td>01933-889900</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
 
                             </div>
 
                             <div class="hint mt-2">
-                                148 residents selected · 148 valid mobile numbers
+                                <span id="selectedRecipientHint">0</span> residents selected ·
+                                <span id="validRecipientHint">0</span> valid mobile numbers
                             </div>
 
                         </div>
 
                     </div>
+
+
 
                     <!-- Estimated Cost -->
                     <div class="card">
@@ -358,7 +389,7 @@
 
                                     <tr>
                                         <td>Recipients selected</td>
-                                        <td class="text-end" id="smsRecipientCountBs">148</td>
+                                        <td class="text-end" id="smsRecipientCountBs">0</td>
                                     </tr>
 
                                     <tr>
@@ -373,7 +404,9 @@
 
                                     <tr>
                                         <td>Rate</td>
-                                        <td class="text-end">৳0.50 / SMS</td>
+                                        <td class="text-end" id="smsRateBs">
+                                            ৳{{ round($amount/0.35, 2) }} / SMS
+                                        </td>
                                     </tr>
 
                                     <tr>
@@ -529,6 +562,21 @@
 @endsection
 @push('scripts')
 
+<!-- Datetime Picker Scripts -->
+<script>
+    $(document).ready(function() {
+        flatpickr('#datepicker', {
+            enableTime: true,
+            dateFormat: 'Y-m-d H:i',
+            minDate: 'today',
+            time_24hr: true,
+            minuteIncrement: 5,
+            disableMobile: true
+        });
+    });
+</script>
+
+<!-- Fetching Data Scripts -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
 
@@ -545,6 +593,7 @@
     });
 </script>
 
+<!-- Tab Changeing Scripts -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
 
@@ -597,48 +646,80 @@
 <!-- Hide Show SMS Types -->
 <script>
     let smsLimit = 160;
+    let smsRate = 0.35;
 
     function customSms() {
-        document.getElementById('customSMS').style.display = 'block';
+        document.getElementById('CustomSmsArea').style.display = 'block';
         document.getElementById('customSMS').required = true;
 
         document.getElementById('draftSmsBox').style.display = 'none';
         document.getElementById('draftSMS').required = false;
+
+        updateSmsCount();
     }
 
     function draftSms() {
-        document.getElementById('customSMS').style.display = 'none';
+        document.getElementById('CustomSmsArea').style.display = 'none';
         document.getElementById('customSMS').required = false;
 
         document.getElementById('draftSmsBox').style.display = 'block';
         document.getElementById('draftSMS').required = true;
+
+        updateSmsCount();
+    }
+
+    function getRecipientCount() {
+        return document.querySelectorAll(
+            '#recipientDropdown .recipient-checkbox:checked'
+        ).length;
     }
 
     function updateSmsCount() {
+
         let message = document.getElementById('customSMS').value;
         let characterCount = message.length;
-        let smsCount = characterCount > 0 ? Math.ceil(characterCount / smsLimit) : 0;
 
-        document.getElementById('smsCharCountBs').textContent = characterCount + ' characters';
-        document.getElementById('smsCountBadgeBs').textContent = smsCount + ' SMS / recipient';
+        let smsPerRecipient = characterCount > 0 ?
+            Math.ceil(characterCount / smsLimit) :
+            0;
+
+        let recipientCount = getRecipientCount();
+
+        let totalSms = smsPerRecipient * recipientCount;
+
+        let totalCost = totalSms * smsRate;
+
+        document.getElementById('smsCharCountBs').textContent =
+            characterCount + ' characters';
+
+        document.getElementById('smsCountBadgeBs').textContent =
+            smsPerRecipient + ' SMS / recipient';
+
+        document.getElementById('smsRecipientCountBs').textContent =
+            recipientCount;
+
+        document.getElementById('smsPerRecipientBs').textContent =
+            smsPerRecipient;
+
+        document.getElementById('smsTotalCountBs').textContent =
+            totalSms;
+
+        document.getElementById('smsRateBs').textContent =
+            '৳' + smsRate.toFixed(2) + ' / SMS';
+
+        document.getElementById('smsTotalCostBs').textContent =
+            '৳' + totalCost.toFixed(2);
     }
 
     document.getElementById('customSMS').addEventListener('input', function() {
         updateSmsCount();
     });
 
-    document.querySelectorAll('[data-lang]').forEach(function(button) {
-        button.addEventListener('click', function() {
+    document.querySelectorAll('input[name="language"]').forEach(function(radio) {
 
-            document.querySelectorAll('[data-lang]').forEach(function(btn) {
-                btn.classList.remove('btn-primary', 'active');
-                btn.classList.add('btn-outline-secondary');
-            });
+        radio.addEventListener('change', function() {
 
-            this.classList.remove('btn-outline-secondary');
-            this.classList.add('btn-primary', 'active');
-
-            if (this.dataset.lang === 'bn') {
+            if (this.value === 'Bangla') {
                 smsLimit = 67;
             } else {
                 smsLimit = 160;
@@ -646,8 +727,205 @@
 
             updateSmsCount();
         });
+
+    });
+
+    document.querySelectorAll('.ledger input[type="checkbox"]').forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            updateSmsCount();
+        });
     });
 
     updateSmsCount();
+</script>
+
+<!-- Recipient and SMS count Script -->
+<script>
+    const recipientSearch = document.getElementById('recipientSearch');
+    const recipientDropdown = document.getElementById('recipientDropdown');
+    const recipientOptions = document.querySelectorAll('.recipient-option');
+
+
+    /*
+     * Show dropdown when search box is focused
+     */
+    recipientSearch.addEventListener('focus', function() {
+        recipientDropdown.classList.remove('d-none');
+        filterRecipients();
+    });
+
+
+    /*
+     * Live search
+     */
+    recipientSearch.addEventListener('input', function() {
+        recipientDropdown.classList.remove('d-none');
+        filterRecipients();
+    });
+
+
+    function filterRecipients() {
+
+        let search = recipientSearch.value.toLowerCase().trim();
+        let visibleCount = 0;
+
+        recipientOptions.forEach(function(option) {
+
+            let name = option.dataset.name;
+            let phone = option.dataset.phone;
+            let uid = option.dataset.uid;
+
+            if (
+                name.includes(search) ||
+                phone.includes(search) ||
+                uid.includes(search)
+            ) {
+                option.classList.remove('d-none');
+                visibleCount++;
+            } else {
+                option.classList.add('d-none');
+            }
+
+        });
+
+        if (visibleCount === 0) {
+            recipientDropdown.classList.add('d-none');
+        }
+    }
+
+
+    /*
+     * Select / remove individual recipient
+     */
+    document.querySelectorAll('.recipient-checkbox').forEach(function(checkbox) {
+
+        checkbox.addEventListener('change', function() {
+            updateRecipients();
+        });
+
+    });
+
+
+    /*
+     * Update selected recipients
+     */
+    function updateRecipients() {
+
+        let selected = document.querySelectorAll(
+            '.recipient-checkbox:checked'
+        );
+
+        let recipientIds = Array.from(selected).map(function(checkbox) {
+            return checkbox.value;
+        });
+
+        document.getElementById('recipientIds').value =
+            JSON.stringify(recipientIds);
+
+        let selectedContainer =
+            document.getElementById('selectedRecipients');
+
+        selectedContainer.innerHTML = '';
+
+        if (selected.length === 0) {
+
+            let emptyText = document.createElement('span');
+
+            emptyText.id = 'noRecipientText';
+            emptyText.className =
+                'text-body-secondary small align-self-center';
+
+            emptyText.textContent = 'No recipients selected';
+
+            selectedContainer.appendChild(emptyText);
+
+        } else {
+
+            selected.forEach(function(checkbox) {
+
+                let badge = document.createElement('span');
+
+                badge.className =
+                    'badge bg-primary-subtle text-primary border d-flex align-items-center gap-1';
+
+                badge.innerHTML =
+                    checkbox.dataset.name +
+                    ' <button type="button" class="btn-close btn-close-sm" aria-label="Remove"></button>';
+
+                badge.querySelector('button').addEventListener('click', function() {
+
+                    checkbox.checked = false;
+
+                    updateRecipients();
+                });
+
+                selectedContainer.appendChild(badge);
+            });
+        }
+
+        let recipientCount = selected.length;
+
+        document.getElementById('recipientSummaryBs').textContent =
+            recipientCount + ' selected';
+
+        document.getElementById('selectedRecipientHint').textContent =
+            recipientCount;
+
+        document.getElementById('validRecipientHint').textContent =
+            recipientCount;
+
+        updateSmsCount();
+    }
+
+
+    /*
+     * Select All
+     */
+    document.getElementById('selectAllRecipients')
+        .addEventListener('click', function() {
+
+            document.querySelectorAll('.recipient-checkbox')
+                .forEach(function(checkbox) {
+                    checkbox.checked = true;
+                });
+
+            updateRecipients();
+        });
+
+
+    /*
+     * Clear All
+     */
+    document.getElementById('clearAllRecipients')
+        .addEventListener('click', function() {
+
+            document.querySelectorAll('.recipient-checkbox')
+                .forEach(function(checkbox) {
+                    checkbox.checked = false;
+                });
+
+            updateRecipients();
+        });
+
+
+    /*
+     * Close dropdown when clicking outside
+     */
+    document.addEventListener('click', function(event) {
+
+        if (
+            !recipientSearch.contains(event.target) &&
+            !recipientDropdown.contains(event.target)
+        ) {
+            recipientDropdown.classList.add('d-none');
+        }
+
+    });
+
+
+    /*
+     * Initial state
+     */
+    updateRecipients();
 </script>
 @endpush

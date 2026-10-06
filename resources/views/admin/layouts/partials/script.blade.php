@@ -1,3 +1,4 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.6.3/jquery-ui-timepicker-addon.min.js"></script>
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="{{asset('assets/js/flatpickr.js')}}"></script>
@@ -32,11 +33,39 @@
 <!-- Permission Change menu Order -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+
+        let successPopup = document.getElementById('successPopup');
+        let closeSuccessPopup = document.getElementById('closeSuccessPopup');
+        let popupTimeout;
+
+        function showSuccessPopup() {
+            clearTimeout(popupTimeout);
+
+            successPopup.style.opacity = '1';
+            successPopup.style.visibility = 'visible';
+
+            popupTimeout = setTimeout(function() {
+                hideSuccessPopup();
+            }, 1000);
+        }
+
+        function hideSuccessPopup() {
+            successPopup.style.opacity = '0';
+            successPopup.style.visibility = 'hidden';
+        }
+
+        closeSuccessPopup.addEventListener('click', function() {
+            clearTimeout(popupTimeout);
+            hideSuccessPopup();
+        });
+
         let sortable = new Sortable(document.getElementById('sortable-permissions'), {
             animation: 150,
-            handle: '.cursor-move', // Only drag using the icon
+            handle: '.cursor-move',
+
             onEnd: function() {
                 let order = [];
+
                 document.querySelectorAll('#sortable-permissions tr').forEach((row, index) => {
                     order.push({
                         id: row.getAttribute('data-id'),
@@ -56,7 +85,9 @@
                     })
                     .then(res => res.json())
                     .then(data => {
-                        console.log("Order updated:", data);
+                        if (data.status === 'success') {
+                            showSuccessPopup();
+                        }
                     });
             }
         });

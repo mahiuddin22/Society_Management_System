@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bill;
-use App\Models\PlotAndUnit;
 use App\Models\PlotType;
 use App\Models\Road;
 use App\Services\BillingService;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -100,6 +98,8 @@ class BillController extends Controller
             $validated['billing_month'],
             $validated['due_date']
         );
+
+        
 
         return redirect()->route('admin.bills.index', ['month' => $validated['billing_month']])
             ->with('success', $result['generated'] > 0 ? "Billing Generation: {$result['generated']} newly generated" : 'All the bill already generated');

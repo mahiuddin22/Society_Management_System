@@ -14,7 +14,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
-        Schedule::command('bills:generate-monthly')->monthlyOn(1, '00:05');
+        $schedule->command('bills:generate-monthly')->monthlyOn(1, '00:05');
+        $schedule->command('sms:send-scheduled')->everyMinute();
     }
 
     /**

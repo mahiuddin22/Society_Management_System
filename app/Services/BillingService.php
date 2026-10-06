@@ -98,6 +98,8 @@ class BillingService
                 'paid_amount'       => 0.00,
                 'status'            => $netAmount == 0 ? 'Paid' : 'Unpaid',
             ]);
+
+            
         });
     }
 
@@ -137,5 +139,15 @@ class BillingService
 
             return $payment;
         });
+    }
+
+
+    public function sendSMS(Bill $bill, string $message): bool
+    {
+        Bill::where('id', $bill->id)->update(['sms_sent' => true]);
+
+        \Log::info("Sending SMS for Bill ID {$bill->id}: {$message}");
+
+        return true;
     }
 }

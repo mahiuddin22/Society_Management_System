@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Settings;
+use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
@@ -18,7 +18,7 @@ class SettingController extends Controller
    */
     public function edit()
     {
-        $settings = Settings::latest()->first();
+        $settings = Setting::latest()->first();
         return View('admin.settings.edit', compact('settings'));
     }
 
@@ -32,7 +32,7 @@ class SettingController extends Controller
         ]);
 
         // Get existing record (IMPORTANT: no truncate)
-        $content = Settings::latest()->first();
+        $content = Setting::latest()->first();
 
         // Logo upload
         if (!empty($request->logo)) {
@@ -78,7 +78,7 @@ class SettingController extends Controller
         ]);
 
         // Get existing record (IMPORTANT: no truncate)
-        $content = Settings::latest()->first();
+        $content = Setting::latest()->first();
 
         // Logo upload
         if (!empty($request->logo)) {

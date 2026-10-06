@@ -1,6 +1,16 @@
 @extends('admin.layouts.app')
 
 @section('content')
+<div id="successPopup" class="position-fixed top-0 end-0 mt-3 me-3 px-5 py-3 bg-white bg-opacity-75 text-success border border-success rounded shadow-sm"
+    style="z-index: 9999; opacity: 0; visibility: hidden; transition: opacity 0.4s ease, visibility 0.4s ease; min-width: 320px;">
+    <div class="d-flex align-items-center justify-content-between gap-4">
+        <span>Reorder updated successfully.</span>
+
+        <button type="button" id="closeSuccessPopup" class="btn p-0 text-success" style="font-size: 20px; line-height: 1;">
+            &times;
+        </button>
+    </div>
+</div>
 <form action="{{ route('admin.permissions.index') }}" method="GET" class="row g-2 mb-3 mt-2">
     <div class="col-md-3">
         <input type="text" name="name" class="form-control form-control-sm" value="{{ $name }}" placeholder="Search by name" />
