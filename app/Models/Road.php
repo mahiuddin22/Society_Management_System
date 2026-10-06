@@ -11,4 +11,9 @@ class Road extends Model
     protected $fillable = [
         'number',
     ];
+
+    public function plotAndUnits()
+    {
+        return $this->hasMany(PlotAndUnit::class);
+    }
 }

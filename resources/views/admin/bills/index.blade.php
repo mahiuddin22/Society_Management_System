@@ -33,7 +33,7 @@
       font-weight: 600;
     }
 
-    /* Custom Month/Year Picker (Billing Month filter) */
+    /* Custom Month/Year Picker (Billing Month filter & Modal) */
     .month-year-popup {
       font-size: 12.5px;
     }
@@ -71,6 +71,28 @@
     }
     .my-month-cell.current-month:not(.active-month) {
       border: 1px solid var(--forest-200, var(--line-strong));
+    }
+
+    /* Clear Month Badge Button */
+    .clear-picker-badge-btn {
+      background: var(--paper-100);
+      border: 1px solid var(--line);
+      color: var(--ink-500);
+      font-size: 11px;
+      line-height: 1;
+      padding: 3px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+    .clear-picker-badge-btn:hover {
+      background: var(--forest-50);
+      border-color: var(--forest-200);
+      color: var(--forest-800);
     }
 
     /* Custom Calendar Date Picker (Payment Date & Due Date) */
@@ -203,40 +225,26 @@
 @section('content')
 <section class="panel active" id="panel-bills">
 
-  {{-- 1. Filter Bar & Action Header (70/30 Split) --}}
+  {{-- 1. Filter Bar & Action Header --}}
   <div class="row align-items-center g-2 mb-4">
 
-    {{-- Left: Search & Filter Popover (70% on desktop) --}}
-    <div class="col-12 col-md-8">
+    {{-- Left: Filter Trigger Button with Popover Panel --}}
+    <div class="col-12 col-md-7">
       <form action="{{ route('admin.bills.index') }}" method="GET" autocomplete="off" id="filterForm">
-        <div class="d-flex align-items-center gap-2 flex-wrap flex-sm-nowrap">
-
-          {{-- Primary Search Input --}}
-          <div class="search flex-grow-1" style="min-width: 0;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6d7469" stroke-width="2">
-              <circle cx="11" cy="11" r="7" />
-              <path d="m21 21-4.3-4.3" />
-            </svg>
-            <input
-              class="input w-100"
-              name="search"
-              value="{{ request('search') }}"
-              placeholder="Search bill #, holding, phone..."
-            >
-          </div>
+        <div class="d-flex align-items-center gap-2">
 
           {{-- Active Filter Counter --}}
           @php
-            $activeAdvancedFiltersCount = collect(['month', 'status', 'road_number', 'plot_type_id'])
+            $activeAdvancedFiltersCount = collect(['search', 'month', 'status', 'road_number', 'plot_type_id'])
                 ->filter(fn($key) => request()->filled($key))
                 ->count();
           @endphp
 
-          {{-- Filter Toggle Button with Popover Anchor --}}
+          {{-- Filter Trigger Button --}}
           <div class="position-relative flex-shrink-0" id="filterPopoverWrapper">
             <button
               type="button"
-              class="btn {{ $activeAdvancedFiltersCount > 0 ? 'btn-primary' : 'btn-ghost' }} d-inline-flex align-items-center gap-1 px-2"
+              class="btn {{ $activeAdvancedFiltersCount > 0 ? 'btn-primary' : 'btn-ghost' }} d-inline-flex align-items-center gap-2 px-3"
               id="toggleFilterPopupBtn"
               title="Toggle filters"
               style="border: 1px solid {{ $activeAdvancedFiltersCount > 0 ? 'transparent' : 'var(--line)' }}; height: 38px;"
@@ -252,7 +260,7 @@
                 <line x1="9" y1="8" x2="15" y2="8"></line>
                 <line x1="17" y1="16" x2="23" y2="16"></line>
               </svg>
-              <span class="d-none d-sm-inline">Filters</span>
+              <span>Filters</span>
 
               @if($activeAdvancedFiltersCount > 0)
                 <span class="badge rounded-pill bg-white text-dark ms-1" style="font-size: 10px; padding: 2px 5px;">
@@ -269,9 +277,9 @@
                 display: none;
                 position: absolute;
                 top: calc(100% + 8px);
-                right: 0;
-                left: auto;
-                width: 280px;
+                left: 0;
+                right: auto;
+                width: 290px;
                 max-width: 90vw;
                 background: var(--card);
                 border: 1px solid var(--line-strong);
@@ -287,9 +295,40 @@
               </div>
 
               <div class="d-flex flex-column gap-3">
-                {{-- 1. Billing Month: Custom Year/Month Picker --}}
+
+                {{-- 1. Search Query Input --}}
                 <div>
-                  <label class="form-label fw-semibold small mb-1" style="font-size: 11.5px; color: var(--ink-800);">Billing Month</label>
+                  <label class="form-label fw-semibold small mb-1" style="font-size: 11.5px; color: var(--ink-800);">Search Query</label>
+                  <div class="position-relative w-100">
+                    <input 
+                      type="text"
+                      class="input w-100" 
+                      name="search" 
+                      value="{{ request('search') }}" 
+                      placeholder="Bill #, holding, phone..."
+                      style="font-size: 12.5px; padding-left: 28px;"
+                    >
+                    <span class="position-absolute top-50 start-0 translate-middle-y ps-2 text-muted" style="pointer-events: none;">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="7" />
+                        <path d="m21 21-4.3-4.3" />
+                      </svg>
+                    </span>
+                  </div>
+                </div>
+
+                {{-- 2. Billing Month: Custom Year/Month Picker --}}
+                <div>
+                  <div class="d-flex align-items-center justify-content-between mb-1">
+                    <label class="form-label fw-semibold small mb-0" style="font-size: 11.5px; color: var(--ink-800);">Billing Month</label>
+                    <button type="button" class="clear-picker-badge-btn" id="clearFilterMonthBtn" title="Clear selected month">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
+                      <span>Clear</span>
+                    </button>
+                  </div>
                   <div class="position-relative month-picker-container w-100" id="filterMonthPickerWrapper">
                     <input
                       type="text"
@@ -332,11 +371,11 @@
                       <div class="d-grid" id="filterMonthGrid" style="grid-template-columns: repeat(3, 1fr); gap: 4px;"></div>
                     </div>
 
-                    <input type="hidden" name="month" id="filterMonthHidden" value="{{ request('month', $currentMonth) }}">
+                    <input type="hidden" name="month" id="filterMonthHidden" value="{{ request('month', '') }}">
                   </div>
                 </div>
 
-                {{-- 2. Payment Status: Custom Select Dropdown --}}
+                {{-- 3. Payment Status: Custom Select Dropdown --}}
                 <div>
                   <label class="form-label fw-semibold small mb-1" style="font-size: 11.5px; color: var(--ink-800);">Payment Status</label>
                   <div class="position-relative status-picker-container w-100">
@@ -399,7 +438,7 @@
                   </div>
                 </div>
 
-                {{-- 3. Road Picker (Custom Select) --}}
+                {{-- 4. Road Picker (Custom Select) --}}
                 <div>
                   <label class="form-label fw-semibold small mb-1" style="font-size: 11.5px; color: var(--ink-800);">Road</label>
                   <div class="position-relative road-picker-container w-100">
@@ -461,7 +500,7 @@
                   </div>
                 </div>
 
-                {{-- 4. Plot Type Picker (Custom Select matching Road Picker) --}}
+                {{-- 5. Plot Type Picker (Custom Select) --}}
                 <div>
                   <label class="form-label fw-semibold small mb-1" style="font-size: 11.5px; color: var(--ink-800);">Plot Type</label>
                   <div class="position-relative plot-type-picker-container w-100">
@@ -530,32 +569,35 @@
                   </div>
                 </div>
 
-                {{-- Apply Button --}}
-                <div class="pt-2 border-top">
+                {{-- Apply & Reset Buttons Inside Popup --}}
+                <div class="pt-2 border-top d-flex gap-2">
                   <button type="submit" class="btn btn-primary w-100 justify-content-center py-2 small" style="font-size: 13px;">
                     Apply Filters
                   </button>
+                  @if($activeAdvancedFiltersCount > 0)
+                    <a href="{{ route('admin.bills.index') }}" class="btn btn-secondary justify-content-center py-2 px-3 small" title="Clear all filters" style="font-size: 13px;">
+                      Reset
+                    </a>
+                  @endif
                 </div>
 
               </div>
             </div>
           </div>
 
-          {{-- Search & Reset Buttons --}}
-          <div class="d-flex align-items-center gap-2 flex-shrink-0">
-            <button type="submit" class="btn btn-primary px-3" style="height: 38px;">Search</button>
-
-            @if(request()->hasAny(['search', 'month', 'status', 'road_number', 'plot_type_id']))
-              <a href="{{ route('admin.bills.index') }}" class="btn btn-secondary px-2" title="Clear all filters" style="height: 38px; line-height: 24px;">Reset</a>
-            @endif
-          </div>
+          {{-- Quick Clear Link outside --}}
+          @if($activeAdvancedFiltersCount > 0)
+            <a href="{{ route('admin.bills.index') }}" class="btn btn-ghost px-2 text-muted" title="Clear all filters" style="height: 38px; line-height: 24px; font-size: 13px;">
+              Reset
+            </a>
+          @endif
 
         </div>
       </form>
     </div>
 
-    {{-- Right: Run Cycle Action (30% on desktop) --}}
-    <div class="col-12 col-md-4 text-md-end mt-2 mt-md-0">
+    {{-- Right: Run Cycle Action Button --}}
+    <div class="col-12 col-md-5 text-md-end mt-2 mt-md-0">
       <button type="button" class="btn btn-primary d-flex d-md-inline-flex justify-content-center align-items-center gap-2 text-nowrap" style="height: 38px;" data-bs-toggle="modal" data-bs-target="#generateModal">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
           <circle cx="12" cy="12" r="3"></circle>
@@ -722,7 +764,7 @@
               @if($bill->status === 'Paid')
                 <span class="badge green"><i class="dot"></i>Paid</span>
               @elseif($bill->status === 'Partial')
-                <span class="badge yellow"><i class="dot"></i>Partial</span>
+                <span class="badge gold"><i class="dot"></i>Partial</span>
               @else
                 <span class="badge red"><i class="dot"></i>Unpaid</span>
               @endif
@@ -767,7 +809,7 @@
 
 </section>
 
-{{-- Modal 1: Generate Billing Run (With Formatted Displays & Custom Due Date Picker) --}}
+{{-- Modal 1: Generate Billing Run (With Custom Month Picker & Formatted Due Date) --}}
 <div class="modal fade" id="generateModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered" style="max-width: 420px;">
     <form action="{{ route('admin.bills.generate') }}" method="POST" class="modal-content border-0 shadow">
@@ -778,37 +820,63 @@
       </div>
       <div class="modal-body p-3">
 
-        {{-- Billing Month with Visible Human-Readable Formatting --}}
+        {{-- Billing Month: Custom Grid Picker (Matches Filter Design Exactly) --}}
         <div class="mb-3">
           <label class="form-label small fw-semibold mb-1">Billing Month</label>
-          <div class="position-relative w-100">
+          <div class="position-relative month-picker-container w-100" id="genMonthPickerWrapper">
             <input
               type="text"
               id="displayBillingMonth"
               class="input w-100"
-              style="padding-right: 34px; background-color: var(--card); cursor: pointer;"
+              placeholder="Select Month"
+              autocomplete="off"
               readonly
+              style="cursor: pointer; padding-right: 28px; background-color: var(--card); font-size: 12.5px; color: var(--ink-700); user-select: none;"
+              required
             >
-            <span class="position-absolute top-50 translate-middle-y text-muted" style="right: 11px; pointer-events: none; z-index: 1;">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                <line x1="16" y1="2" x2="16" y2="6"></line>
-                <line x1="8" y1="2" x2="8" y2="6"></line>
-                <line x1="3" y1="10" x2="21" y2="10"></line>
+            <span class="position-absolute top-50 end-0 translate-middle-y pe-2 text-muted" style="pointer-events: none; opacity: .65;">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="m6 9 6 6 6-6"/>
               </svg>
             </span>
+
+            <div
+              id="genMonthDropdown"
+              class="month-year-popup road-custom-popup"
+              style="
+                display: none;
+                position: absolute;
+                top: calc(100% + 4px);
+                left: 0;
+                width: 230px;
+                max-width: 90vw;
+                background: var(--card);
+                border: 1px solid var(--line);
+                border-radius: var(--radius-s);
+                box-shadow: 0 4px 14px rgba(23, 56, 34, 0.08);
+                z-index: 1075;
+                padding: 10px;
+              "
+            >
+              <div class="d-flex align-items-center justify-content-between mb-2">
+                <button type="button" class="my-year-nav-btn" id="genMonthYearPrev">&laquo;</button>
+                <span class="fw-semibold" id="genMonthYearLabel" style="font-size: 13px; color: var(--ink-900);"></span>
+                <button type="button" class="my-year-nav-btn" id="genMonthYearNext">&raquo;</button>
+              </div>
+              <div class="d-grid" id="genMonthGrid" style="grid-template-columns: repeat(3, 1fr); gap: 4px;"></div>
+            </div>
+
             <input
-              type="month"
+              type="hidden"
               name="billing_month"
               id="nativeBillingMonth"
               value="{{ now()->format('Y-m') }}"
-              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 2;"
               required
             >
           </div>
         </div>
 
-        {{-- Due Date: Custom Calendar Picker (Same custom grid design) --}}
+        {{-- Due Date: Custom Calendar Picker (Displays e.g. "10 November, 2026") --}}
         <div class="mb-3">
           <label class="form-label small fw-semibold mb-1">Due Date</label>
           <div class="position-relative date-picker-container w-100" id="genDueDatePickerWrapper">
@@ -820,6 +888,7 @@
               autocomplete="off"
               readonly
               style="cursor: pointer; padding-right: 28px; background-color: var(--card); font-size: 12.5px; color: var(--ink-700); user-select: none;"
+              required
             >
             <span class="position-absolute top-50 end-0 translate-middle-y pe-2 text-muted" style="pointer-events: none; opacity: .65;">
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -862,7 +931,13 @@
               <div class="dp-day-grid" id="genDueDateGrid"></div>
             </div>
 
-            <input type="hidden" name="due_date" id="nativeDueDate" value="{{ now()->addMonth()->startOfMonth()->addDays(9)->toDateString() }}">
+            <input
+              type="hidden"
+              name="due_date"
+              id="nativeDueDate"
+              value="{{ now()->addMonth()->startOfMonth()->addDays(9)->toDateString() }}"
+              required
+            >
           </div>
         </div>
 
@@ -951,7 +1026,7 @@
           </div>
         </div>
 
-        {{-- Payment Method: Custom Select Dropdown (Matching Road Picker style) --}}
+        {{-- Payment Method: Custom Select Dropdown --}}
         <div class="mb-2">
           <label class="form-label small fw-semibold">Method</label>
           <div class="position-relative method-picker-container w-100">
@@ -1052,7 +1127,7 @@
         </div>
       </div>
 
-      {{-- Modal Footer: Flush right alignment with inputs --}}
+      {{-- Modal Footer --}}
       <div class="modal-footer py-2 px-3 border-top d-flex justify-content-end align-items-center gap-2" style="padding-right: 1rem !important;">
         <button type="button" class="btn btn-ghost" data-bs-dismiss="modal">Close</button>
         <button type="submit" class="btn btn-primary m-0" style="margin-right: 0 !important;">Save Payment</button>
@@ -1210,9 +1285,9 @@
       }
 
       // ===================================================
-      // Custom Year/Month Picker (used for Filter: Billing Month)
+      // Custom Year/Month Picker (Re-usable for Filter & Modal)
       // ===================================================
-      function initMonthYearPicker({ wrapperId, displayId, dropdownId, gridId, yearLabelId, prevBtnId, nextBtnId, hiddenId, closeOnSelect = true }) {
+      function initMonthYearPicker({ wrapperId, displayId, dropdownId, gridId, yearLabelId, prevBtnId, nextBtnId, hiddenId, clearBtnId, onSelectCallback, closeOnSelect = true }) {
         const wrapper    = document.getElementById(wrapperId);
         const display    = document.getElementById(displayId);
         const dropdown   = document.getElementById(dropdownId);
@@ -1221,22 +1296,26 @@
         const prevBtn    = document.getElementById(prevBtnId);
         const nextBtn    = document.getElementById(nextBtnId);
         const hidden     = document.getElementById(hiddenId);
+        const clearBtn   = document.getElementById(clearBtnId);
 
         if (!wrapper || !display || !dropdown || !grid || !hidden) return;
 
         const now = new Date();
-        let [initYear, initMonth] = hidden.value
-          ? hidden.value.split('-').map(Number)
-          : [now.getFullYear(), now.getMonth() + 1];
+        let viewYear = now.getFullYear();
 
-        let viewYear = initYear;
+        if (hidden.value && hidden.value.trim() !== '') {
+          const parts = hidden.value.split('-');
+          if (parts.length >= 1 && !isNaN(parts[0])) {
+            viewYear = parseInt(parts[0], 10);
+          }
+        }
 
         function formatDisplay(year, month) {
           return `${year}-${monthNames[month - 1]}`;
         }
 
         function syncDisplayFromHidden() {
-          if (hidden.value) {
+          if (hidden.value && hidden.value.trim() !== '') {
             const [y, m] = hidden.value.split('-').map(Number);
             display.value = formatDisplay(y, m);
           } else {
@@ -1248,7 +1327,9 @@
           yearLabel.textContent = viewYear;
           grid.innerHTML = '';
 
-          const [selYear, selMonth] = hidden.value ? hidden.value.split('-').map(Number) : [null, null];
+          const [selYear, selMonth] = (hidden.value && hidden.value.trim() !== '') 
+            ? hidden.value.split('-').map(Number) 
+            : [null, null];
 
           monthShort.forEach((label, idx) => {
             const monthNum = idx + 1;
@@ -1259,14 +1340,16 @@
             if (selYear === viewYear && selMonth === monthNum) {
               cell.classList.add('active-month');
             }
-            if (viewYear === now.getFullYear() && monthNum === (now.getMonth() + 1)) {
-              cell.classList.add('current-month');
-            }
 
             cell.addEventListener('click', function (e) {
               e.stopPropagation();
-              hidden.value = `${viewYear}-${pad2(monthNum)}`;
+              const chosenMonthStr = `${viewYear}-${pad2(monthNum)}`;
+              hidden.value = chosenMonthStr;
               syncDisplayFromHidden();
+
+              if (typeof onSelectCallback === 'function') {
+                onSelectCallback(chosenMonthStr);
+              }
 
               if (closeOnSelect) {
                 dropdown.style.display = 'none';
@@ -1280,8 +1363,12 @@
         }
 
         function openDropdown() {
-          const [y] = hidden.value ? hidden.value.split('-').map(Number) : [now.getFullYear()];
-          viewYear = y;
+          if (hidden.value && hidden.value.trim() !== '') {
+            const [y] = hidden.value.split('-').map(Number);
+            viewYear = y;
+          } else {
+            viewYear = now.getFullYear();
+          }
           renderGrid();
           dropdown.style.display = 'block';
         }
@@ -1299,6 +1386,15 @@
         dropdown.addEventListener('click', function (e) {
           e.stopPropagation();
         });
+
+        if (clearBtn) {
+          clearBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            hidden.value = '';
+            syncDisplayFromHidden();
+            closeDropdown();
+          });
+        }
 
         if (prevBtn) {
           prevBtn.addEventListener('click', function (e) {
@@ -1329,8 +1425,15 @@
         });
 
         syncDisplayFromHidden();
+
+        return {
+          refresh: function() {
+            syncDisplayFromHidden();
+          }
+        };
       }
 
+      // Filter Billing Month Picker
       initMonthYearPicker({
         wrapperId:   'filterMonthPickerWrapper',
         displayId:   'filterMonthDisplay',
@@ -1340,12 +1443,13 @@
         prevBtnId:   'filterMonthYearPrev',
         nextBtnId:   'filterMonthYearNext',
         hiddenId:    'filterMonthHidden',
+        clearBtnId:  'clearFilterMonthBtn',
       });
 
       // ===================================================
-      // Custom Calendar Date Picker (used for Payment Date & Due Date)
+      // Custom Calendar Date Picker (Payment Date & Due Date)
       // ===================================================
-      function initDatePicker({ wrapperId, displayId, dropdownId, gridId, monthYearLabelId, prevBtnId, nextBtnId, hiddenId, closeOnSelect = true }) {
+      function initDatePicker({ wrapperId, displayId, dropdownId, gridId, monthYearLabelId, prevBtnId, nextBtnId, hiddenId, displayFormat = 'slash', closeOnSelect = true }) {
         const wrapper   = document.getElementById(wrapperId);
         const display   = document.getElementById(displayId);
         const dropdown  = document.getElementById(dropdownId);
@@ -1371,6 +1475,11 @@
         let viewMonth = sel.m;
 
         function formatDisplay(y, m, d) {
+          if (displayFormat === 'human') {
+            // "10 November, 2026"
+            return `${d} ${monthNames[m - 1]}, ${y}`;
+          }
+          // Default: "10/11/2026"
           return `${pad2(d)}/${pad2(m)}/${y}`;
         }
 
@@ -1497,6 +1606,10 @@
           refresh: function () {
             syncDisplayFromHidden();
           },
+          setDate: function(dateStr) {
+            hidden.value = dateStr;
+            syncDisplayFromHidden();
+          }
         };
       }
 
@@ -1510,11 +1623,11 @@
         prevBtnId:         'paymentDatePrev',
         nextBtnId:         'paymentDateNext',
         hiddenId:          'nativePaymentDate',
+        displayFormat:     'slash'
       });
-
       window.__paymentDatePicker = paymentDatePicker;
 
-      // 2. Generate Modal Due Date Picker (Customized to match theme & mobile layout)
+      // 2. Generate Modal Due Date Picker (Human Format: "10 November, 2026")
       const genDueDatePicker = initDatePicker({
         wrapperId:         'genDueDatePickerWrapper',
         displayId:         'displayDueDate',
@@ -1524,36 +1637,46 @@
         prevBtnId:         'genDueDatePrev',
         nextBtnId:         'genDueDateNext',
         hiddenId:          'nativeDueDate',
+        displayFormat:     'human'
       });
-
       window.__genDueDatePicker = genDueDatePicker;
 
-      // ===================================================
-      // Generate Modal Month Display Sync
-      // ===================================================
-      const nativeMonth  = document.getElementById('nativeBillingMonth');
-      const displayMonth = document.getElementById('displayBillingMonth');
-
-      function formatMonthDisplay(val) {
-        if (!val) return '';
-        const [year, month] = val.split('-');
-        const mIndex = parseInt(month, 10) - 1;
-        return `${year}-${monthNames[mIndex] || month}`;
-      }
-
-      function syncGenMonth() {
-        if (nativeMonth && displayMonth) {
-          displayMonth.value = formatMonthDisplay(nativeMonth.value);
+      // 3. Generate Modal: Custom Month/Year Picker (Auto recalculates Due Date to next month 10th)
+      const genMonthPicker = initMonthYearPicker({
+        wrapperId:         'genMonthPickerWrapper',
+        displayId:         'displayBillingMonth',
+        dropdownId:        'genMonthDropdown',
+        gridId:            'genMonthGrid',
+        yearLabelId:       'genMonthYearLabel',
+        prevBtnId:         'genMonthYearPrev',
+        nextBtnId:         'genMonthYearNext',
+        hiddenId:          'nativeBillingMonth',
+        onSelectCallback:  function(selectedMonthStr) {
+          // When a month like "2026-10" is chosen, calculate next month's 10th
+          if (selectedMonthStr) {
+            const [y, m] = selectedMonthStr.split('-').map(Number);
+            let nextYear = y;
+            let nextMonth = m + 1;
+            if (nextMonth > 12) {
+              nextMonth = 1;
+              nextYear += 1;
+            }
+            const autoDueDate = `${nextYear}-${pad2(nextMonth)}-10`;
+            if (genDueDatePicker && typeof genDueDatePicker.setDate === 'function') {
+              genDueDatePicker.setDate(autoDueDate);
+            }
+          }
         }
-      }
+      });
+      window.__genMonthPicker = genMonthPicker;
 
-      if (nativeMonth) nativeMonth.addEventListener('change', syncGenMonth);
-      syncGenMonth();
-
+      // Modal show event: refresh pickers
       const generateModal = document.getElementById('generateModal');
       if (generateModal) {
         generateModal.addEventListener('show.bs.modal', function () {
-          syncGenMonth();
+          if (window.__genMonthPicker && typeof window.__genMonthPicker.refresh === 'function') {
+            window.__genMonthPicker.refresh();
+          }
           if (window.__genDueDatePicker && typeof window.__genDueDatePicker.refresh === 'function') {
             window.__genDueDatePicker.refresh();
           }
