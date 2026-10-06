@@ -13,12 +13,12 @@ class BulkSmsController extends Controller
 {
     public function index(Request $request)
     {
-        // $balanceapi                 = Http::get('http://103.230.63.50/bulksms/api/sec03-amount');
-        // $data['amount']             = $balanceapi->json('amount');
-        // $data['validity_period']    = $balanceapi->json('validity_period');
-        $balanceapi                 = 100;
-        $data['amount']             = 100;
-        $data['validity_period']    = 12 - 12 - 2026;
+        $balanceapi                 = Http::get('http://103.230.63.50/bulksms/api/sec03-amount');
+        $data['amount']             = $balanceapi->json('amount');
+        $data['validity_period']    = $balanceapi->json('validity_period');
+        // $balanceapi                 = 100;
+        // $data['amount']             = 100;
+        // $data['validity_period']    = 12 - 12 - 2026;
         $data['members']            = PlotAndUnit::where('status', 'Active')->get();
         $data['drafts']             = Draft::all();
 
