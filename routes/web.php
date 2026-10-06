@@ -64,6 +64,7 @@ Route::get('testsms', function () {
     dd($data->reply[0]->statuscode);
     var_dump($server_output);
 });
+
 Route::middleware('auth')->prefix('member')->as('member.')->group(function () {
     // Members
     Route::controller(MemberController::class)->group(function () {

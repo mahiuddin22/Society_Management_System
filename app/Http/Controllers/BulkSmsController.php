@@ -57,10 +57,7 @@ class BulkSmsController extends Controller
             'status'         => 'pending',
         ]);
 
-        $recipients = PlotAndUnit::where('status', 'Active')
-            ->whereIn('id', $recipientIds)
-            ->get();
-
+        $recipients = PlotAndUnit::where('status', 'Active')->whereIn('id', $recipientIds)->get();
         $draft = null;
 
         if ($request->sms_type === 'draft') {
@@ -68,12 +65,9 @@ class BulkSmsController extends Controller
         }
 
         foreach ($recipients as $recipient) {
-
             $mobileNo = $recipient->phone;
-
             $message = $request->sms_type === 'custom'
-                ? $request->custom_sms
-                : $draft->message;
+                ? $request->custom_sms : $draft->message;
 
             $number = $mobileNo;
             $text = $message;
