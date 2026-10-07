@@ -93,15 +93,13 @@ class BulkSmsController extends Controller
 
             $ch = curl_init();
 
-            $apiUrl = "http://103.230.63.50/bulksms/api";
-            $requesteid = $_SERVER['REQUEST_TIME'];
-            $contentType = 1;
+            $apiUrl         = "http://103.230.63.50/bulksms/api";
+            $requesteid     = $_SERVER['REQUEST_TIME'];
+            $contentType    = 1;
 
             curl_setopt($ch, CURLOPT_URL, $apiUrl);
             curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt(
-                $ch,
-                CURLOPT_POSTFIELDS,
+            curl_setopt( $ch, CURLOPT_POSTFIELDS,
                 "authUser=HSIA&authAccess=HSIA@241#765&destination=" . $number .
                     "&mask=" . $mask . "&text=" . urlencode($text) .
                     "&requestId=" . $requesteid . "&contentType=" . $contentType
