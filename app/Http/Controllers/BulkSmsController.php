@@ -88,8 +88,8 @@ class BulkSmsController extends Controller
             }
 
             $number = $phone_no;
-            $text = $message;
-            $mask = 'HSIA';
+            $text   = $message;
+            $mask   = 'HSIA';
 
             $ch = curl_init();
 
