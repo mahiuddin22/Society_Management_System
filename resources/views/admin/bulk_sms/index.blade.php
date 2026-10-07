@@ -837,56 +837,24 @@
 <!-- Recipient and SMS count Script -->
 <script>
     const recipientSearch = document.getElementById('recipientSearch');
-    const recipientDropdown = document.getElementById('recipientDropdown');
-    const recipientOptions = document.querySelectorAll('.recipient-option');
-
-
-    /*
-     * Show dropdown when search box is focused
-     */
-    recipientSearch.addEventListener('focus', function() {
-        recipientDropdown.classList.remove('d-none');
-        filterRecipients();
-    });
+    const recipientOptions = document.querySelectorAll('#recipientList .recipient-item');
 
 
     /*
      * Live search
      */
-    recipientSearch.addEventListener('input', function() {
-        recipientDropdown.classList.remove('d-none');
-        filterRecipients();
-    });
-
-
     function filterRecipients() {
-
-        let search = recipientSearch.value.toLowerCase().trim();
-        let visibleCount = 0;
+        const search = recipientSearch.value.toLowerCase().trim();
 
         recipientOptions.forEach(function(option) {
-
-            let name = option.dataset.name;
-            let phone = option.dataset.phone;
-            let uid = option.dataset.uid;
-
-            if (
-                name.includes(search) ||
-                phone.includes(search) ||
-                uid.includes(search)
-            ) {
-                option.classList.remove('d-none');
-                visibleCount++;
-            } else {
-                option.classList.add('d-none');
-            }
-
+            option.classList.toggle(
+                'd-none',
+                !option.textContent.toLowerCase().includes(search)
+            );
         });
-
-        if (visibleCount === 0) {
-            recipientDropdown.classList.add('d-none');
-        }
     }
+
+    recipientSearch.addEventListener('input', filterRecipients);
 
 
     /*
@@ -1011,21 +979,6 @@
 
             updateRecipients();
         });
-
-
-    /*
-     * Close dropdown when clicking outside
-     */
-    document.addEventListener('click', function(event) {
-
-        if (
-            !recipientSearch.contains(event.target) &&
-            !recipientDropdown.contains(event.target)
-        ) {
-            recipientDropdown.classList.add('d-none');
-        }
-
-    });
 
 
     /*
