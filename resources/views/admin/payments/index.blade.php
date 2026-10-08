@@ -367,7 +367,9 @@
             <th>Method &amp; Trx</th>
             <th class="num">Amount</th>
             <th>Received By</th>
+            @if(hasPermission('collections','download'))
             <th class="text-end pe-3">Slip</th>
+            @endif
           </tr>
         </thead>
         <tbody>
@@ -409,6 +411,7 @@
             </td>
 
             {{-- 7. Action: Print / View Slip --}}
+            @if(hasPermission('collections','download'))
             <td class="text-end pe-3">
               <button 
                 type="button" 
@@ -435,6 +438,7 @@
                 </svg>
               </button>
             </td>
+            @endif
           </tr>
           @empty
           <tr>

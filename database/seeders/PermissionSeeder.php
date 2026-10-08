@@ -116,7 +116,7 @@ class PermissionSeeder extends Seeder
                 'menu_type' => 'sub_menu',
                 'menu_key' => 'collections',
                 'order_no' => 9,
-                'activity_id' => '1,3,4,8,9',
+                'activity_id' => '1,9',
                 'created_at' => '2026-08-18 20:38:56',
                 'updated_at' => '2026-09-28 12:14:12',
             ],

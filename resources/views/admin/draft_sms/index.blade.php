@@ -27,10 +27,11 @@
 
   <div class="card-head">
     <h3>Saved Drafts</h3>
-
+    @if(hasPermission('draft_sms','create'))
     <a href="{{ route('admin.draft.create') }}" class="btn btn-primary btn-sm">
       + New Draft
     </a>
+    @endif
   </div>
 
   <div class="table-wrap">
@@ -73,14 +74,16 @@
 
           <td>
             <div class="d-flex justify-content-center gap-2">
-
+              @if(hasPermission('draft_sms','edit'))
               <a href="{{ route('admin.draft.edit', $draft->id) }}" class="btn btn-outline-primary btn-sm"> <i class="bi bi-pencil"></i> </a>
-
+              @endif
+              @if(hasPermission('draft_sms','delete'))
               <form action="{{ route('admin.draft.destroy', $draft->id) }}" method="POST" id="delete-form-{{ $draft->id }}">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="btn btn-outline-danger btn-sm"> <i class="bi bi-trash"></i> </button>
               </form>
+              @endif
 
             </div>
           </td>
