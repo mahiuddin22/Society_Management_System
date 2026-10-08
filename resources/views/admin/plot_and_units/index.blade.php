@@ -254,7 +254,7 @@
       <div class="d-flex align-items-center justify-content-start justify-content-md-end gap-2 flex-wrap">
         
         {{-- Upload Button --}}
-        @if (hasPermission('plot_and_units', 'create'))
+        @if (hasPermission('upload_members'))
           <a href="{{ route('admin.plot-and-units.bulk-upload') }}" class="btn btn-ghost d-inline-flex justify-content-center align-items-center gap-2 text-nowrap" style="height: 38px; border: 1px solid var(--line);">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>

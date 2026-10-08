@@ -6,7 +6,7 @@
 
     <div class="card-head">
         <h3>Saved Drafts</h3>
-
+        
         <button class="btn btn-primary btn-sm">
             + New Draft
         </button>

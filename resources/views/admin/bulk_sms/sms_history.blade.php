@@ -52,6 +52,9 @@
             <h3>Campaign History</h3>
             <span class="hint">SMS delivery summary</span>
         </div>
+        @if(hasPermission('sms_history','download'))
+        <button class="btn btn-primary btn-sm"> <i class="bi bi-download"></i> Download</button>
+        @endif
     </div>
 
 

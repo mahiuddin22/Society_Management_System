@@ -77,8 +77,8 @@
           <tr>
             <td>{{ $data->firstItem() + $loop->iteration  - 1}}</td>
             <td>{{ $member->unique_id}}</td>
-            <td>{{ $member->unit_road->name}}</td>
-            <td>{{ $member->holding_no }}</td>
+            <td>{{ $member->unit_road->name ?? ''}}</td>
+            <td>{{ $member->holding_no ?? '' }}</td>
             <td>{{ $member->plot_type->name ?? 'N/A' }}</td>
             <td>{{ $member->total_flat ?? 'N/A' }}</td>
             <td>{{ $member->occupied_flat ?? 'N/A' }}</td>

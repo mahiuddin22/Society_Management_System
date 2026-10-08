@@ -3,21 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Models\PlotAndUnit;
-use App\Models\Settings;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 
 class MemberController extends Controller
 {
 
     public function mypayments(){
-        $data = PlotAndUnit::where('unique_id', auth()->user()->uid)->paginate(30);
+        if(auth()->user()->role == 'admin'){
+            $data = PlotAndUnit::paginate(30);
+        }else{
+            $data = PlotAndUnit::where('unique_id', auth()->user()->uid)->paginate(30);
+        }
         return view('members.index', compact('data'));
     }
     
     public function receipt($id)
     {
         $collection = PlotAndUnit::findOrFail($id);
-        $settings   = Settings::latest()->first();
+        $settings   = Setting::latest()->first();
         return view('members.receipt', compact('collection', 'settings'));
     }
 
@@ -26,7 +30,12 @@ class MemberController extends Controller
     }
 
     public function paymentReport(){
-        dd("Under Construction");
+        if(auth()->user()->role == 'admin'){
+            $data = PlotAndUnit::paginate(30);
+        }else{
+            $data = PlotAndUnit::where('unique_id', auth()->user()->uid)->paginate(30);
+        }
+        return view('members.payment_report', compact('data'));
     }
 
 }
