@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendBillSmsJob;
 use App\Models\Bill;
 use App\Models\PlotType;
 use App\Models\Road;
 use App\Services\BillingService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -52,11 +54,11 @@ class BillController extends Controller
             $search = trim($request->search);
             $query->where(function ($q) use ($search) {
                 $q->where('bill_number', 'like', "%{$search}%")
-                ->orWhereHas('plotAndUnit', function ($pq) use ($search) {
-                    $pq->where('holding_no', 'like', "%{$search}%")
-                        ->orWhere('name', 'like', "%{$search}%")
-                        ->orWhere('phone', 'like', "%{$search}%");
-                });
+                    ->orWhereHas('plotAndUnit', function ($pq) use ($search) {
+                        $pq->where('holding_no', 'like', "%{$search}%")
+                            ->orWhere('name', 'like', "%{$search}%")
+                            ->orWhere('phone', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -66,7 +68,7 @@ class BillController extends Controller
         $currentMonth = $request->get('month', now()->format('Y-m'));
 
         $statsQuery = Bill::where('billing_month', $currentMonth);
-        
+
         // Road filter metrics-e o apply korte chaile:
         if ($request->filled('road_number')) {
             $roadNum = trim($request->road_number);
@@ -99,10 +101,25 @@ class BillController extends Controller
             $validated['due_date']
         );
 
-        
-
         return redirect()->route('admin.bills.index', ['month' => $validated['billing_month']])
             ->with('success', $result['generated'] > 0 ? "Billing Generation: {$result['generated']} newly generated" : 'All the bill already generated');
+    }
+
+    public function sendMessage()
+    {
+        $query = Bill::with(['plotAndUnit'])->where('status', '!=', 'Paid')->latest('billing_month')->get();
+        foreach ($query as $bill) {
+            $phone   = $bill->plotAndUnit->phone;
+            $name    = $bill->plotAndUnit->name;
+            $total   = $bill->net_amount - $bill->paid_amount;
+            $month   = Carbon::parse($bill->billing_month)->format('M Y'); // e.g., Oct 2026
+            $holding = $bill->plotAndUnit->holding_no;
+            $flat    = $bill->plotAndUnit->flat_no;
+            $message = "Dear {$name}, your {$month} bill for Holding {$holding}, Flat {$flat} is Tk {$total}. Kindly settle the payment at your earliest convenience. Thank you.";
+
+            SendBillSmsJob::dispatch($phone, $name, $total, $month, $holding, $flat, $message);
+        }
+        return redirect()->back()->with('success', 'Messages are being processed and will be delivered shortly.');
     }
 
     public function pay(Request $request, Bill $bill)
