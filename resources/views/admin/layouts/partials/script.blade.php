@@ -129,6 +129,30 @@
     });
 </script>
 
+<!-- Send Message Sweetalert -->
+<script>
+    document.querySelectorAll('.send-message-form').forEach(function(form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'This will send a message to the selected members.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#198754',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, send the message!',
+                cancelButtonText: 'Cancel'
+            }).then(function(result) {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+</script>
+
 <!-- Change Status Sweetalert -->
 <script>
     document.querySelectorAll('[id^="change-status-"]').forEach(function(form) {

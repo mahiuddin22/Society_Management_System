@@ -223,6 +223,7 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
     Route::controller(BillController::class)->prefix('bills')->name('bills.')->group(function () {
         Route::get('/', 'index')->name('index');
         Route::post('generate', 'generate')->name('generate');
+        Route::post('send-messages', 'sendMessage')->name('send.messages');
         Route::post('{bill}/pay', 'pay')->name('pay');
     });
 

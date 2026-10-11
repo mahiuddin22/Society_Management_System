@@ -614,6 +614,16 @@
     {{-- Right: Run Cycle Action Button --}}
     @if(hasPermission('bill_generator','create'))
     <div class="col-12 col-md-5 text-md-end mt-2 mt-md-0">
+      <form action="{{ route('admin.bills.send.messages') }}" method="POST" class="d-inline send-message-form">
+        @csrf
+        <button type="submit" class="btn btn-primary d-flex d-md-inline-flex justify-content-center align-items-center gap-2 text-nowrap" style="height: 38px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+          </svg>
+          <span>Send Message to Members</span>
+        </button>
+      </form>
       <button type="button" class="btn btn-primary d-flex d-md-inline-flex justify-content-center align-items-center gap-2 text-nowrap" style="height: 38px;" data-bs-toggle="modal" data-bs-target="#generateModal">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
           <circle cx="12" cy="12" r="3"></circle>
