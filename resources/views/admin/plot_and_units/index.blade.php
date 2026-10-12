@@ -1,37 +1,87 @@
 @extends('admin.layouts.app')
 
 @push('styles')
-  <style>
-    .road-custom-popup {
-      scrollbar-width: thin;
-      scrollbar-color: var(--line-strong) transparent;
-    }
-    .road-custom-popup::-webkit-scrollbar {
-      width: 5px;
-    }
-    .road-custom-popup::-webkit-scrollbar-thumb {
-      background: var(--line-strong);
-      border-radius: 4px;
-    }
-    .road-opt {
-      padding: 6px 11px;
-      font-size: 12.5px;
-      color: var(--ink-700);
-      cursor: pointer;
-      line-height: 1.4;
-      white-space: nowrap;
-      transition: background .12s ease, color .12s ease;
-    }
-    .road-opt:hover {
-      background-color: var(--forest-50);
-      color: var(--forest-800);
-    }
-    .road-opt.active-road {
-      background-color: var(--forest-100) !important;
-      color: var(--forest-900) !important;
-      font-weight: 600;
-    }
-  </style>
+<style>
+  /* Custom Dropdown & Picker Popup Menu Styling */
+  .road-custom-popup {
+    scrollbar-width: thin;
+    scrollbar-color: var(--line-strong) transparent;
+  }
+
+  .road-custom-popup::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  .road-custom-popup::-webkit-scrollbar-thumb {
+    background: var(--line-strong);
+    border-radius: 4px;
+  }
+
+  .road-opt {
+    padding: 6px 11px;
+    font-size: 12.5px;
+    color: var(--ink-700);
+    cursor: pointer;
+    line-height: 1.4;
+    white-space: nowrap;
+    transition: background .12s ease, color .12s ease;
+  }
+
+  .road-opt:hover {
+    background-color: var(--forest-50);
+    color: var(--forest-800);
+  }
+
+  .road-opt.active-road {
+    background-color: var(--forest-100) !important;
+    color: var(--forest-900) !important;
+    font-weight: 600;
+  }
+
+  /* Forest Green Custom Pagination */
+  .pagination {
+    margin-bottom: 0;
+    gap: 3px;
+  }
+
+  .pagination .page-item .page-link {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-700);
+    background-color: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-s, 6px) !important;
+    padding: 4px 9px;
+    min-width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    transition: all 0.15s ease;
+    box-shadow: none !important;
+  }
+
+  .pagination .page-item .page-link:hover {
+    background-color: var(--forest-50);
+    border-color: var(--forest-100);
+    color: var(--forest-900);
+  }
+
+  .pagination .page-item.active .page-link {
+    background-color: var(--forest-800) !important;
+    border-color: var(--forest-900) !important;
+    color: #ffffff !important;
+    font-weight: 600;
+  }
+
+  .pagination .page-item.disabled .page-link {
+    color: var(--ink-500);
+    background-color: var(--paper-50);
+    border-color: var(--line);
+    opacity: 0.6;
+  }
+</style>
 @endpush
 
 @section('content')
@@ -108,7 +158,7 @@
 
               <div class="d-flex flex-column gap-3">
 
-                {{-- 1. Search Query Input (Placed right before Road) --}}
+                {{-- 1. Search Query Input --}}
                 <div>
                   <label class="form-label fw-semibold small mb-1" style="font-size: 11.5px; color: var(--ink-800);">Search</label>
                   <div class="position-relative w-100">
@@ -238,7 +288,7 @@
             </div>
           </div>
 
-          {{-- Quick Clear Link outside (visible only if filters are applied) --}}
+          {{-- Quick Clear Link outside --}}
           @if($activeAdvancedFiltersCount > 0)
             <a href="{{ route('admin.plot-and-units.index') }}" class="btn btn-ghost px-2 text-muted" title="Clear all filters" style="height: 38px; line-height: 24px; font-size: 13px;">
               Reset
@@ -265,7 +315,7 @@
           </a>
         @endif
 
-        <!-- {{-- Add Building Button --}} -->
+        {{-- Add Building Button --}}
         @if (hasPermission('plot_and_units', 'create'))
           <a href="{{ route('admin.plot-and-units.create') }}" class="btn btn-primary d-inline-flex justify-content-center align-items-center gap-2 text-nowrap" style="height: 38px;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -281,14 +331,14 @@
 
   </div>
 
-  <!-- {{-- 2. Compact Overview Metric Row (5 Types) --}} -->
+  {{-- 2. Compact Overview Metric Row (5 Types) --}}
   @if($plotTypes->isNotEmpty())
   <div class="row row-cols-2 row-cols-sm-3 row-cols-lg-5 g-2 mb-3">
     @foreach($plotTypes as $type)
     <div class="col">
       <div class="card p-2 h-100 d-flex flex-column justify-content-between" style="background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-s);">
         
-        <!-- {{-- Label & Unit Count --}} -->
+        {{-- Label & Unit Count --}}
         <div class="d-flex align-items-center justify-content-between mb-1">
           <span class="fw-bold text-truncate" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-700);" title="{{ $type->name }}">
             {{ $type->name }}
@@ -313,7 +363,7 @@
   </div>
   @endif
 
-  <!-- {{-- 3. Register Ledger Table --}} -->
+  {{-- 3. Register Ledger Table --}}
   <div class="card p-0 overflow-hidden">
     <div class="table-wrap">
       <table class="ledger text-nowrap w-100">
@@ -331,13 +381,13 @@
         <tbody>
           @forelse($plotAndUnits as $unit)
           <tr>
-            <!-- {{-- Holding & Road --}} -->
+            {{-- Holding & Road --}}
             <td>
               <div class="fw-medium text-dark">Holding - {{ $unit->holding_no }}</div>
               <span class="hint small">Road - {{ $unit->road->number ?? 'N/A' }}</span>
             </td>
 
-            <!-- {{-- Type & Mode --}} -->
+            {{-- Type & Mode --}}
             <td>
               <div>{{ $unit->plotType->name ?? 'N/A' }}</div>
               <span class="hint small" style="font-size: 10px;">{{ $unit->collection_type ?? '—' }}</span>
@@ -417,9 +467,15 @@
       </table>
     </div>
 
+    {{-- Forest Green Footer with Showing Count & Pagination --}}
     @if($plotAndUnits->hasPages())
-    <div class="p-3 border-top d-flex justify-content-end">
-      {{ $plotAndUnits->links('pagination::bootstrap-5') }}
+    <div class="pagination-footer px-3 py-2 border-top d-flex align-items-center justify-content-between flex-wrap gap-2">
+      <div class="hint small text-muted" style="font-size: 12px;">
+        Showing <span class="fw-semibold text-dark">{{ $plotAndUnits->firstItem() }}</span> to <span class="fw-semibold text-dark">{{ $plotAndUnits->lastItem() }}</span> of <span class="fw-semibold text-dark">{{ $plotAndUnits->total() }}</span> results
+      </div>
+      <div>
+        {{ $plotAndUnits->onEachSide(1)->links('pagination::bootstrap-4') }}
+      </div>
     </div>
     @endif
   </div>
@@ -428,100 +484,100 @@
 @endsection
 
 @push('scripts')
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const toggleBtn   = document.getElementById('toggleFilterPopupBtn');
-      const closeBtn    = document.getElementById('closeFilterPopupBtn');
-      const popupPanel  = document.getElementById('filterPopupPanel');
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const toggleBtn   = document.getElementById('toggleFilterPopupBtn');
+    const closeBtn    = document.getElementById('closeFilterPopupBtn');
+    const popupPanel  = document.getElementById('filterPopupPanel');
 
-      // Toggle filter popup
-      if (toggleBtn && popupPanel) {
-        toggleBtn.addEventListener('click', function (e) {
-          e.stopPropagation();
-          const isVisible = popupPanel.style.display === 'block';
-          popupPanel.style.display = isVisible ? 'none' : 'block';
-        });
-      }
-
-      // Close button inside popup
-      if (closeBtn && popupPanel) {
-        closeBtn.addEventListener('click', function (e) {
-          e.stopPropagation();
-          popupPanel.style.display = 'none';
-        });
-      }
-
-      // Close popup when clicking anywhere outside
-      document.addEventListener('click', function (e) {
-        if (popupPanel && !popupPanel.contains(e.target) && !toggleBtn.contains(e.target)) {
-          popupPanel.style.display = 'none';
-        }
+    // Toggle filter popup
+    if (toggleBtn && popupPanel) {
+      toggleBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        const isVisible = popupPanel.style.display === 'block';
+        popupPanel.style.display = isVisible ? 'none' : 'block';
       });
+    }
 
-      // Close popup with Escape key
-      document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && popupPanel) {
-          popupPanel.style.display = 'none';
-        }
+    // Close button inside popup
+    if (closeBtn && popupPanel) {
+      closeBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        popupPanel.style.display = 'none';
       });
+    }
 
-      // --- Road Picker Logic Inside Popup ---
-      const displayInput = document.getElementById('roadSearchInput');
-      const hiddenInput  = document.getElementById('roadHiddenValue');
-      const roadMenu     = document.getElementById('roadDropdownMenu');
-      const roadItems    = roadMenu ? roadMenu.querySelectorAll('.road-opt') : [];
-
-      if (displayInput && roadMenu) {
-        function toggleRoadDropdown() {
-          const isVisible = roadMenu.style.display === 'block';
-          if (isVisible) {
-            roadMenu.style.display = 'none';
-            displayInput.style.borderBottomLeftRadius = '';
-            displayInput.style.borderBottomRightRadius = '';
-          } else {
-            roadItems.forEach(item => item.style.display = 'block');
-            roadMenu.style.display = 'block';
-            displayInput.style.borderBottomLeftRadius = '0';
-            displayInput.style.borderBottomRightRadius = '0';
-
-            const activeItem = roadMenu.querySelector('.road-opt.active-road');
-            if (activeItem) {
-              roadMenu.scrollTop = activeItem.offsetTop - (roadMenu.clientHeight / 2) + (activeItem.clientHeight / 2);
-            }
-          }
-        }
-
-        displayInput.addEventListener('click', function (e) {
-          e.stopPropagation();
-          toggleRoadDropdown();
-        });
-
-        roadItems.forEach(item => {
-          item.addEventListener('click', function (e) {
-            e.stopPropagation();
-            const val = this.getAttribute('data-val');
-            const label = this.getAttribute('data-label');
-
-            hiddenInput.value = val;
-            displayInput.value = val ? label : '';
-
-            roadItems.forEach(el => el.classList.remove('active-road'));
-            this.classList.add('active-road');
-
-            roadMenu.style.display = 'none';
-            displayInput.style.borderBottomLeftRadius = '';
-            displayInput.style.borderBottomRightRadius = '';
-          });
-        });
-
-        document.addEventListener('click', function (e) {
-          if (!e.target.closest('.road-picker-container')) {
-            roadMenu.style.display = 'none';
-            displayInput.style.borderBottomLeftRadius = '';
-            displayInput.style.borderBottomRightRadius = '';
-          }
-        });
+    // Close popup when clicking anywhere outside
+    document.addEventListener('click', function (e) {
+      if (popupPanel && !popupPanel.contains(e.target) && !toggleBtn.contains(e.target)) {
+        popupPanel.style.display = 'none';
       }
     });
-  </script>
+
+    // Close popup with Escape key
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && popupPanel) {
+        popupPanel.style.display = 'none';
+      }
+    });
+
+    // --- Road Picker Logic Inside Popup ---
+    const displayInput = document.getElementById('roadSearchInput');
+    const hiddenInput  = document.getElementById('roadHiddenValue');
+    const roadMenu     = document.getElementById('roadDropdownMenu');
+    const roadItems    = roadMenu ? roadMenu.querySelectorAll('.road-opt') : [];
+
+    if (displayInput && roadMenu) {
+      function toggleRoadDropdown() {
+        const isVisible = roadMenu.style.display === 'block';
+        if (isVisible) {
+          roadMenu.style.display = 'none';
+          displayInput.style.borderBottomLeftRadius = '';
+          displayInput.style.borderBottomRightRadius = '';
+        } else {
+          roadItems.forEach(item => item.style.display = 'block');
+          roadMenu.style.display = 'block';
+          displayInput.style.borderBottomLeftRadius = '0';
+          displayInput.style.borderBottomRightRadius = '0';
+
+          const activeItem = roadMenu.querySelector('.road-opt.active-road');
+          if (activeItem) {
+            roadMenu.scrollTop = activeItem.offsetTop - (roadMenu.clientHeight / 2) + (activeItem.clientHeight / 2);
+          }
+        }
+      }
+
+      displayInput.addEventListener('click', function (e) {
+        e.stopPropagation();
+        toggleRoadDropdown();
+      });
+
+      roadItems.forEach(item => {
+        item.addEventListener('click', function (e) {
+          e.stopPropagation();
+          const val = this.getAttribute('data-val');
+          const label = this.getAttribute('data-label');
+
+          hiddenInput.value = val;
+          displayInput.value = val ? label : '';
+
+          roadItems.forEach(el => el.classList.remove('active-road'));
+          this.classList.add('active-road');
+
+          roadMenu.style.display = 'none';
+          displayInput.style.borderBottomLeftRadius = '';
+          displayInput.style.borderBottomRightRadius = '';
+        });
+      });
+
+      document.addEventListener('click', function (e) {
+        if (!e.target.closest('.road-picker-container')) {
+          roadMenu.style.display = 'none';
+          displayInput.style.borderBottomLeftRadius = '';
+          displayInput.style.borderBottomRightRadius = '';
+        }
+      });
+    }
+  });
+</script>
 @endpush

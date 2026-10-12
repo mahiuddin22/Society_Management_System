@@ -154,6 +154,7 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
         
         Route::get('bulk-upload', 'bulkUpload')->name('bulk-upload');
         Route::post('bulk-upload', 'bulkUploadStore')->name('bulk-upload.store');
+        Route::get('bulk-upload/progress', 'getBulkUploadProgress')->name('bulk-upload.progress');
 
         Route::get('/', 'index')->name('index');
         Route::get('create', 'create')->name('create');
