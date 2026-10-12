@@ -16,6 +16,7 @@ use App\Models\PlotAndUnit;
 use App\Models\PlotType;
 use App\Models\Road;
 use App\Models\User;
+use Illuminate\Support\Facades\Cache;
 
 class PlotAndUnitController extends Controller
 {
@@ -236,9 +237,11 @@ class PlotAndUnitController extends Controller
     public function bulkUploadStore(Request $request)
     {
         $request->validate([
-            'file' => 'required|file|mimes:xlsx,xls,csv|max:10240',
+            'file'   => 'required|file|mimes:xlsx,xls,csv|max:30720',
+            'job_id' => 'required|string',
         ]);
 
+        $jobId = $request->input('job_id');
         $file = $request->file('file');
         $directory = storage_path('app/imports');
 
@@ -248,8 +251,96 @@ class PlotAndUnitController extends Controller
 
         $fileName = time() . '_' . $file->getClientOriginalName();
         $file->move($directory, $fileName);
+        $fullPath = $directory . DIRECTORY_SEPARATOR . $fileName;
 
-        Excel::import(new MembersImport(), $directory . DIRECTORY_SEPARATOR . $fileName);
-        return redirect()->route('admin.plot-and-units.index')->with('success', 'Plot uploaded successfully.');
+        // Quick row count using PhpSpreadsheet (total row count for accurate % calculation)
+        $totalRows = 0;
+        try {
+            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($fullPath);
+            $totalRows = max(0, $spreadsheet->getActiveSheet()->getHighestRow() - 1);
+        } catch (\Exception $e) {
+            $totalRows = 1000; // fallback estimate
+        }
+
+        // Initialize progress state in cache
+        Cache::put("import_progress_{$jobId}", [
+            'total'      => $totalRows,
+            'processed'  => 0,
+            'success'    => 0,
+            'skipped'    => 0,
+            'errors'     => [],
+            'status'     => 'processing',
+            'percentage' => 0,
+        ], 600);
+
+        try {
+            Excel::import(new \App\Imports\MembersImport($jobId), $fullPath);
+
+            // Fetch final stats
+            $finalProgress = Cache::get("import_progress_{$jobId}", []);
+            $finalProgress['percentage'] = 100;
+            $finalProgress['status']     = 'completed';
+            Cache::put("import_progress_{$jobId}", $finalProgress, 600);
+
+            if (file_exists($fullPath)) {
+                @unlink($fullPath);
+            }
+
+            return response()->json([
+                'status' => 'completed',
+                'data'   => $finalProgress,
+            ]);
+        } catch (\Exception $e) {
+            $errData = Cache::get("import_progress_{$jobId}", []);
+            $errData['status'] = 'failed';
+            $errData['errors'][] = $e->getMessage();
+            Cache::put("import_progress_{$jobId}", $errData, 300);
+
+            return response()->json([
+                'status'  => 'failed',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
+
+    public function getBulkUploadProgress(Request $request)
+    {
+        $jobId = $request->get('job_id');
+        $progress = Cache::get("import_progress_{$jobId}", [
+            'percentage' => 0,
+            'status'     => 'starting',
+            'processed'  => 0,
+            'total'      => 0,
+            'success'    => 0,
+            'skipped'    => 0,
+            'errors'     => []
+        ]);
+
+        return response()->json($progress);
+    }
+
+    // public function bulkUpload()
+    // {
+    //     return view('admin.plot_and_units.bulk-upload');
+    // }
+
+    // public function bulkUploadStore(Request $request)
+    // {
+    //     $request->validate([
+    //         'file' => 'required|file|mimes:xlsx,xls,csv|max:10240',
+    //     ]);
+
+    //     $file = $request->file('file');
+    //     $directory = storage_path('app/imports');
+
+    //     if (!is_dir($directory)) {
+    //         mkdir($directory, 0755, true);
+    //     }
+
+    //     $fileName = time() . '_' . $file->getClientOriginalName();
+    //     $file->move($directory, $fileName);
+
+    //     Excel::import(new MembersImport(), $directory . DIRECTORY_SEPARATOR . $fileName);
+    //     return redirect()->route('admin.plot-and-units.index')->with('success', 'Plot uploaded successfully.');
+    // }
 }
