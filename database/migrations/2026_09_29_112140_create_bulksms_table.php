@@ -13,13 +13,14 @@ return new class extends Migration
     {
         Schema::create('bulksms', function (Blueprint $table) {
             $table->id();
+            $table->string('phone_no')->nullable();
             $table->enum('sms_type',['custom','draft'])->nullable();
             $table->integer('draft_id')->nullable();
             $table->enum('language',['english','bangla'])->nullable();
             $table->string('custom_sms')->nullable();
             $table->enum('sending_method',['send_now','scheduled_message'])->nullable();
             $table->datetime('schedule_time')->nullable();
-            $table->enum('status',['pending','sent'])->nullable();
+            $table->enum('status',['canceled','sent'])->nullable();
             $table->timestamps();
         });
     }

@@ -61,18 +61,6 @@ class BulkSmsController extends Controller
             return redirect()->back()->withInput()->with('error', 'Please select at least one recipient with a phone number.');
         }
 
-        Bulksms::create([
-            'sms_type'       => $request->sms_type,
-            'draft_id'       => $request->draft_id,
-            'language'       => strtolower($request->language),
-            'custom_sms'     => $request->custom_sms,
-            'sending_method' => $request->sending_method,
-            'schedule_time'  => $request->sending_method == 'scheduled_message'
-                ? Carbon::parse($request->schedule_time)
-                : null,
-            'status'         => 'pending',
-        ]);
-
         $draft = null;
 
         if ($request->sms_type === 'draft') {
@@ -99,7 +87,9 @@ class BulkSmsController extends Controller
 
             curl_setopt($ch, CURLOPT_URL, $apiUrl);
             curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt( $ch, CURLOPT_POSTFIELDS,
+            curl_setopt(
+                $ch,
+                CURLOPT_POSTFIELDS,
                 "authUser=HSIA&authAccess=HSIA@241#765&destination=" . $number .
                     "&mask=" . $mask . "&text=" . urlencode($text) .
                     "&requestId=" . $requesteid . "&contentType=" . $contentType
@@ -110,9 +100,29 @@ class BulkSmsController extends Controller
             $server_output = curl_exec($ch);
 
             curl_close($ch);
+
+            $status_code = json_decode($server_output, true)['reply'][0]['statuscode'] ?? null;
+            Bulksms::create([
+                'phone_no'       => $phone_no,
+                'sms_type'       => $request->sms_type,
+                'draft_id'       => $request->draft_id,
+                'language'       => strtolower($request->language),
+                'custom_sms'     => $request->custom_sms,
+                'sending_method' => $request->sending_method,
+                'schedule_time'  => $request->sending_method == 'scheduled_message'
+                    ? Carbon::parse($request->schedule_time) : null,
+                'status'         => $status_code == 0 ? 'sent' : 'canceled',
+            ]);
         } else {
             foreach ($phoneNumbers as $phone_no) {
-                SendBulkSmsJob::dispatch($phone_no, $message);
+                $sms_type = $request->sms_type;
+                $draft_id = $request->draft_id;
+                $language = strtolower($request->language);
+                $custom_sms = $request->custom_sms;
+                $sending_method = $request->sending_method;
+                $schedule_time = $request->schedule_time;
+
+                SendBulkSmsJob::dispatch($phone_no, $message, $sms_type, $draft_id, $language, $custom_sms, $sending_method, $schedule_time);
             }
         }
 
@@ -122,16 +132,18 @@ class BulkSmsController extends Controller
 
     public function SMSHistory(Request $request)
     {
-        $response = Http::get('http://103.230.63.50/bulksms/api/all-sms-data', [
-            'page'          => $request->query('page', 1),
-            'mobile_no'     => $request->query('mobile_no'),
-            'api_status'    => $request->query('api_status'),
-            'date_from'     => $request->query('date_from'),
-            'date_to'       => $request->query('date_to'),
-        ]);
+        $sms_histories = Bulksms::orderBy('created_at', 'desc');
 
-        $allsms = $response->json('all_sms');
+        if ($request->mobile_no) {
+            $sms_histories = $sms_histories->where('phone_no', 'like', '%' . $request->mobile_no . '%');
+        }
 
-        return view('admin.bulk_sms.sms_history', compact('allsms'));
+        if ($request->from_date && $request->to_date) {
+            $sms_histories = $sms_histories->whereBetween('created_at', [$request->from_date, $request->to_date]);
+        }
+
+        $sms_histories = $sms_histories->paginate(10);
+
+        return view('admin.bulk_sms.sms_history', compact('sms_histories'));
     }
 }

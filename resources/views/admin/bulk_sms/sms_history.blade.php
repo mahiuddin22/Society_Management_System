@@ -1,33 +1,33 @@
 @extends('admin.layouts.app')
 
 @section('content')
-<div class="p-3 border-bottom">
+<div class="p-3 ">
     <form action="{{ url()->current() }}" method="GET">
 
-        <div class="row g-2">
+        <div class="row g-2 mb-4">
 
             <div class="col-md-3">
                 <label class="form-label">Mobile No</label>
                 <input type="text" name="mobile_no" class="form-control" value="{{ request('mobile_no') }}" placeholder="Mobile number">
             </div>
 
-            <div class="col-md-2">
+            <!-- <div class="col-md-2">
                 <label class="form-label">Status</label>
                 <select name="api_status" class="form-select">
                     <option value="">All Status</option>
                     <option value="3" {{ request('api_status') == '3' ? 'selected' : '' }}>Sent</option>
                     <option value="0" {{ request('api_status') == '0' ? 'selected' : '' }}>Canceled</option>
                 </select>
-            </div>
+            </div> -->
 
             <div class="col-md-2">
                 <label class="form-label">Date From</label>
-                <input type="date" name="date_from" class="form-control" value="{{ request('date_from') }}">
+                <input type="date" name="from_date" class="form-control" value="{{ request('from_date') }}">
             </div>
 
             <div class="col-md-2">
                 <label class="form-label">Date To</label>
-                <input type="date" name="date_to" class="form-control" value="{{ request('date_to') }}">
+                <input type="date" name="to_date" class="form-control" value="{{ request('to_date') }}">
             </div>
 
             <div class="col-md-3 d-flex align-items-end gap-2">
@@ -64,6 +64,7 @@
 
             <thead>
                 <tr>
+                    <th>SMS Type</th>
                     <th>Mobile No</th>
                     <th>Message</th>
                     <th>Character Count</th>
@@ -74,27 +75,28 @@
 
             <tbody>
 
-                @forelse($allsms['data'] ?? [] as $item)
+                @forelse($sms_histories as $item)
 
                 <tr>
 
-                    <td>{{ $item['mobile_no'] }}</td>
+                    <td>{{ $item->sms_type }}</td>
+                    <td>{{ $item->phone_no ?? '-' }}</td>
 
-                    <td>{{ $item['message'] }}</td>
+                    <td>{{ $item->sms_type == 'custom' ? $item->custom_sms : $item->draftsms->message ?? 'N/A' }}</td>
 
-                    <td>{{ strlen($item['message']) }} chars</td>
+                    <td>{{ strlen($item->message) }} chars</td>
 
                     <td>
-                        <span class="badge {{ $item['api_status'] == 3 ? 'green' : 'red' }}">
-                            {{ $item['api_status'] == 3 ? 'Sent' : 'Canceled' }}
+                        <span class="badge {{ $item->status == 'sent' ? 'green' : 'red' }}">
+                            {{ $item->status == 'sent' ? 'Sent' : 'Canceled' }}
                         </span>
                     </td>
 
                     <td>
-                        {{ \Carbon\Carbon::parse($item['attempt_time']) }}
+                        {{ \Carbon\Carbon::parse($item->created_at) }}
                         <br>
                         <strong>
-                            {{ \Carbon\Carbon::parse($item['attempt_time'])->diffForHumans() }}
+                            {{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}
                         </strong>
                     </td>
 
