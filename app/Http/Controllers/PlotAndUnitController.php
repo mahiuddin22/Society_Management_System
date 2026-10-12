@@ -114,7 +114,6 @@ class PlotAndUnitController extends Controller
                     'collection_rate' => $validated['collection_rate'] ?? 0,
                     'discount'        => $validated['discount'] ?? 0,
                     'total_amount'    => $validated['collection_amount'] ?? 0,
-
                     'status'          => $validated['status'],
                 ]);
 
@@ -178,7 +177,6 @@ class PlotAndUnitController extends Controller
                     'flat_no'         => $validated['flat_no'] ?? null,
                     'phone'           => $validated['phone'],
                     'email'           => $validated['email'] ?? null,
-
                     'unique_id'       => 'UTR03'
                                         . '-'
                                         . $road->number
@@ -252,6 +250,6 @@ class PlotAndUnitController extends Controller
         $file->move($directory, $fileName);
 
         Excel::import(new MembersImport(), $directory . DIRECTORY_SEPARATOR . $fileName);
-        return redirect()->back()->with('success', 'Members uploaded successfully.');
+        return redirect()->route('admin.plot-and-units.index')->with('success', 'Plot uploaded successfully.');
     }
 }

@@ -254,7 +254,7 @@
 @section('content')
 <section class="panel active" id="panel-bills">
 
-  {{-- 1. Filter Bar & Action Header --}}
+  <!-- {{-- 1. Filter Bar & Action Header --}} -->
   <div class="row align-items-center g-2 mb-4">
 
     {{-- Left: Filter Trigger Button with Popover Panel --}}
@@ -262,14 +262,14 @@
       <form action="{{ route('admin.bills.index') }}" method="GET" autocomplete="off" id="filterForm">
         <div class="d-flex align-items-center gap-2">
 
-          {{-- Active Filter Counter --}}
+          <!-- {{-- Active Filter Counter --}} -->
           @php
           $activeAdvancedFiltersCount = collect(['search', 'month', 'status', 'road_number', 'plot_type_id'])
           ->filter(fn($key) => request()->filled($key))
           ->count();
           @endphp
 
-          {{-- Filter Trigger Button --}}
+          <!-- {{-- Filter Trigger Button --}} -->
           <div class="position-relative flex-shrink-0" id="filterPopoverWrapper">
             <button
               type="button"
@@ -297,7 +297,7 @@
               @endif
             </button>
 
-            {{-- Floating Filter Popover Panel --}}
+            <!-- {{-- Floating Filter Popover Panel --}} -->
             <div
               id="filterPopupPanel"
               class="shadow-lg p-3 rounded-2"
@@ -323,7 +323,7 @@
 
               <div class="d-flex flex-column gap-3">
 
-                {{-- 1. Search Query Input --}}
+                <!-- {{-- 1. Search Query Input --}} -->
                 <div>
                   <label class="form-label fw-semibold small mb-1" style="font-size: 11.5px; color: var(--ink-800);">Search Query</label>
                   <div class="position-relative w-100">
@@ -343,7 +343,7 @@
                   </div>
                 </div>
 
-                {{-- 2. Billing Month: Custom Year/Month Picker --}}
+                <!-- {{-- 2. Billing Month: Custom Year/Month Picker --}} -->
                 <div>
                   <div class="d-flex align-items-center justify-content-between mb-1">
                     <label class="form-label fw-semibold small mb-0" style="font-size: 11.5px; color: var(--ink-800);">Billing Month</label>
@@ -399,7 +399,7 @@
                   </div>
                 </div>
 
-                {{-- 3. Payment Status: Custom Select Dropdown --}}
+                <!-- {{-- 3. Payment Status: Custom Select Dropdown --}} -->
                 <div>
                   <label class="form-label fw-semibold small mb-1" style="font-size: 11.5px; color: var(--ink-800);">Payment Status</label>
                   <div class="position-relative status-picker-container w-100">
@@ -459,7 +459,7 @@
                   </div>
                 </div>
 
-                {{-- 4. Road Picker (Custom Select) --}}
+                <!-- {{-- 4. Road Picker (Custom Select) --}} -->
                 <div>
                   <label class="form-label fw-semibold small mb-1" style="font-size: 11.5px; color: var(--ink-800);">Road</label>
                   <div class="position-relative road-picker-container w-100">
@@ -518,7 +518,7 @@
                   </div>
                 </div>
 
-                {{-- 5. Plot Type Picker (Custom Select) --}}
+                <!-- {{-- 5. Plot Type Picker (Custom Select) --}} -->
                 <div>
                   <label class="form-label fw-semibold small mb-1" style="font-size: 11.5px; color: var(--ink-800);">Plot Type</label>
                   <div class="position-relative plot-type-picker-container w-100">
@@ -584,7 +584,7 @@
                   </div>
                 </div>
 
-                {{-- Apply & Reset Buttons Inside Popup --}}
+                <!-- {{-- Apply & Reset Buttons Inside Popup --}} -->
                 <div class="pt-2 border-top d-flex gap-2">
                   <button type="submit" class="btn btn-primary w-100 justify-content-center py-2 small" style="font-size: 13px;">
                     Apply Filters
@@ -600,7 +600,7 @@
             </div>
           </div>
 
-          {{-- Quick Clear Link outside --}}
+          <!-- Quick Clear Link outside -->
           @if($activeAdvancedFiltersCount > 0)
           <a href="{{ route('admin.bills.index') }}" class="btn btn-ghost px-2 text-muted" title="Clear all filters" style="height: 38px; line-height: 24px; font-size: 13px;">
             Reset
@@ -611,7 +611,7 @@
       </form>
     </div>
 
-    {{-- Right: Run Cycle Action Button --}}
+    <!-- Right: Run Cycle Action Button -->
     @if(hasPermission('bill_generator','create'))
     <div class="col-12 col-md-5 text-md-end mt-2 mt-md-0">
       <form action="{{ route('admin.bills.send.messages') }}" method="POST" class="d-inline send-message-form">
@@ -635,10 +635,10 @@
     @endif
   </div>
 
-  {{-- 2. Compact Overview Metric Row (5-Columns) --}}
+  <!-- 2. Compact Overview Metric Row (5-Columns) -->
   <div class="row row-cols-2 row-cols-sm-3 row-cols-lg-5 g-2 mb-3">
 
-    {{-- Metric 1: Total Invoiced --}}
+    <!-- Metric 1: Total Invoiced -->
     <div class="col">
       <div class="card p-2 h-100 d-flex flex-column justify-content-between" style="background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-s);">
         <div class="d-flex align-items-center justify-content-between mb-1">
@@ -656,7 +656,7 @@
       </div>
     </div>
 
-    {{-- Metric 2: Collected --}}
+    <!-- Metric 2: Collected -->
     <div class="col">
       <div class="card p-2 h-100 d-flex flex-column justify-content-between" style="background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-s);">
         <div class="d-flex align-items-center justify-content-between mb-1">
@@ -674,7 +674,7 @@
       </div>
     </div>
 
-    {{-- Metric 3: Pending Balance --}}
+    <!-- Metric 3: Pending Balance -->
     <div class="col">
       <div class="card p-2 h-100 d-flex flex-column justify-content-between" style="background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-s);">
         <div class="d-flex align-items-center justify-content-between mb-1">
@@ -692,7 +692,7 @@
       </div>
     </div>
 
-    {{-- Metric 4: Unpaid Holdings --}}
+    <!-- {{-- Metric 4: Unpaid Holdings --}} -->
     <div class="col">
       <div class="card p-2 h-100 d-flex flex-column justify-content-between" style="background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-s);">
         <div class="d-flex align-items-center justify-content-between mb-1">
@@ -710,7 +710,7 @@
       </div>
     </div>
 
-    {{-- Metric 5: Collection Rate --}}
+    <!-- {{-- Metric 5: Collection Rate --}} -->
     <div class="col">
       <div class="card p-2 h-100 d-flex flex-column justify-content-between" style="background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-s);">
         @php
@@ -735,7 +735,7 @@
 
   </div>
 
-  {{-- 3. Register Ledger Table --}}
+  <!-- {{-- 3. Register Ledger Table --}} -->
   <div class="card p-0 overflow-hidden">
     <div class="table-wrap">
       <table class="ledger text-nowrap w-100">
@@ -755,25 +755,25 @@
         <tbody>
           @forelse($bills as $bill)
           <tr>
-            {{-- 1. Bill / Date --}}
+            <!-- 1. Bill / Date -->
             <td>
               <div class="fw-bold font-monospace" style="color: var(--forest-900);">{{ $bill->bill_number }}</div>
               <span class="hint small" style="font-size: 11px;">Month: {{ \Carbon\Carbon::parse($bill->billing_month)->format('Y-M') }} &bull; Due: {{ $bill->due_date->format('d M') }}</span>
             </td>
 
-            {{-- 2. Holding & Resident --}}
+            <!-- 2. Holding & Resident -->
             <td>
               <div class="fw-medium text-dark">{{ $bill->plotAndUnit->name ?? '—' }}</div>
               <span class="hint small">{{ $bill->plotAndUnit->phone ?? '—' }}</span>
             </td>
 
-            {{-- 3. Type --}}
+            <!-- 3. Type -->
             <td>
               <div>{{ $bill->plot_type_name }}</div>
               <span class="hint small">Road: {{ $bill->plotAndUnit->road->number ?? '-' }} &bull; {{ $bill->plotAndUnit->holding_no ?? '-' }}</span>
             </td>
 
-            {{-- 4. Units & Rate --}}
+            <!-- 4. Units & Rate -->
             <td>
               <div>{{ $bill->billing_units }} unit(s) &times; {{ number_format($bill->rate_snapshot) }}৳</div>
               @if($bill->discount_snapshot > 0)
@@ -781,13 +781,13 @@
               @endif
             </td>
 
-            {{-- 5. Net Due --}}
+            <!-- 5. Net Due -->
             <td class="num">
               <div><span class="fw-bold">{{ number_format($bill->due_balance, 2) }}</span>৳</div>
               <div class="hint" style="font-size: 10px;">Paid: {{ number_format($bill->paid_amount, 2) }}৳</div>
             </td>
 
-            {{-- 6. Status --}}
+            <!-- 6. Status -->
             <td>
               @if($bill->status === 'Paid')
               <span class="badge green"><i class="dot"></i>Paid</span>
@@ -798,7 +798,7 @@
               @endif
             </td>
 
-            {{-- 7. Action --}}
+            <!-- 7. Action -->
             @if(hasPermission('bill_generator','collect'))
             <td class="text-end pe-3">
               @if($bill->due_balance > 0)
@@ -839,7 +839,7 @@
 
 </section>
 
-{{-- Modal 1: Generate Billing Run (With Custom Month Picker & Formatted Due Date) --}}
+<!-- Modal 1: Generate Billing Run (With Custom Month Picker & Formatted Due Date) -->
 <div class="modal fade" id="generateModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered" style="max-width: 420px;">
     <form action="{{ route('admin.bills.generate') }}" method="POST" class="modal-content border-0 shadow">
@@ -850,7 +850,7 @@
       </div>
       <div class="modal-body p-3">
 
-        {{-- Billing Month: Custom Grid Picker (Matches Filter Design Exactly) --}}
+        <!-- Billing Month: Custom Grid Picker (Matches Filter Design Exactly) -->
         <div class="mb-3">
           <label class="form-label small fw-semibold mb-1">Billing Month</label>
           <div class="position-relative month-picker-container w-100" id="genMonthPickerWrapper">
@@ -903,7 +903,7 @@
           </div>
         </div>
 
-        {{-- Due Date: Custom Calendar Picker (Displays e.g. "10 November, 2026") --}}
+        <!-- Due Date: Custom Calendar Picker (Displays e.g. "10 November, 2026") -->
         <div class="mb-3">
           <label class="form-label small fw-semibold mb-1">Due Date</label>
           <div class="position-relative date-picker-container w-100" id="genDueDatePickerWrapper">
@@ -975,7 +975,7 @@
   </div>
 </div>
 
-{{-- Modal 2: Collect Payment --}}
+<!-- Modal 2: Collect Payment -->
 <div class="modal fade" id="payModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
     <form id="payForm" method="POST" class="modal-content border-0 shadow">
@@ -985,14 +985,14 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
 
-      {{-- Modal Body --}}
+      <!-- Modal Body -->
       <div class="modal-body p-3">
         <div class="mb-2">
           <label class="form-label small fw-semibold">Payment Amount (৳)</label>
           <input type="number" step="0.01" name="amount" id="payAmountInput" class="input w-100" required>
         </div>
 
-        {{-- Payment Date: Custom Calendar Picker --}}
+        <!-- Payment Date: Custom Calendar Picker -->
         <div class="mb-2">
           <label class="form-label fw-semibold small mb-1">Payment Date</label>
           <div class="position-relative date-picker-container w-100" id="payDatePickerWrapper">
@@ -1048,7 +1048,7 @@
           </div>
         </div>
 
-        {{-- Payment Method: Custom Select Dropdown --}}
+        <!-- Payment Method: Custom Select Dropdown -->
         <div class="mb-2">
           <label class="form-label small fw-semibold">Method</label>
           <div class="position-relative method-picker-container w-100">
@@ -1099,7 +1099,7 @@
           </div>
         </div>
 
-        {{-- Transaction / Slip Ref --}}
+        <!-- Transaction / Slip Ref -->
         <div class="mb-1">
           <label class="form-label small fw-semibold mb-1">
             Transaction / Slip Ref
@@ -1145,7 +1145,7 @@
         </div>
       </div>
 
-      {{-- Modal Footer --}}
+      <!-- Modal Footer -->
       <div class="modal-footer py-2 px-3 border-top d-flex justify-content-end align-items-center gap-2" style="padding-right: 1rem !important;">
         <button type="button" class="btn btn-ghost" data-bs-dismiss="modal">Close</button>
         <button type="submit" class="btn btn-primary m-0" style="margin-right: 0 !important;">Save Payment</button>

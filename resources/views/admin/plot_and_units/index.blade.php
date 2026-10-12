@@ -265,7 +265,7 @@
           </a>
         @endif
 
-        {{-- Add Building Button --}}
+        <!-- {{-- Add Building Button --}} -->
         @if (hasPermission('plot_and_units', 'create'))
           <a href="{{ route('admin.plot-and-units.create') }}" class="btn btn-primary d-inline-flex justify-content-center align-items-center gap-2 text-nowrap" style="height: 38px;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -281,14 +281,14 @@
 
   </div>
 
-  {{-- 2. Compact Overview Metric Row (5 Types) --}}
+  <!-- {{-- 2. Compact Overview Metric Row (5 Types) --}} -->
   @if($plotTypes->isNotEmpty())
   <div class="row row-cols-2 row-cols-sm-3 row-cols-lg-5 g-2 mb-3">
     @foreach($plotTypes as $type)
     <div class="col">
       <div class="card p-2 h-100 d-flex flex-column justify-content-between" style="background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-s);">
         
-        {{-- Label & Unit Count --}}
+        <!-- {{-- Label & Unit Count --}} -->
         <div class="d-flex align-items-center justify-content-between mb-1">
           <span class="fw-bold text-truncate" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-700);" title="{{ $type->name }}">
             {{ $type->name }}
@@ -313,7 +313,7 @@
   </div>
   @endif
 
-  {{-- 3. Register Ledger Table --}}
+  <!-- {{-- 3. Register Ledger Table --}} -->
   <div class="card p-0 overflow-hidden">
     <div class="table-wrap">
       <table class="ledger text-nowrap w-100">
@@ -331,13 +331,13 @@
         <tbody>
           @forelse($plotAndUnits as $unit)
           <tr>
-            {{-- Holding & Road --}}
+            <!-- {{-- Holding & Road --}} -->
             <td>
               <div class="fw-medium text-dark">Holding - {{ $unit->holding_no }}</div>
               <span class="hint small">Road - {{ $unit->road->number ?? 'N/A' }}</span>
             </td>
 
-            {{-- Type & Mode --}}
+            <!-- {{-- Type & Mode --}} -->
             <td>
               <div>{{ $unit->plotType->name ?? 'N/A' }}</div>
               <span class="hint small" style="font-size: 10px;">{{ $unit->collection_type ?? '—' }}</span>
