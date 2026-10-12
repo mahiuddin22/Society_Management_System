@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             ActivitySeeder::class,
             PermissionSeeder::class,
             RolePermissionsSeeder::class,
+            BulkSmsSeeder::class,
 
         ]);
     }
