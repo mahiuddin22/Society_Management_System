@@ -151,7 +151,7 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
 
     // Plot and Units
     Route::controller(PlotAndUnitController::class)->prefix('plot-and-units')->name('plot-and-units.')->group(function () {
-        
+
         Route::get('bulk-upload', 'bulkUpload')->name('bulk-upload');
         Route::post('bulk-upload', 'bulkUploadStore')->name('bulk-upload.store');
         Route::get('bulk-upload/progress', 'getBulkUploadProgress')->name('bulk-upload.progress');
@@ -182,7 +182,7 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
         Route::post('/store', 'store')->name('store');
         Route::get('/sms-history', 'SMSHistory')->name('smshistory');
     });
-    
+
     // Draft Managements
     Route::controller(DraftController::class)->prefix('draft')->name('draft.')->group(function () {
         Route::get('/', 'index')->name('index');
@@ -192,7 +192,7 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
         Route::put('/{id}', 'update')->name('update');
         Route::delete('/{id}/destroy', 'destroy')->name('destroy');
     });
-    
+
     // SMS Managements
     Route::controller(BulkSmsController::class)->prefix('bulksms')->name('bulksms.')->group(function () {
         Route::get('/', 'index')->name('index');
@@ -229,7 +229,4 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
     });
 
     Route::get('/collections', [PaymentController::class, 'index'])->name('payments.index');
-    
 });
-
-    
