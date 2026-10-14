@@ -4,6 +4,7 @@ use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\CollectorController;
 use App\Http\Controllers\AjaxController;
+use App\Http\Controllers\Auth\MemberOtpController;
 use App\Http\Controllers\BillController;
 use App\Http\Controllers\BulkSmsController;
 use App\Http\Controllers\DraftController;
@@ -62,6 +63,15 @@ Route::get('testsms', function () {
     //
     ////FOR DEBUG
     var_dump($server_output);
+});
+
+
+Route::middleware('guest')->name('member.')->group(function () {
+    Route::get('/member-login', [MemberOtpController::class, 'showPhoneForm'])->name('otp.phone');
+    Route::post('/member-login/send-otp', [MemberOtpController::class, 'sendOtp'])->name('otp.send');
+    Route::get('/member-login/verify', [MemberOtpController::class, 'showVerifyForm'])->name('otp.verify.form');
+    Route::post('/member-login/resend-otp', [MemberOtpController::class, 'resendOtp'])->name('otp.resend');
+    Route::post('/member-login/verify', [MemberOtpController::class, 'verifyOtp'])->name('otp.verify');
 });
 
 Route::middleware('auth')->prefix('member')->as('member.')->group(function () {
