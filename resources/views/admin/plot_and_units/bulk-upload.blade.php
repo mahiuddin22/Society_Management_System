@@ -183,7 +183,7 @@
     
     <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-3">
       <div>
-        <h5 class="fw-bold mb-1" style="color: #2b6242;">Bulk Upload Plots &amp; Units</h5>
+        <h5 class="fw-bold mb-1" style="color: #2b6242;">Bulk Upload Plots</h5>
         <span class="hint small text-muted">Upload your Excel file to mass import society records</span>
       </div>
       <a href="{{ route('admin.plot-and-units.index') }}" class="btn btn-ghost border btn-sm px-3" style="height: 34px; line-height: 22px;">
@@ -320,7 +320,7 @@
         Upload Another
       </button>
       <a href="{{ route('admin.plot-and-units.index') }}" class="btn btn-forest-primary px-3" style="height: 38px; line-height: 24px;">
-        Go to Plots &amp; Units Ledger
+        Go to Plot
       </a>
     </div>
 

@@ -231,7 +231,8 @@ class PlotAndUnitController extends Controller
 
     public function bulkUpload()
     {
-        return view('admin.plot_and_units.bulk-upload');
+        $pageTitle = 'Bulk Upload';
+        return view('admin.plot_and_units.bulk-upload', compact('pageTitle'));
     }
 
     public function bulkUploadStore(Request $request)
@@ -318,29 +319,4 @@ class PlotAndUnitController extends Controller
 
         return response()->json($progress);
     }
-
-    // public function bulkUpload()
-    // {
-    //     return view('admin.plot_and_units.bulk-upload');
-    // }
-
-    // public function bulkUploadStore(Request $request)
-    // {
-    //     $request->validate([
-    //         'file' => 'required|file|mimes:xlsx,xls,csv|max:10240',
-    //     ]);
-
-    //     $file = $request->file('file');
-    //     $directory = storage_path('app/imports');
-
-    //     if (!is_dir($directory)) {
-    //         mkdir($directory, 0755, true);
-    //     }
-
-    //     $fileName = time() . '_' . $file->getClientOriginalName();
-    //     $file->move($directory, $fileName);
-
-    //     Excel::import(new MembersImport(), $directory . DIRECTORY_SEPARATOR . $fileName);
-    //     return redirect()->route('admin.plot-and-units.index')->with('success', 'Plot uploaded successfully.');
-    // }
 }

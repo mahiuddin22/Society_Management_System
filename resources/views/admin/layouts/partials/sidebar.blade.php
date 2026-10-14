@@ -26,12 +26,12 @@
         <div class="nav-group">
             <div class="nav-group-label">Plot Managerment</div>
             @if (hasPermission('plot_and_units'))
-                @php 
-                    $plot_activity = request()->routeIs('admin.plot-and-units.index') 
-                                    || request()->routeIs('admin.plot-and-units.create') 
-                                    || request()->routeIs('admin.plot-and-units.edit') 
-                                    || request()->routeIs('admin.plot-and-units.show')
-                @endphp
+            @php
+            $plot_activity = request()->routeIs('admin.plot-and-units.index')
+            || request()->routeIs('admin.plot-and-units.create')
+            || request()->routeIs('admin.plot-and-units.edit')
+            || request()->routeIs('admin.plot-and-units.show')
+            @endphp
             <a class="nav-item {{ $plot_activity ? 'active' : '' }}" href="{{ route('admin.plot-and-units.index') }}" data-panel="units">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M3 21V9l9-6 9 6v12" />
@@ -79,7 +79,7 @@
                 Bill Generator
             </a>
             @endif
-  
+
             @if(hasPermission('collections'))
             <a class="nav-item {{ request()->routeIs('admin.payments.*') ? 'active' : '' }}" href="{{ route('admin.payments.index') }}" data-panel="payments">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -105,12 +105,11 @@
         @endif
 
         <!-- SMS Management -->
-        @if(hasPermission('collections') || hasPermission('Collectors'))
-        @endif
+        @if(hasPermission('bulk_sms') || hasPermission('draft_sms') || hasPermission('sms_history'))
         <div class="nav-group">
             <div class="nav-group-label">SMS Management</div>
             @if(hasPermission('bulk_sms'))
-            
+
             <a class="nav-item {{ request()->routeIs('admin.bulksms') ? 'active' : '' }}" href="{{ route('admin.bulksms.index') }}" data-panel="payments">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="2" y="6" width="20" height="13" rx="2" />
@@ -139,7 +138,7 @@
             </a>
             @endif
         </div>
-        
+        @endif
 
         @if (hasPermission('activities') || hasPermission('roles') || hasPermission('permissions'))
         <div class="nav-group">
