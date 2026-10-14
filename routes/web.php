@@ -20,6 +20,7 @@ use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserPermissionController;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -28,10 +29,9 @@ Route::get('/', function () {
     if (auth()->check()) {
         return redirect()->route('admin.home');
     }
-    return redirect('/login');
+    return redirect()->route('member.otp.phone');
 });
 
-use Illuminate\Support\Facades\Artisan;
 
 Route::get('/clear-cache', function () {
 
