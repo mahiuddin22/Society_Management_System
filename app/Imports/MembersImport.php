@@ -164,6 +164,7 @@ class MembersImport implements ToCollection, WithHeadingRow, WithChunkReading
                     'discount'        => $discount,
                     'total_amount'    => $totalAmount,
                     'status'          => $status,
+                    'import_batch_id' => $this->jobId,
                     'created_at'      => $now,
                     'updated_at'      => $now,
                 ];

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Bill;
 use App\Models\Payment;
 use App\Models\PlotAndUnit;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
@@ -82,15 +83,23 @@ class HomeController extends Controller
     {
         $items = collect();
 
-        foreach (Bill::with('plotAndUnit')->latest()->take(10)->get() as $bill) {
+        $billMonths = Bill::query()
+            ->select('billing_month')
+            ->selectRaw('MAX(created_at) as latest_created_at')
+            ->groupBy('billing_month')
+            ->orderByDesc('latest_created_at')
+            ->take(10)
+            ->get();
+
+        foreach ($billMonths as $billMonth) {
             $items->push([
-                'id' => 'bill-' . $bill->id,
-                'record_id' => $bill->id,
-                'type' => 'bill',
-                'title' => 'New bill generated',
-                'details' => ($bill->plotAndUnit->name ?? 'Resident') . ' · ' . ($bill->plotAndUnit->phone ?? 'No phone') . ' · Holding ' . ($bill->plotAndUnit->holding_no ?? '—'),
-                'time' => $bill->created_at?->diffForHumans() ?? '',
-                'timestamp' => $bill->created_at?->timestamp ?? 0,
+                'id' => 'bill_month-' . $billMonth->billing_month,
+                'record_id' => $billMonth->billing_month,
+                'type' => 'bill_month',
+                'title' => 'New bill generated for the month of ' . Carbon::createFromFormat('Y-m', $billMonth->billing_month)->format('F Y') . '.',
+                'details' => '',
+                'time' => Carbon::parse($billMonth->latest_created_at)->diffForHumans(),
+                'timestamp' => Carbon::parse($billMonth->latest_created_at)->timestamp,
                 'url' => route('admin.bills.index'),
             ]);
         }
@@ -108,7 +117,29 @@ class HomeController extends Controller
             ]);
         }
 
-        foreach (PlotAndUnit::latest()->take(10)->get() as $plot) {
+        $bulkPlotBatches = PlotAndUnit::whereNotNull('import_batch_id')
+            ->select('import_batch_id')
+            ->selectRaw('MAX(created_at) as latest_created_at, COUNT(*) as plot_count')
+            ->groupBy('import_batch_id')
+            ->orderByDesc('latest_created_at')
+            ->take(10)
+            ->get();
+
+        foreach ($bulkPlotBatches as $batch) {
+            $batchTime = Carbon::parse($batch->latest_created_at);
+            $items->push([
+                'id' => 'bulk_plot-' . $batch->import_batch_id,
+                'record_id' => $batch->import_batch_id,
+                'type' => 'bulk_plot',
+                'title' => 'New Plots Uploaded',
+                'details' => number_format($batch->plot_count) . ' plot / unit records',
+                'time' => $batchTime->diffForHumans(),
+                'timestamp' => $batchTime->timestamp,
+                'url' => route('admin.plot-and-units.index'),
+            ]);
+        }
+
+        foreach (PlotAndUnit::whereNull('import_batch_id')->latest()->take(10)->get() as $plot) {
             $items->push([
                 'id' => 'plot-' . $plot->id,
                 'record_id' => $plot->id,
@@ -149,14 +180,21 @@ class HomeController extends Controller
     public function markNotificationRead(Request $request)
     {
         $data = $request->validate([
-            'type' => ['required', 'in:bill,collection,plot'],
-            'id' => ['required', 'integer', 'min:1'],
+            'type' => ['required', 'in:bill_month,collection,plot,bulk_plot'],
+        ]);
+        $data += $request->validate([
+            'id' => $data['type'] === 'bill_month'
+                ? ['required', 'date_format:Y-m']
+                : ($data['type'] === 'bulk_plot'
+                    ? ['required', 'uuid']
+                    : ['required', 'integer', 'min:1']),
         ]);
 
         $exists = match ($data['type']) {
-            'bill' => Bill::whereKey($data['id'])->exists(),
+            'bill_month' => Bill::where('billing_month', $data['id'])->exists(),
             'collection' => Payment::whereKey($data['id'])->exists(),
             'plot' => PlotAndUnit::whereKey($data['id'])->exists(),
+            'bulk_plot' => PlotAndUnit::where('import_batch_id', $data['id'])->exists(),
         };
 
         if (! $exists) {

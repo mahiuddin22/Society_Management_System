@@ -239,7 +239,7 @@ class PlotAndUnitController extends Controller
     {
         $request->validate([
             'file'   => 'required|file|mimes:xlsx,xls,csv|max:30720',
-            'job_id' => 'required|string',
+            'job_id' => 'required|uuid',
         ]);
 
         $jobId = $request->input('job_id');

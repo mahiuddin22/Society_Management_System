@@ -185,9 +185,10 @@ $user = auth()->user();
         let lastRenderedItems = '';
         let unseenCount = 0;
         const iconByType = {
-            bill: ['bi-receipt', 'bg-success-subtle', 'text-success'],
+            bill_month: ['bi-receipt', 'bg-success-subtle', 'text-success'],
             collection: ['bi-cash-coin', 'bg-primary-subtle', 'text-primary'],
-            plot: ['bi-building', 'bg-warning-subtle', 'text-warning-emphasis']
+            plot: ['bi-building', 'bg-warning-subtle', 'text-warning-emphasis'],
+            bulk_plot: ['bi-cloud-arrow-up', 'bg-warning-subtle', 'text-warning-emphasis']
         };
 
         function showNotifications(notifications) {
@@ -224,14 +225,19 @@ $user = auth()->user();
                 const title = document.createElement('span');
                 title.className = 'notification-title d-block';
                 title.textContent = notification.title;
-                const details = document.createElement('span');
-                details.className = 'notification-details';
-                details.textContent = notification.details;
+                if (notification.details) {
+                    const details = document.createElement('span');
+                    details.className = 'notification-details';
+                    details.textContent = notification.details;
+                    copy.append(title, details);
+                } else {
+                    copy.appendChild(title);
+                }
                 const time = document.createElement('span');
                 time.className = 'notification-time d-block';
                 time.textContent = notification.time;
 
-                copy.append(title, details, time);
+                copy.appendChild(time);
                 const arrow = document.createElement('i');
                 arrow.className = 'bi bi-chevron-right text-muted small';
                 link.append(icon, copy, arrow);
