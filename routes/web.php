@@ -89,6 +89,8 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
     // Dashboard
     Route::controller(HomeController::class)->group(function () {
         Route::get('dashboard', 'index')->name('home');
+        Route::get('notifications', 'notifications')->name('notifications');
+        Route::post('notifications/read', 'markNotificationRead')->name('notifications.read');
         Route::get('settings', 'settings')->name('settings');
         Route::get('profile', 'profile')->name('profile');
     });
