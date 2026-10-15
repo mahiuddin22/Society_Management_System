@@ -352,7 +352,15 @@
     let pollInterval      = null;
 
     function generateUUID() {
-      return 'job_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
+      if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+        return window.crypto.randomUUID();
+      }
+
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (character) {
+        const random = Math.random() * 16 | 0;
+        const value = character === 'x' ? random : (random & 0x3 | 0x8);
+        return value.toString(16);
+      });
     }
 
     function handleFile(file) {
