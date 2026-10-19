@@ -71,10 +71,10 @@ class PlotAndUnitController extends Controller
 
     public function create()
     {
-        $plotTypes = PlotType::whereStatus('Active')->get(['id', 'name', 'slug', 'fees']);
+        $plotTypes  = PlotType::whereStatus('Active')->get(['id', 'name', 'slug', 'fees']);
         $rates      = $plotTypes->pluck('amount', 'id')->toArray();
         $roads      = Road::get();
-        $pageTitle = '';
+        $pageTitle  = '';
         return view('admin.plot_and_units.create', compact('plotTypes', 'rates', 'roads', 'pageTitle'));
     }
 
