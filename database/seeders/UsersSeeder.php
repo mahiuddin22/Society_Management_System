@@ -55,48 +55,6 @@ class UsersSeeder extends Seeder
                 'remember_token' => null,
                 'created_at' => '2026-09-06 02:22:42',
                 'updated_at' => '2026-09-06 02:22:42'
-            ],
-            [
-                'id' => 17,
-                'uid' => 'UT0361/A1410',
-                'role' => 'member',
-                'name' => 'Ex Name',
-                'username' => 'exname',
-                'email' => 'test@example.com',
-                'phone' => 8801234567890,
-                'email_verified_at' => null,
-                'password' => '$2y$12$gscCF7yAURrvKKvzxHORBuRHKX9nXGlDSTL1sFLiNHyzLAsoz/Tzm',
-                'remember_token' => null,
-                'created_at' => '2026-09-15 00:21:38',
-                'updated_at' => '2026-09-15 00:22:15'
-            ],
-            [
-                'id' => 18,
-                'uid' => 'UT0371/B590',
-                'role' => 'member',
-                'name' => 'Aminul Haque',
-                'username' => 'aminulhaque',
-                'email' => 'aminul_h@live.com',
-                'phone' => 8801970247545,
-                'email_verified_at' => null,
-                'password' => '$2y$12$shJWPj.9CZrjcyKThvNYb.0hB9h77JyVNoHeMo0IfIte82rtIqGEe',
-                'remember_token' => null,
-                'created_at' => '2026-09-15 01:56:38',
-                'updated_at' => '2026-09-15 01:56:38'
-            ],
-            [
-                'id' => 19,
-                'uid' => 'UT0392/C6012',
-                'role' => 'member',
-                'name' => 'Rasel Miah',
-                'username' => 'raselmiah',
-                'email' => 'rasel@dev.com',
-                'phone' => 8801330563459,
-                'email_verified_at' => null,
-                'password' => '$2y$12$rZtLaqKIjItHiSoQrkynJORu.tIziu.g7t2hrHbsImkclm639iNzm',
-                'remember_token' => null,
-                'created_at' => '2026-09-15 02:03:26',
-                'updated_at' => '2026-09-15 05:22:05'
             ]
         ]);
     }

@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\ActivityController;
-use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\CollectorController;
 use App\Http\Controllers\AjaxController;
 use App\Http\Controllers\Auth\MemberOtpController;
@@ -32,7 +31,6 @@ Route::get('/', function () {
     return redirect()->route('member.otp.phone');
 });
 
-
 Route::get('/clear-cache', function () {
 
     Artisan::call('optimize:clear');
@@ -48,7 +46,7 @@ Route::get('testsms', function () {
     //Text Message
     $text = 'This is a test message from Sector3 W.A';
     $mask = 'HSIA';
-    //------------------ No change Needed-------------------
+    //------------------ No change Needed -------------------
     $ch = curl_init();
     $apiUrl = "http://103.230.63.50/bulksms/api";
     $requesteid = $_SERVER['REQUEST_TIME'];
@@ -59,7 +57,7 @@ Route::get('testsms', function () {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $server_output = curl_exec($ch);
     curl_close($ch);
-    ////------------------ No change Needed-------------------
+    ////------------------ No change Needed -------------------
     //
     ////FOR DEBUG
     var_dump($server_output);

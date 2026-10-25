@@ -1,4 +1,3 @@
-
 @extends('admin.layouts.app')
 
 @section('content')
@@ -29,10 +28,16 @@
                     <div class="invalid-feedback">Please select a role.</div>
                 </div>
 
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <label for="username" class="form-label">Username</label>
                     <input type="text" id="username" name="username" class="form-control" value="{{ $user->username }}" placeholder="Enter Username" required />
                     <div class="invalid-feedback">Please enter a username.</div>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="phone" class="form-label">Phone</label>
+                    <input type="text" id="phone" name="phone" class="form-control" value="{{ $user->phone }}" placeholder="Enter Phone"  required />
+                    <div class="invalid-feedback">Please enter a phone number.</div>
                 </div>
 
                 <div class="col-md-6">
@@ -67,96 +72,96 @@
 
 @push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function() {
 
-    const form = document.getElementById('EdiUserForm');
+        const form = document.getElementById('EdiUserForm');
 
-    if (!form) return;
+        if (!form) return;
 
-    const fields = form.querySelectorAll('input, select');
+        const fields = form.querySelectorAll('input, select');
 
-    const password = document.getElementById('password');
-    const passwordConfirmation = document.getElementById('password_confirmation');
+        const password = document.getElementById('password');
+        const passwordConfirmation = document.getElementById('password_confirmation');
 
-    function validateField(field) {
+        function validateField(field) {
 
-        if (field === password) {
+            if (field === password) {
 
-            if (password.value && password.value.length < 6) {
-                password.setCustomValidity('Password must be at least 6 characters.');
+                if (password.value && password.value.length < 6) {
+                    password.setCustomValidity('Password must be at least 6 characters.');
+                } else {
+                    password.setCustomValidity('');
+                }
+
+            }
+
+            if (field === passwordConfirmation) {
+
+                if (!password.value && !passwordConfirmation.value) {
+                    passwordConfirmation.setCustomValidity('');
+                } else if (passwordConfirmation.value.length < 6) {
+                    passwordConfirmation.setCustomValidity('Password must be at least 6 characters.');
+                } else if (passwordConfirmation.value !== password.value) {
+                    passwordConfirmation.setCustomValidity('Passwords do not match.');
+                } else {
+                    passwordConfirmation.setCustomValidity('');
+                }
+
+            }
+
+            if (field.checkValidity()) {
+                field.classList.remove('is-invalid');
+                field.classList.add('is-valid');
             } else {
-                password.setCustomValidity('');
+                field.classList.remove('is-valid');
+                field.classList.add('is-invalid');
             }
 
         }
 
-        if (field === passwordConfirmation) {
+        fields.forEach(function(field) {
 
-            if (!password.value && !passwordConfirmation.value) {
-                passwordConfirmation.setCustomValidity('');
-            } else if (passwordConfirmation.value.length < 6) {
-                passwordConfirmation.setCustomValidity('Password must be at least 6 characters.');
-            } else if (passwordConfirmation.value !== password.value) {
-                passwordConfirmation.setCustomValidity('Passwords do not match.');
-            } else {
-                passwordConfirmation.setCustomValidity('');
-            }
-
-        }
-
-        if (field.checkValidity()) {
-            field.classList.remove('is-invalid');
-            field.classList.add('is-valid');
-        } else {
-            field.classList.remove('is-valid');
-            field.classList.add('is-invalid');
-        }
-
-    }
-
-    fields.forEach(function(field) {
-
-        field.addEventListener('input', function() {
-            validateField(field);
-        });
-
-        field.addEventListener('change', function() {
-            validateField(field);
-        });
-
-        field.addEventListener('blur', function() {
-            validateField(field);
-        });
-
-    });
-
-    password.addEventListener('input', function() {
-        validateField(password);
-        validateField(passwordConfirmation);
-    });
-
-    passwordConfirmation.addEventListener('input', function() {
-        validateField(passwordConfirmation);
-    });
-
-    form.addEventListener('submit', function(event) {
-
-        validateField(password);
-        validateField(passwordConfirmation);
-
-        if (!form.checkValidity()) {
-
-            event.preventDefault();
-            event.stopPropagation();
-
-            fields.forEach(function(field) {
+            field.addEventListener('input', function() {
                 validateField(field);
             });
 
-        }
+            field.addEventListener('change', function() {
+                validateField(field);
+            });
+
+            field.addEventListener('blur', function() {
+                validateField(field);
+            });
+
+        });
+
+        password.addEventListener('input', function() {
+            validateField(password);
+            validateField(passwordConfirmation);
+        });
+
+        passwordConfirmation.addEventListener('input', function() {
+            validateField(passwordConfirmation);
+        });
+
+        form.addEventListener('submit', function(event) {
+
+            validateField(password);
+            validateField(passwordConfirmation);
+
+            if (!form.checkValidity()) {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                fields.forEach(function(field) {
+                    validateField(field);
+                });
+
+            }
+
+        });
 
     });
-
-});
 </script>
 @endpush

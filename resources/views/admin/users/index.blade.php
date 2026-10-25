@@ -107,10 +107,15 @@
                             </select>
                             <div class="invalid-feedback">Please select a role.</div>
                         </div>
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <label for="email" class="form-label">Username</label>
                             <input type="text" id="username" name="username" class="form-control" placeholder="Enter Username" required />
                             <div class="invalid-feedback">Please enter a username.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="phone" class="form-label">Phone</label>
+                            <input type="text" id="phone" name="phone" class="form-control" placeholder="Enter Phone" required />
+                            <div class="invalid-feedback">Please enter a phone number.</div>
                         </div>
                         <div class="col-md-6">
                             <label for="password" class="form-label">Password</label>
