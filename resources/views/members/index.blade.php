@@ -44,87 +44,96 @@
 
   <div class="card">
     <div class="card-head">
-      <h3>Collection Index</h3><span class="hint">{{ $data->count() }} of {{ $data->total() }} collections shown</span>
+      <h3>Collection Index</h3><span class="hint">{{ $bills->count() }} of {{ $bills->total() }} collections shown</span>
     </div>
-    <div class="table-wrap">
-      <table class="ledger text-nowrap">
-        <thead>
-          <tr>
-            <th>SL</th>
-            <th>Member ID</th>
-            <th>Road</th>
-            <th>Holding No.</th>
-            <th>Building Type</th>
-            <th>Total Flat</th>
-            <th>Occupied Flat</th>
-            <th>Collection Type</th>
-            <th>Collection Rate</th>
-            <th>Discount</th>
-            <th>Collection Amount</th>
-            <th>Person Name</th>
-            <th>Flat No</th>
-            <th>Phone No</th>
-            <th>Email</th>
-            <th>Issue Date</th>
-            <th>Status</th>
-            <th>Payment Status</th>
-            <th>Payment Date</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          @forelse($data as $member)
-          <tr>
-            <td>{{ $data->firstItem() + $loop->iteration  - 1}}</td>
-            <td>{{ $member->unique_id}}</td>
-            <td>{{ $member->unit_road->name ?? ''}}</td>
-            <td>{{ $member->holding_no ?? '' }}</td>
-            <td>{{ $member->plot_type->name ?? 'N/A' }}</td>
-            <td>{{ $member->total_flat ?? 'N/A' }}</td>
-            <td>{{ $member->occupied_flat ?? 'N/A' }}</td>
-            <td>{{ $member->collection_type ?? 'N/A' }}</td>
-            <td>৳{{ number_format($member->collection_rate, 2) }}</td>
-            <td>৳{{ number_format($member->discount, 2) }}</td>
-            <td>৳{{ number_format($member->collection_amount) }}</td>
-            <td>{{ $member->name ?? 'N/A' }}</td>
-            <td>{{ $member->flat_no ?? 'N/A' }}</td>
-            <td>{{ $member->number ?? 'N/A' }}</td>
-            <td>{{ $member->email ?? 'N/A' }}</td>
-            <td>{{ $member->date }}</td>
-            <td>
-              @if($member->status == 1)
-              <span class="badge green"><i class="dot"></i>Active</span>
-              @else
-              <span class="badge red"><i class="dot"></i>Expired</span>
-              @endif
-            </td>
-            <td>
-              @if($member->payment_status == 1)
-              <span class="badge green"><i class="dot"></i>Paid</span>
-              @else
-              <span class="badge red"><i class="dot"></i>Unpaid</span>
-              @endif
-            </td>
-            <td class="text-center">{{ $member->payment_date ?? '--' }}</td>
-            <td>
-              @if (hasPermission('my_payments', 'download'))
-              <a href="{{ route('member.receipt', $member->id) }}" target="_blank" class="btn btn-info btn-sm" title="Money Receipt"><i class="bi bi-receipt"></i></a>
-              @endif
+    <table class="ledger text-nowrap w-100">
+      <thead>
+        <tr>
+          <th>Bill / Date</th>
+          <th>Resident / Contact</th>
+          <th>Road / Holding</th>
+          <th>Units &amp; Rate</th>
+          <th class="num">Net Due</th>
+          <th>Status</th>
+          @if (hasPermission('my_payments', 'pay'))
+          <th class="text-end pe-3">Action</th>
+          @endif
+        </tr>
+      </thead>
+      <tbody>
+        @forelse($bills as $bill)
+        <tr>
+          <!-- 1. Bill / Date -->
+          <td>
+            <div class="fw-bold font-monospace" style="color: var(--forest-900);">{{ $bill->bill_number }}</div>
+            <span class="hint small" style="font-size: 11px;">Month: {{ \Carbon\Carbon::parse($bill->billing_month)->format('Y-M') }} &bull; Due: {{ $bill->due_date->format('d M') }}</span>
+          </td>
 
-              @if (hasPermission('my_payments', 'pay'))
-              <a href="{{ route('member.pay', $member->id) }}" target="_blank" class="btn btn-info btn-sm" title="Pay bill"><i class="bi bi-wallet2"></i></a>
-              @endif
-            </td>
-          </tr>
-          @empty
-          <tr>
-            <td colspan="12" class="text-center">No plot or unit data available.</td>
-          </tr>
-          @endforelse
-        </tbody>
-      </table>
-      {{ $data->links('pagination::bootstrap-5') }}
-    </div>
+          <!-- 2. Holding & Resident -->
+          <td>
+            <div class="fw-medium text-dark">{{ $bill->plotAndUnit->name ?? '—' }}</div>
+            <span class="hint small">{{ $bill->plotAndUnit->phone ?? '—' }}</span>
+          </td>
+
+          <!-- 3. Type -->
+          <td>
+            <div>{{ $bill->plot_type_name }}</div>
+            <span class="hint small">Road: {{ $bill->plotAndUnit->road->number ?? '-' }} &bull; {{ $bill->plotAndUnit->holding_no ?? '-' }}</span>
+          </td>
+
+          <!-- 4. Units & Rate -->
+          <td>
+            <div>{{ $bill->billing_units }} unit(s) &times; {{ number_format($bill->rate_snapshot) }}৳</div>
+            @if($bill->discount_snapshot > 0)
+            <div class="text-muted" style="font-size: 10px;">Disc: -৳{{ number_format($bill->discount_snapshot) }}</div>
+            @endif
+          </td>
+
+          <!-- 5. Net Due -->
+          <td class="num">
+            <div><span class="fw-bold">{{ number_format($bill->due_balance, 2) }}</span>৳</div>
+            <div class="hint" style="font-size: 10px;">Paid: {{ number_format($bill->paid_amount, 2) }}৳</div>
+          </td>
+
+          <!-- 6. Status -->
+          <td>
+            @if($bill->status === 'Paid')
+            <span class="badge green"><i class="dot"></i>Paid</span>
+            @elseif($bill->status === 'Partial')
+            <span class="badge gold"><i class="dot"></i>Partial</span>
+            @else
+            <span class="badge red"><i class="dot"></i>Unpaid</span>
+            @endif
+          </td>
+
+          <!-- 7. Action -->
+          <td class="text-end pe-3">
+            @if($bill->status === 'Paid')
+
+            @if (hasPermission('my_payments', 'download'))
+            <a href="{{ route('member.receipt', $bill->id) }}" target="_blank" class="btn btn-info btn-sm" title="Money Receipt"><i class="bi bi-receipt"></i></a>
+            @endif
+            @else
+
+            @if (hasPermission('my_payments', 'pay'))
+            <form action="{{route('bkash-create-payment')}}" method="get">
+              <input type="hidden" name="bill_id" value="{{$bill->id}}">
+              <button type="submit" class="btn btn-info btn-sm" title="Pay bill"></i><img src="{{asset('uploads/settings/bkash.png')}}" style="width: 80px; height: 40px;" alt=""></button>
+            </form>
+            @endif
+
+            @endif
+          </td>
+        </tr>
+        @empty
+        <tr>
+          <td colspan="7" class="text-center py-5 text-muted">
+            <div class="empty-note">No billing records found for this criteria.</div>
+          </td>
+        </tr>
+        @endforelse
+      </tbody>
+    </table>
   </div>
 </section>
 @endsection

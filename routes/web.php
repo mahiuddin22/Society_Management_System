@@ -63,7 +63,6 @@ Route::get('testsms', function () {
     var_dump($server_output);
 });
 
-
 Route::middleware('guest')->name('member.')->group(function () {
     Route::get('/member-login', [MemberOtpController::class, 'showPhoneForm'])->name('otp.phone');
     Route::post('/member-login/send-otp', [MemberOtpController::class, 'sendOtp'])->name('otp.send');
@@ -239,4 +238,20 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
     });
 
     Route::get('/collections', [PaymentController::class, 'index'])->name('payments.index');
+});
+
+Route::group(['middleware' => ['auth']], function () {
+    // Payment Routes for bKash
+    Route::get('/bkash/payment', [App\Http\Controllers\BkashTokenizePaymentController::class,'index']);
+    Route::get('/bkash/create-payment', [App\Http\Controllers\BkashTokenizePaymentController::class,'createPayment'])->name('bkash-create-payment');
+    Route::get('/bkash/callback', [App\Http\Controllers\BkashTokenizePaymentController::class,'callBack'])->name('bkash-callBack');
+
+    // Those 3 routes will be taken in admin middleware
+    //search payment
+    Route::get('/bkash/search/{trxID}', [App\Http\Controllers\BkashTokenizePaymentController::class,'searchTnx'])->name('bkash-serach');
+
+    //refund payment routes
+    Route::get('/bkash/refund', [App\Http\Controllers\BkashTokenizePaymentController::class,'refund'])->name('bkash-refund');
+    Route::get('/bkash/refund/status', [App\Http\Controllers\BkashTokenizePaymentController::class,'refundStatus'])->name('bkash-refund-status');
+
 });

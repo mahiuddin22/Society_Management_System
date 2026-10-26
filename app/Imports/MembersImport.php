@@ -5,9 +5,11 @@ namespace App\Imports;
 use App\Models\PlotAndUnit;
 use App\Models\PlotType;
 use App\Models\Road;
+use App\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -127,6 +129,24 @@ class MembersImport implements ToCollection, WithHeadingRow, WithChunkReading
                 // Phone number format kora (faka thakle faka-i thakbe, kono dummy 01000000 hobe na)
                 $rawPhone = (string)($row['person_phone'] ?? $row['phone'] ?? '');
                 $phone    = $this->formatPhoneNumber($rawPhone);
+                $email     = !empty($row['person_email']) ? substr(trim((string)$row['person_email']), 0, 254) : null;
+                $uniqueId = substr($this->generateUniqueId($roadNumberClean ?: '0', $holdingNo, $flatNo, $rawPlotType), 0, 30);
+
+                // Create or sync the member account using the imported contact details.
+                // Rows without a phone number cannot be uniquely matched to a user.
+                if ($phone !== '') {
+                    User::updateOrCreate(
+                        ['phone' => $phone],
+                        [
+                            'uid'     => $uniqueId,
+                            'role'     => 'member',
+                            'name'     => $contactName,
+                            'email'    => $email,
+                            'password' => Hash::make(Str::random(10)),
+                            'phone'    => $phone,
+                        ]
+                    );
+                }
 
                 $totalFlat     = isset($row['total_flat']) && is_numeric($row['total_flat']) ? (int)$row['total_flat'] : 0;
                 $occupiedFlat  = isset($row['occupied_flat']) && is_numeric($row['occupied_flat']) ? (int)$row['occupied_flat'] : 0;
@@ -143,19 +163,18 @@ class MembersImport implements ToCollection, WithHeadingRow, WithChunkReading
                     ? (float)$row['collection_amount']
                     : ($collectionRate * max(1, $occupiedFlat));
 
-                $uniqueId = $this->generateUniqueId($roadNumberClean ?: '0', $holdingNo, $flatNo, $rawPlotType);
                 $status   = (strtolower($rawPlotType) === 'empty plot') ? 'Hold' : 'Active';
 
                 $records[] = [
                     'road_id'         => $roadId,
                     'plot_type_id'    => $plotTypeId,
-                    'unique_id'       => substr($uniqueId, 0, 30),
+                    'unique_id'       => $uniqueId,
                     'holding_no'      => substr($holdingNo, 0, 20),
                     'building_name'   => !empty($row['building_name']) ? substr(trim((string)$row['building_name']), 0, 100) : null,
                     'name'            => substr($contactName ?: ($flatNo ? "Resident {$flatNo}" : "Holding {$holdingNo}"), 0, 100),
                     'flat_no'         => $flatNo ? substr($flatNo, 0, 30) : null,
                     'phone'           => $phone ?? '',
-                    'email'           => !empty($row['person_email']) ? substr(trim((string)$row['person_email']), 0, 254) : null,
+                    'email'           => $email,
                     'total_flat'      => $totalFlat,
                     'occupied_flat'   => $occupiedFlat,
                     'flat_numbers'    => $flatNumbers,

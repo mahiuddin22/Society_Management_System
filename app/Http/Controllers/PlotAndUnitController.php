@@ -29,9 +29,9 @@ class PlotAndUnitController extends Controller
             $search = trim($request->search);
             $query->where(function ($q) use ($search) {
                 $q->where('holding_no', 'LIKE', "%{$search}%")
-                ->orWhere('name', 'LIKE', "%{$search}%")
-                ->orWhere('phone', 'LIKE', "%{$search}%")
-                ->orWhere('unique_id', 'LIKE', "%{$search}%");
+                    ->orWhere('name', 'LIKE', "%{$search}%")
+                    ->orWhere('phone', 'LIKE', "%{$search}%")
+                    ->orWhere('unique_id', 'LIKE', "%{$search}%");
             });
         }
 
@@ -59,12 +59,12 @@ class PlotAndUnitController extends Controller
         }
 
         $plotAndUnits = $query->paginate(30)->withQueryString();
-        
+
         // Auxiliary data for filter dropdowns & metric cards
         $plotTypes = PlotType::withCount('plotAndUnits')->get();
         $roads     = Road::orderBy('number')->get();
 
-         $pageTitle = 'Plot Management';
+        $pageTitle = 'Plot Management';
 
         return view('admin.plot_and_units.index', compact('plotAndUnits', 'plotTypes', 'roads', 'pageTitle'));
     }
@@ -101,15 +101,15 @@ class PlotAndUnitController extends Controller
                     'phone'           => $validated['phone'] ?? 'N/A',
                     'email'           => $validated['email'] ?? null,
                     'unique_id'       => 'UTR03'
-                                        . '-'
-                                        . $road->number
-                                        . $validated['holding_no']
-                                        . '-'
-                                        . match (true) {
-                                            ($validated['occupied_flat'] == 0 || $validated['occupied_flat'] == null) && $validated['plot_type'] == 2 => 'CONS',
-                                            ($validated['occupied_flat'] == 0 || $validated['occupied_flat'] == null) && $validated['plot_type'] == 1 => 'EMT',
-                                            default => $validated['flat_no'],
-                                        },
+                        . '-'
+                        . $road->number
+                        . $validated['holding_no']
+                        . '-'
+                        . match (true) {
+                            ($validated['occupied_flat'] == 0 || $validated['occupied_flat'] == null) && $validated['plot_type'] == 2 => 'CONS',
+                            ($validated['occupied_flat'] == 0 || $validated['occupied_flat'] == null) && $validated['plot_type'] == 1 => 'EMT',
+                            default => $validated['flat_no'],
+                        },
 
                     // Financials
                     'collection_rate' => $validated['collection_rate'] ?? 0,
@@ -121,23 +121,32 @@ class PlotAndUnitController extends Controller
                 User::updateOrCreate(
                     ['phone' => $validated['phone']],
                     [
-                        'role'  => 7,
+                        'role'  => 'member',
                         'name'  => $validated['name'],
                         'email' => $validated['email'],
                         'password' => Hash::make(Str::random(10)),
                         'phone' => $validated['phone'],
+                        'uid' => 'UTR03'
+                            . '-'
+                            . $road->number
+                            . $validated['holding_no']
+                            . '-'
+                            . match (true) {
+                                ($validated['occupied_flat'] == 0 || $validated['occupied_flat'] == null) && $validated['plot_type'] == 2 => 'CONS',
+                                ($validated['occupied_flat'] == 0 || $validated['occupied_flat'] == null) && $validated['plot_type'] == 1 => 'EMT',
+                                default => $validated['flat_no'],
+                            },
                     ]
                 );
-                
-                return $plotAndUnit;
 
+                return $plotAndUnit;
             });
         } catch (\Throwable $e) {
             report($e);
             return back()->withInput()->with('error', $e->getMessage());
         }
 
-         return redirect()->route('admin.plot-and-units.show', $plotAndUnit->id)->with('success', 'Building updated successfully.');
+        return redirect()->route('admin.plot-and-units.show', $plotAndUnit->id)->with('success', 'Building updated successfully.');
         // return redirect()->route('admin.plot-and-units.index')->with('success', 'Data created successfully.');
     }
 
@@ -154,7 +163,7 @@ class PlotAndUnitController extends Controller
 
     public function update(UpdatePlotAndUnitRequest $request, int $id)
     {
-        
+
         #TODO::Some infomation can't update when payment cycle started.
 
         $validated = $request->validated();
@@ -179,15 +188,15 @@ class PlotAndUnitController extends Controller
                     'phone'           => $validated['phone'],
                     'email'           => $validated['email'] ?? null,
                     'unique_id'       => 'UTR03'
-                                        . '-'
-                                        . $road->number
-                                        . $validated['holding_no']
-                                        . '-'
-                                        . match (true) {
-                                            ($validated['occupied_flat'] == 0 || $validated['occupied_flat'] == null) && $validated['plot_type'] == 2 => 'CONS',
-                                            ($validated['occupied_flat'] == 0 || $validated['occupied_flat'] == null) && $validated['plot_type'] == 1 => 'EMT',
-                                            default => $validated['flat_no'],
-                                        },
+                        . '-'
+                        . $road->number
+                        . $validated['holding_no']
+                        . '-'
+                        . match (true) {
+                            ($validated['occupied_flat'] == 0 || $validated['occupied_flat'] == null) && $validated['plot_type'] == 2 => 'CONS',
+                            ($validated['occupied_flat'] == 0 || $validated['occupied_flat'] == null) && $validated['plot_type'] == 1 => 'EMT',
+                            default => $validated['flat_no'],
+                        },
 
                     // Financials
                     'collection_rate' => $validated['collection_rate'] ?? 0,
@@ -200,7 +209,7 @@ class PlotAndUnitController extends Controller
                 User::updateOrCreate(
                     ['phone' => $validated['phone']],
                     [
-                        'role'  => 7,
+                        'role'  => 'member',
                         'name'  => $validated['name'],
                         'password' => Hash::make(Str::random(10)),
                         'email' => $validated['email'] ?? null,
@@ -224,7 +233,6 @@ class PlotAndUnitController extends Controller
     public function destroy(int $id)
     {
         $plotAndUnit = PlotAndUnit::findOrFail($id);
-        $plotAndUnit->sector_collenctions()->delete();
         $plotAndUnit->delete();
         return redirect()->route('admin.plot-and-units.index')->with('success', 'Data deleted successfully.');
     }
