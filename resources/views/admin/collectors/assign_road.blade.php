@@ -92,7 +92,7 @@
                         </span>
 
                         <span class="road-name">
-                            {{ $road->name }}
+                            Road-{{ $road->number }}
                         </span>
 
                     </label>
