@@ -34,6 +34,7 @@ class RolePermissionSeeder extends Seeder
         ];
 
         $collectorPermissions = [
+            [37, 'bill_generator', [1, 2, 12]],
             [27, 'collections', [1, 8, 9]],
         ];
 
@@ -45,11 +46,11 @@ class RolePermissionSeeder extends Seeder
         $permissionGroups = [
             'admin' => [
                 'permissions' => $adminPermissions,
-                'timestamp' => '2026-10-12 11:46:49',
+                'timestamp' => '2026-10-26 05:27:53',
             ],
             'collector' => [
                 'permissions' => $collectorPermissions,
-                'timestamp' => '2026-09-16 17:09:25',
+                'timestamp' => '2026-10-27 04:31:23',
             ],
             'member' => [
                 'permissions' => $memberPermissions,

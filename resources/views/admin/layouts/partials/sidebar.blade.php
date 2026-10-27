@@ -24,7 +24,7 @@
         <!-- Collection -->
         @if(hasPermission('plot_and_units') || hasPermission('upload_members'))
         <div class="nav-group">
-            <div class="nav-group-label">Plot Managerment</div>
+            <div class="nav-group-label">Plot Management</div>
             @if (hasPermission('plot_and_units'))
             @php
             $plot_activity = request()->routeIs('admin.plot-and-units.index')
@@ -76,7 +76,7 @@
                     <path d="M2 10h20" />
                     <path d="M6 15h4" />
                 </svg>
-                Bill Generator
+                Bill Collections
             </a>
             @endif
 
@@ -88,7 +88,7 @@
                     <path d="M15 10h4" />
                     <path d="M15 14h4" />
                 </svg>
-                Collections
+                Payments
             </a>
             @endif
 

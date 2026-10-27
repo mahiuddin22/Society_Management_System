@@ -24,6 +24,11 @@ class BillController extends Controller
     {
         $query = Bill::with(['plotAndUnit.road', 'plotAndUnit.plotType', 'payments'])->latest('billing_month');
 
+        if (Auth::user()->role !== 'admin') {
+            $roadIds = Road::where('collector_id', Auth::id())->pluck('id');
+            $query->whereHas('plotAndUnit', fn ($q) => $q->whereIn('road_id', $roadIds));
+        }
+
         // 1. Billing Month Filter (Year + Month: e.g. '2026-09')
         if ($request->filled('month')) {
             $query->where('billing_month', $request->month);
@@ -69,6 +74,10 @@ class BillController extends Controller
 
         $statsQuery = Bill::where('billing_month', $currentMonth);
 
+        if (Auth::user()->role !== 'admin') {
+            $statsQuery->whereHas('plotAndUnit', fn ($q) => $q->whereIn('road_id', $roadIds));
+        }
+
         // Road filter metrics-e o apply korte chaile:
         if ($request->filled('road_number')) {
             $roadNum = trim($request->road_number);
@@ -83,7 +92,8 @@ class BillController extends Controller
             'unpaid_count' => (clone $statsQuery)->whereIn('status', ['Unpaid', 'Partial'])->count(),
         ];
 
-        $roads = Road::orderBy('number')->get();
+        $roads = Road::when(Auth::user()->role !== 'admin', fn ($q) => $q->where('collector_id', Auth::id()))
+            ->orderBy('number')->get();
         $plotTypes = PlotType::where('status', 'Active')->get();
 
         return view('admin.bills.index', compact('bills', 'stats', 'currentMonth', 'roads', 'plotTypes'));
@@ -124,6 +134,12 @@ class BillController extends Controller
 
     public function pay(Request $request, Bill $bill)
     {
+        if (Auth::user()->role !== 'admin' && ! Road::where('collector_id', Auth::id())
+            ->whereHas('plotAndUnits', fn ($q) => $q->whereKey($bill->plot_and_unit_id))
+            ->exists()) {
+            abort(403);
+        }
+
         $due = $bill->due_balance;
 
         $validated = $request->validate([
