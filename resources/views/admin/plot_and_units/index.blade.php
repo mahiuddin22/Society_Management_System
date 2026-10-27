@@ -442,7 +442,7 @@
                 @endif
 
                 @if (hasPermission('plot_and_units', 'delete'))
-                <form action="{{ route('admin.plot-and-units.destroy', $unit->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this unit record?');">
+                <form action="{{ route('admin.plot-and-units.destroy', $unit->id) }}" method="POST" class="d-inline delete-form">
                   @csrf
                   @method('DELETE')
                   <button type="submit" class="btn btn-ghost btn-sm px-2 text-danger" title="Delete Unit">
