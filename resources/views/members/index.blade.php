@@ -116,9 +116,12 @@
             @else
 
             @if (hasPermission('my_payments', 'pay'))
-            <form action="{{route('bkash-create-payment')}}" method="get">
-              <input type="hidden" name="bill_id" value="{{$bill->id}}">
-              <button type="submit" class="btn btn-info btn-sm" title="Pay bill"></i><img src="{{asset('uploads/settings/bkash.png')}}" style="width: 80px; height: 40px;" alt=""></button>
+            <form action="{{ route('bkash-create-payment') }}" method="get" class="d-inline-block">
+              <input type="hidden" name="bill_id" value="{{ $bill->id }}">
+              <button type="submit" class="btn btn-bkash" title="Pay bill">
+                <img src="{{ asset('uploads/settings/bkash.svg') }}" alt="bKash" class="bkash-icon">
+                <span>Pay</span>
+              </button>
             </form>
             @endif
 
