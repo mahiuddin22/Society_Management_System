@@ -111,7 +111,7 @@
             @if($bill->status === 'Paid')
 
             @if (hasPermission('my_payments', 'download'))
-            <a href="{{ route('member.receipt', $bill->id) }}" target="_blank" class="btn btn-info btn-sm" title="Money Receipt"><i class="bi bi-receipt"></i></a>
+            <a href="{{ route('member.receipt', $bill->id) }}" target="_blank" class="btn btn-info btn-sm" title="Money Receipt"><i class="bi bi-receipt"></i> Receipt</a>
             @endif
             @else
 
