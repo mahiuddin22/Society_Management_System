@@ -74,9 +74,18 @@
                     @endforeach
                     <!-- Additional rows -->
                 </tbody>
-                {{ $users->onEachSide(1)->links('pagination::bootstrap-4') }}
             </table>
         </div>
+        @if($users->hasPages())
+        <div class="pagination-footer px-3 py-2 border-top d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div class="hint small text-muted" style="font-size: 12px;">
+                Showing <span class="fw-semibold text-dark">{{ $users->firstItem() }}</span> to <span class="fw-semibold text-dark">{{ $users->lastItem() }}</span> of <span class="fw-semibold text-dark">{{ $users->total() }}</span> results
+            </div>
+            <div>
+                {{ $users->onEachSide(1)->links('pagination::bootstrap-4') }}
+            </div>
+        </div>
+        @endif
     </div>
 </div>
 
