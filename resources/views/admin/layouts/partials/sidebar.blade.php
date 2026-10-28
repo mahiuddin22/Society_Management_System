@@ -140,6 +140,45 @@
         </div>
         @endif
 
+        <!-- Collection Management -->
+        @if(hasPermission('plot_and_units') || hasPermission('bill_generator') || hasPermission('collections') || hasPermission('collectors') || hasPermission('sms_history') || hasPermission('bulk_sms'))
+        <div class="nav-group">
+            <div class="nav-group-label">Reports</div>
+            @if(hasPermission('plot_and_units') || hasPermission('bill_generator'))
+            <a class="nav-item {{ request()->routeIs('admin.report.plotmanagement*') ? 'active' : '' }}" href="{{ route('admin.report.plotmanagement') }}" data-panel="payments">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="6" width="20" height="13" rx="2" />
+                    <path d="M2 10h20" />
+                    <path d="M6 15h4" />
+                </svg>
+                Plot Management Report
+            </a>
+            @endif
+
+            @if(hasPermission('collections') || hasPermission('bill_generator'))
+            <a class="nav-item {{ request()->routeIs('admin.report.billcollections*') ? 'active' : '' }}" href="{{ route('admin.report.billcollections') }}" data-panel="payments">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="6" width="20" height="13" rx="2" />
+                    <text x="10.5" y="16" font-size="10" font-weight="bold" fill="currentColor" stroke="none" text-anchor="middle" font-family="sans-serif">৳</text>
+                    <path d="M15 10h4" />
+                    <path d="M15 14h4" />
+                </svg>
+                Bill Collections Report
+            </a>
+            @endif
+
+            @if(hasPermission('bulk_sms') || hasPermission('sms_history'))
+            <a class="nav-item {{ request()->routeIs('admin.report.bulksms*') ? 'active' : '' }}" href="{{ route('admin.report.bulksms') }}" data-panel="owners">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="8" r="4" />
+                    <path d="M4 21c1-4 5-6 8-6s7 2 8 6" />
+                </svg>
+                Bulk SMS Report
+            </a>
+            @endif
+        </div>
+        @endif
+
         @if (hasPermission('activities') || hasPermission('roles') || hasPermission('permissions'))
         <div class="nav-group">
             <div class="nav-group-label">Administration</div>
@@ -169,9 +208,10 @@
         </div>
         @endif
 
-        @if(hasPermission('plot_types') || hasPermission('site_settings'))
+        @if(auth()->check())
         <div class="nav-group">
             <div class="nav-group-label">Settings</div>
+            <a class="nav-item {{ request()->routeIs('admin.user-manual') ? 'active' : '' }}" href="{{ route('admin.user-manual') }}"><i class="bi bi-book"></i> User Manual</a>
             @if(hasPermission('plot_types'))
             <a class="nav-item {{ request()->routeIs('admin.plot_type.*') ? 'active' : '' }}" href="{{ route('admin.plot_type.index') }}"><i class="bi bi-person-circle"></i> Plot Types</a>
             @endif

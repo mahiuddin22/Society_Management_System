@@ -12,6 +12,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PermissionsController;
 use App\Http\Controllers\PlotAndUnitController;
 use App\Http\Controllers\PlotTypeController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoadController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RolePermissionController;
@@ -81,6 +82,8 @@ Route::middleware('auth')->prefix('member')->as('member.')->group(function () {
 });
 
 Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
+
+    Route::view('user-manual', 'admin.user_manual.index')->name('user-manual');
 
     // Dashboard
     Route::controller(HomeController::class)->group(function () {
@@ -206,6 +209,13 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('/draft-sms', 'DraftSMS')->name('draftsms');
         Route::get('/sms-history', 'SMSHistory')->name('smshistory');
+    });
+    
+    // Report Managements
+    Route::controller(ReportController::class)->prefix('report')->name('report.')->group(function () {
+        Route::get('/plot-management', 'plotManagement')->name('plotmanagement');
+        Route::get('/bill-collections', 'billCollections')->name('billcollections');
+        Route::get('/bulk-sms', 'bulkSms')->name('bulksms');
     });
 
     // Collectors
