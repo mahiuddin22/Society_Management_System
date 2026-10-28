@@ -74,7 +74,7 @@
                     @endforeach
                     <!-- Additional rows -->
                 </tbody>
-                {{ $users->links() }}
+                {{ $users->onEachSide(1)->links('pagination::bootstrap-4') }}
             </table>
         </div>
     </div>
