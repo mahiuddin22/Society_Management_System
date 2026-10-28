@@ -19,7 +19,7 @@
 
 <div class="card">
     <div class="card-head">
-        <h3>Collector Index</h3><span class="hint">{{ $collectors->count() }} of {{ $collectors->total() }} collectors shown</span>
+        <span class="hint">{{ $collectors->count() }} of {{ $collectors->total() }} collectors shown</span>
     </div>
     <div class="table-wrap">
         <table class="ledger">
@@ -58,11 +58,11 @@
 
                         @if(hasPermission('collectors', 'delete'))
                         @if($user->name != 'admin')
-                        <form action="{{ route('admin.collectors.destroy', $user->id) }}" method="POST" class="d-inline delete-form">
+                        <!-- <form action="{{ route('admin.collectors.destroy', $user->id) }}" method="POST" class="d-inline delete-form">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-sm btn-outline-danger " title="Delete"><i class="bi bi-trash"></i></button>
-                        </form>
+                        </form> -->
                         @endif
                         @endif
 
