@@ -22,6 +22,9 @@ class RolePermissionSeeder extends Seeder
             [39, 'bulk_sms', [1]],
             [40, 'draft_sms', [1, 2, 3, 4]],
             [41, 'sms_history', [1, 9]],
+            [46, 'plot_report', [1, 9]],
+            [48, 'bill_report', [1, 9]],
+            [47, 'bulk_report', [1, 9]],
             [19, 'activities', [1, 2, 3, 4]],
             [21, 'roles', [1, 2, 3, 4]],
             [29, 'roads', [1, 2, 3, 4]],
@@ -35,7 +38,7 @@ class RolePermissionSeeder extends Seeder
 
         $collectorPermissions = [
             [37, 'bill_generator', [1, 2, 12]],
-            [27, 'collections', [1, 8, 9]],
+            [27, 'collections', [1, 9]],
         ];
 
         $memberPermissions = [
@@ -46,11 +49,11 @@ class RolePermissionSeeder extends Seeder
         $permissionGroups = [
             'admin' => [
                 'permissions' => $adminPermissions,
-                'timestamp' => '2026-10-26 05:27:53',
+                'timestamp' => '2026-10-29 14:31:48',
             ],
             'collector' => [
                 'permissions' => $collectorPermissions,
-                'timestamp' => '2026-10-27 04:31:23',
+                'timestamp' => '2026-10-29 14:53:06',
             ],
             'member' => [
                 'permissions' => $memberPermissions,
