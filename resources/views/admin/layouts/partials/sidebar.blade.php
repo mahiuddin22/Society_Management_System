@@ -141,10 +141,10 @@
         @endif
 
         <!-- Collection Management -->
-        @if(hasPermission('plot_and_units') || hasPermission('bill_generator') || hasPermission('collections') || hasPermission('collectors') || hasPermission('sms_history') || hasPermission('bulk_sms'))
+        @if(hasPermission('plot_report') || hasPermission('bill_report') || hasPermission('bulk_report'))
         <div class="nav-group">
             <div class="nav-group-label">Reports</div>
-            @if(hasPermission('plot_and_units') || hasPermission('bill_generator'))
+            @if(hasPermission('plot_report'))
             <a class="nav-item {{ request()->routeIs('admin.report.plotmanagement*') ? 'active' : '' }}" href="{{ route('admin.report.plotmanagement') }}" data-panel="payments">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="2" y="6" width="20" height="13" rx="2" />
@@ -155,7 +155,7 @@
             </a>
             @endif
 
-            @if(hasPermission('collections') || hasPermission('bill_generator'))
+            @if(hasPermission('bill_report'))
             <a class="nav-item {{ request()->routeIs('admin.report.billcollections*') ? 'active' : '' }}" href="{{ route('admin.report.billcollections') }}" data-panel="payments">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="2" y="6" width="20" height="13" rx="2" />
@@ -167,7 +167,7 @@
             </a>
             @endif
 
-            @if(hasPermission('bulk_sms') || hasPermission('sms_history'))
+            @if(hasPermission('bulk_report'))
             <a class="nav-item {{ request()->routeIs('admin.report.bulksms*') ? 'active' : '' }}" href="{{ route('admin.report.bulksms') }}" data-panel="owners">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="8" r="4" />
