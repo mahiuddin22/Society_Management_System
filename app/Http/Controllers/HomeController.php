@@ -212,6 +212,33 @@ class HomeController extends Controller
 
     public function profile()
     {
-        return view('admin.profile.profile');
+        $user = auth()->user();
+        return view('admin.profile.profile', compact('user'));
     }
+
+    public function updateProfile(Request $request)
+    {
+        $user = auth()->user();
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'unique:users,email,' . $user->id],
+            'phone' => ['required', 'string', 'max:255'],
+        ]);
+
+        $user->update($data);
+        return redirect()->back()->with('success', 'Profile updated successfully.');
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $user = auth()->user();
+        $data = $request->validate([
+            'password' => ['required', 'current_password'],
+            'new_password' => ['required', 'string', 'min:6', 'confirmed'],
+        ]);
+
+        $user->update(['password' => bcrypt($data['new_password'])]);
+        return redirect()->back()->with('success', 'Password updated successfully.');
+    }
+    
 }

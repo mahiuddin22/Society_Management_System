@@ -92,6 +92,9 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
         Route::post('notifications/read', 'markNotificationRead')->name('notifications.read');
         Route::get('settings', 'settings')->name('settings');
         Route::get('profile', 'profile')->name('profile');
+        Route::put('update-password', 'updatePassword')->name('password.update');
+        Route::put('profile', 'updateProfile')->name('profile.update');
+
     });
 
     // Ajax Routes

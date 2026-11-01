@@ -8,16 +8,16 @@
         <div class="row g-0">
 
             <!-- Profile Picture Section (fixed height) -->
-            <div class="col-md-4">
+            <!-- <div class="col-md-4">
                 <div class="bg-light rounded-start"
                     style="width: 100%; height: 450px; display: flex; justify-content: center; align-items: center;">
                     <img src="{{ asset('assets/images/noyon.jpg') }}" alt="Profile Picture" class="rounded-start"
                         style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
-            </div>
+            </div> -->
 
             <!-- Tab Section (flexible height) -->
-            <div class="col-md-8 d-flex flex-column">
+            <div class="col-md-12 d-flex flex-column">
                 <div class="card-body p-4 d-flex flex-column">
 
                     <!-- Header -->
@@ -27,9 +27,9 @@
                             <h4 class="fw-bold mb-0">{{ auth()->user()->name }}</h4>
                             <small class="text-light">{{ auth()->user()->role }}</small>
                         </div>
-                        <a href="#" class="btn btn-sm btn-light">
+                        <!-- <a href="#" class="btn btn-sm btn-light">
                             <i class="bi bi-pencil-square me-1"></i> Edit
-                        </a>
+                        </a> -->
                     </div>
 
                     <!-- Tabs -->
@@ -81,20 +81,22 @@
 
                         <!-- Settings -->
                         <div class="tab-pane fade" id="settings" role="tabpanel">
-                            <form>
+                            <form action="{{ route('admin.profile.update') }}" method="POST">
+                                @csrf
+                                @method('PUT')
                                 <div class="mb-3">
                                     <label for="name" class="form-label">Full Name</label>
-                                    <input type="text" class="form-control" id="name" value="{{ auth()->user()->name }}">
+                                    <input type="text" name="name" class="form-control" id="name" value="{{ auth()->user()->name }}">
                                 </div>
                                 <div class="mb-3">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <label for="email" class="form-label">Email Address</label>
-                                            <input type="email" class="form-control" id="email" value="{{ auth()->user()->email }}">
+                                            <input type="email" name="email" class="form-control" id="email" value="{{ auth()->user()->email }}">
                                         </div>
                                         <div class="col-md-6">
                                             <label for="phone" class="form-label">Phone Number</label>
-                                            <input type="text" class="form-control" id="phone" value="{{ auth()->user()->phone }}">
+                                            <input type="text" name="phone" class="form-control" id="phone" value="{{ auth()->user()->phone }}">
                                         </div>
                                     </div>
                                 </div>
@@ -107,10 +109,12 @@
 
                         <!-- Change Password -->
                         <div class="tab-pane fade" id="changePassword" role="tabpanel">
-                            <form>
+                            <form action="{{ route('admin.password.update') }}" method="POST">
+                                @csrf
+                                @method('PUT')
                                 <div class="mb-3">
                                     <label for="password" class="form-label">Enter Old Password</label>
-                                    <input type="password" class="form-control" id="password">
+                                    <input type="password" name="password" class="form-control" id="password">
                                     @if (Route::has('password.request'))
                                     <div class="forgot-password">
                                         <a href="{{ route('password.request') }}" class="text-decoration-none">Forgot your password?</a>
@@ -121,11 +125,11 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <label for="new_password" class="form-label">Enter New Password</label>
-                                            <input type="password" class="form-control" id="new_password">
+                                            <input type="password" name="new_password" class="form-control" id="new_password">
                                         </div>
                                         <div class="col-md-6">
                                             <label for="confirm_password" class="form-label">Confirm New Password</label>
-                                            <input type="password" class="form-control" id="confirm_password">
+                                            <input type="password" name="confirm_password" class="form-control" id="confirm_password">
                                         </div>
                                     </div>
                                 </div>
