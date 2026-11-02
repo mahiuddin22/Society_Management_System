@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Bill;
 use App\Models\Payment;
 use App\Models\PlotAndUnit;
+use App\Models\Road;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -26,19 +27,32 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function index(Request $request)
     {
         $today = now()->toDateString();
         $monthStart = now()->startOfMonth();
         $monthKey = $monthStart->format('Y-m');
+        $isCollector = auth()->user()?->role === 'collector';
+        $assignedRoadIds = $isCollector
+            ? Road::where('collector_id', auth()->id())->pluck('id')
+            : collect();
+
+        $billQuery = Bill::query();
+        $paymentQuery = Payment::query();
+        $plotQuery = PlotAndUnit::query();
+        if ($isCollector) {
+            $billQuery->whereHas('plotAndUnit', fn ($query) => $query->whereIn('road_id', $assignedRoadIds));
+            $paymentQuery->whereHas('bill.plotAndUnit', fn ($query) => $query->whereIn('road_id', $assignedRoadIds));
+            $plotQuery->whereIn('road_id', $assignedRoadIds);
+        }
 
         $stats = [
-            'today_collected' => (float) Payment::whereDate('payment_date', $today)->sum('amount'),
-            'month_collected' => (float) Payment::whereBetween('payment_date', [$monthStart->toDateString(), now()->toDateString()])->sum('amount'),
-            'outstanding' => (float) Bill::whereColumn('net_amount', '>', 'paid_amount')
+            'today_collected' => (float) (clone $paymentQuery)->whereDate('payment_date', $today)->sum('amount'),
+            'month_collected' => (float) (clone $paymentQuery)->whereBetween('payment_date', [$monthStart->toDateString(), now()->toDateString()])->sum('amount'),
+            'outstanding' => (float) (clone $billQuery)->whereColumn('net_amount', '>', 'paid_amount')
                 ->selectRaw('COALESCE(SUM(net_amount - paid_amount), 0) as total')->value('total'),
-            'active_plots' => PlotAndUnit::where('status', 'Active')->count(),
-            'unpaid_bills' => Bill::whereIn('status', ['Unpaid', 'Partial', 'Overdue'])->count(),
+            'active_plots' => (clone $plotQuery)->where('status', 'Active')->count(),
+            'unpaid_bills' => (clone $billQuery)->whereIn('status', ['Unpaid', 'Partial', 'Overdue'])->count(),
         ];
 
         $months = collect(range(5, 0))->map(function ($offset) {
@@ -46,11 +60,11 @@ class HomeController extends Controller
             return ['key' => $date->format('Y-m'), 'label' => $date->format('M')];
         });
         $monthKeys = $months->pluck('key');
-        $billedByMonth = Bill::whereIn('billing_month', $monthKeys)
+        $billedByMonth = (clone $billQuery)->whereIn('billing_month', $monthKeys)
             ->select('billing_month', DB::raw('SUM(net_amount) as total'))
             ->groupBy('billing_month')->pluck('total', 'billing_month');
         $firstMonth = now()->startOfMonth()->subMonths(5);
-        $paymentsByMonth = Payment::whereBetween('payment_date', [$firstMonth->toDateString(), now()->toDateString()])
+        $paymentsByMonth = (clone $paymentQuery)->whereBetween('payment_date', [$firstMonth->toDateString(), now()->toDateString()])
             ->get(['payment_date', 'amount'])
             ->groupBy(fn ($payment) => $payment->payment_date->format('Y-m'))
             ->map(fn ($payments) => (float) $payments->sum('amount'));
@@ -60,7 +74,7 @@ class HomeController extends Controller
             'collected' => (float) ($paymentsByMonth[$month['key']] ?? 0),
         ]);
 
-        $monthBillStats = Bill::where('billing_month', $monthKey)
+        $monthBillStats = (clone $billQuery)->where('billing_month', $monthKey)
             ->selectRaw('COUNT(*) as count, COALESCE(SUM(net_amount), 0) as billed, COALESCE(SUM(paid_amount), 0) as collected')
             ->first();
         $monthBillCount = (int) $monthBillStats->count;
@@ -68,93 +82,162 @@ class HomeController extends Controller
         $monthPaid = (float) $monthBillStats->collected;
         $monthDue = max(0, $monthBilled - $monthPaid);
 
-        $recentBills = Bill::with('plotAndUnit.road')->latest()->take(5)->get();
-        $recentCollections = Payment::with(['bill.plotAndUnit', 'collector'])
+        $collectorSummary = null;
+        if ($isCollector) {
+            $collectorSummary = [
+                'monthly_target' => $monthBilled,
+                'monthly_collected' => $stats['month_collected'],
+                'monthly_due' => $monthDue,
+                'lifetime_collected' => (float) (clone $paymentQuery)->sum('amount'),
+                'lifetime_due' => $stats['outstanding'],
+            ];
+        }
+
+        $dashboardSummary = null;
+        $dashboardPeriod = null;
+        if (auth()->user()?->role === 'admin') {
+            $period = $request->query('summary_period', 'month');
+            $dashboardPeriod = in_array($period, ['week', 'month', 'year', 'total'], true) ? $period : 'month';
+            $billQuery = Bill::query();
+
+            if ($dashboardPeriod !== 'total') {
+                $start = match ($dashboardPeriod) {
+                    'week' => now()->startOfWeek(),
+                    'year' => now()->startOfYear(),
+                    default => now()->startOfMonth(),
+                };
+                $billQuery->whereBetween('created_at', [$start, now()]);
+            }
+
+            $summary = $billQuery->selectRaw(
+                'COALESCE(SUM(net_amount), 0) as total_amount, '
+                .'COALESCE(SUM(CASE WHEN net_amount > paid_amount THEN net_amount - paid_amount ELSE 0 END), 0) as due_amount, '
+                .'COALESCE(SUM(paid_amount), 0) as paid_amount'
+            )->first();
+
+            $dashboardSummary = [
+                'total' => (float) $summary->total_amount,
+                'due' => (float) $summary->due_amount,
+                'paid' => (float) $summary->paid_amount,
+            ];
+        }
+
+        $recentBills = (clone $billQuery)->with('plotAndUnit.road')->latest()->take(5)->get();
+        $recentCollections = (clone $paymentQuery)->with(['bill.plotAndUnit', 'collector'])
             ->orderByDesc('payment_date')->orderByDesc('id')->take(5)->get();
-        $recentPlots = PlotAndUnit::with(['road', 'plotType'])->where('status', 'Active')->latest()->take(5)->get();
+        $recentPlots = (clone $plotQuery)->with(['road', 'plotType'])->where('status', 'Active')->latest()->take(5)->get();
 
         return view('admin.dashboard', compact(
             'stats', 'chartMonths', 'monthBilled', 'monthPaid', 'monthDue', 'monthBillCount',
-            'recentBills', 'recentCollections', 'recentPlots'
+            'recentBills', 'recentCollections', 'recentPlots', 'dashboardSummary', 'dashboardPeriod',
+            'collectorSummary', 'isCollector'
         ));
     }
 
     public function notifications()
     {
         $items = collect();
+        $role = auth()->user()?->role;
+        $isCollector = $role === 'collector';
+        $isMember = $role === 'member';
+        $assignedRoadIds = $isCollector ? Road::where('collector_id', auth()->id())->pluck('id') : collect();
+        $memberPlotIds = $isMember
+            ? PlotAndUnit::where('unique_id', auth()->user()->uid)->pluck('id')
+            : collect();
 
         $billMonths = Bill::query()
+            ->when($isCollector, fn ($query) => $query->whereHas('plotAndUnit', fn ($plotQuery) => $plotQuery->whereIn('road_id', $assignedRoadIds)))
+            ->when($isMember, fn ($query) => $query->whereHas('plotAndUnit', fn ($plotQuery) => $plotQuery->whereIn('id', $memberPlotIds)))
+            ->whereNotNull('billing_month')
             ->select('billing_month')
             ->selectRaw('MAX(created_at) as latest_created_at')
+            ->selectRaw('COUNT(*) as bill_count, COALESCE(SUM(net_amount - paid_amount), 0) as remaining_due')
             ->groupBy('billing_month')
             ->orderByDesc('latest_created_at')
             ->take(10)
             ->get();
 
         foreach ($billMonths as $billMonth) {
+            $monthLabel = Carbon::hasFormat($billMonth->billing_month, 'Y-m')
+                ? Carbon::createFromFormat('Y-m', $billMonth->billing_month)->format('F Y')
+                : $billMonth->billing_month;
             $items->push([
                 'id' => 'bill_month-' . $billMonth->billing_month,
                 'record_id' => $billMonth->billing_month,
                 'type' => 'bill_month',
-                'title' => 'New bill generated for the month of ' . Carbon::createFromFormat('Y-m', $billMonth->billing_month)->format('F Y') . '.',
-                'details' => '',
+                'title' => $isMember ? 'A bill for ' . $monthLabel . ' is available.' : 'New bill generated for the month of ' . $monthLabel . '.',
+                'details' => $isMember
+                    ? number_format((int) $billMonth->bill_count) . ' bill(s) · Remaining due ৳' . number_format((float) $billMonth->remaining_due, 2)
+                    : '',
                 'time' => Carbon::parse($billMonth->latest_created_at)->diffForHumans(),
                 'timestamp' => Carbon::parse($billMonth->latest_created_at)->timestamp,
-                'url' => route('admin.bills.index'),
+                'url' => $isMember ? route('member.mypayment') : route('admin.bills.index'),
             ]);
         }
 
-        foreach (Payment::with('bill.plotAndUnit')->latest()->take(10)->get() as $payment) {
+        $payments = Payment::with('bill.plotAndUnit')
+            ->when($isCollector, fn ($query) => $query->whereHas('bill.plotAndUnit', fn ($plotQuery) => $plotQuery->whereIn('road_id', $assignedRoadIds)))
+            ->when($isMember, fn ($query) => $query->whereHas('bill.plotAndUnit', fn ($plotQuery) => $plotQuery->whereIn('id', $memberPlotIds)))
+            ->latest()->take(10)->get();
+        foreach ($payments as $payment) {
             $items->push([
                 'id' => 'collection-' . $payment->id,
                 'record_id' => $payment->id,
                 'type' => 'collection',
-                'title' => 'New collection received',
-                'details' => '৳' . number_format((float) $payment->amount, 0) . ' · ' . ($payment->bill->plotAndUnit->name ?? 'Resident') . ' · ' . ($payment->bill->plotAndUnit->phone ?? 'No phone'),
+                'title' => $isMember ? 'Your payment was recorded.' : 'New collection received',
+                'details' => '৳' . number_format((float) $payment->amount, 2) . ($isMember
+                    ? ' · Bill ' . ($payment->bill->bill_number ?? '')
+                    : ' · ' . ($payment->bill->plotAndUnit->name ?? 'Resident') . ' · ' . ($payment->bill->plotAndUnit->phone ?? 'No phone')),
                 'time' => $payment->created_at?->diffForHumans() ?? '',
                 'timestamp' => $payment->created_at?->timestamp ?? 0,
-                'url' => route('admin.payments.index'),
+                'url' => $isMember ? route('member.paymentreport') : route('admin.payments.index'),
             ]);
         }
 
-        $bulkPlotBatches = PlotAndUnit::whereNotNull('import_batch_id')
-            ->select('import_batch_id')
-            ->selectRaw('MAX(created_at) as latest_created_at, COUNT(*) as plot_count')
-            ->groupBy('import_batch_id')
-            ->orderByDesc('latest_created_at')
-            ->take(10)
-            ->get();
+        if (! $isMember) {
+            $bulkPlotBatches = PlotAndUnit::whereNotNull('import_batch_id')
+                ->when($isCollector, fn ($query) => $query->whereIn('road_id', $assignedRoadIds))
+                ->select('import_batch_id')
+                ->selectRaw('MAX(created_at) as latest_created_at, COUNT(*) as plot_count')
+                ->groupBy('import_batch_id')
+                ->orderByDesc('latest_created_at')
+                ->take(10)
+                ->get();
 
-        foreach ($bulkPlotBatches as $batch) {
-            $batchTime = Carbon::parse($batch->latest_created_at);
-            $items->push([
-                'id' => 'bulk_plot-' . $batch->import_batch_id,
-                'record_id' => $batch->import_batch_id,
-                'type' => 'bulk_plot',
-                'title' => 'New Plots Uploaded',
-                'details' => number_format($batch->plot_count) . ' plot / unit records',
-                'time' => $batchTime->diffForHumans(),
-                'timestamp' => $batchTime->timestamp,
-                'url' => route('admin.plot-and-units.index'),
-            ]);
-        }
+            foreach ($bulkPlotBatches as $batch) {
+                $batchTime = Carbon::parse($batch->latest_created_at);
+                $items->push([
+                    'id' => 'bulk_plot-' . $batch->import_batch_id,
+                    'record_id' => $batch->import_batch_id,
+                    'type' => 'bulk_plot',
+                    'title' => 'New Plots Uploaded',
+                    'details' => number_format($batch->plot_count) . ' plot / unit records',
+                    'time' => $batchTime->diffForHumans(),
+                    'timestamp' => $batchTime->timestamp,
+                    'url' => route('admin.plot-and-units.index'),
+                ]);
+            }
 
-        foreach (PlotAndUnit::whereNull('import_batch_id')->latest()->take(10)->get() as $plot) {
-            $items->push([
-                'id' => 'plot-' . $plot->id,
-                'record_id' => $plot->id,
-                'type' => 'plot',
-                'title' => 'New plot / unit added',
-                'details' => $plot->name . ' · ' . ($plot->phone ?? 'No phone') . ' · Holding ' . $plot->holding_no,
-                'time' => $plot->created_at?->diffForHumans() ?? '',
-                'timestamp' => $plot->created_at?->timestamp ?? 0,
-                'url' => route('admin.plot-and-units.show', $plot->id),
-            ]);
+            $newPlots = PlotAndUnit::whereNull('import_batch_id')
+                ->when($isCollector, fn ($query) => $query->whereIn('road_id', $assignedRoadIds))
+                ->latest()->take(10)->get();
+            foreach ($newPlots as $plot) {
+                $items->push([
+                    'id' => 'plot-' . $plot->id,
+                    'record_id' => $plot->id,
+                    'type' => 'plot',
+                    'title' => 'New plot / unit added',
+                    'details' => $plot->name . ' · ' . ($plot->phone ?? 'No phone') . ' · Holding ' . $plot->holding_no,
+                    'time' => $plot->created_at?->diffForHumans() ?? '',
+                    'timestamp' => $plot->created_at?->timestamp ?? 0,
+                    'url' => route('admin.plot-and-units.show', $plot->id),
+                ]);
+            }
         }
 
         $latestItems = $items->sortByDesc('timestamp')->take(10)->values();
         $latestKeys = $latestItems->pluck('id');
-        $staleReadRows = DB::table('dashboard_notification_reads');
+        $staleReadRows = DB::table('dashboard_notification_reads')->where('user_id', auth()->id());
         if ($latestKeys->isNotEmpty()) {
             $staleReadRows->whereNotIn('notification_key', $latestKeys);
         }
@@ -190,11 +273,29 @@ class HomeController extends Controller
                     : ['required', 'integer', 'min:1']),
         ]);
 
+        $isCollector = auth()->user()?->role === 'collector';
+        $isMember = auth()->user()?->role === 'member';
+        $assignedRoadIds = $isCollector ? Road::where('collector_id', auth()->id())->pluck('id') : collect();
+        $memberPlotIds = $isMember
+            ? PlotAndUnit::where('unique_id', auth()->user()->uid)->pluck('id')
+            : collect();
         $exists = match ($data['type']) {
-            'bill_month' => Bill::where('billing_month', $data['id'])->exists(),
-            'collection' => Payment::whereKey($data['id'])->exists(),
-            'plot' => PlotAndUnit::whereKey($data['id'])->exists(),
-            'bulk_plot' => PlotAndUnit::where('import_batch_id', $data['id'])->exists(),
+            'bill_month' => Bill::where('billing_month', $data['id'])
+                ->when($isCollector, fn ($query) => $query->whereHas('plotAndUnit', fn ($plotQuery) => $plotQuery->whereIn('road_id', $assignedRoadIds)))
+                ->when($isMember, fn ($query) => $query->whereHas('plotAndUnit', fn ($plotQuery) => $plotQuery->whereIn('id', $memberPlotIds)))
+                ->exists(),
+            'collection' => Payment::whereKey($data['id'])
+                ->when($isCollector, fn ($query) => $query->whereHas('bill.plotAndUnit', fn ($plotQuery) => $plotQuery->whereIn('road_id', $assignedRoadIds)))
+                ->when($isMember, fn ($query) => $query->whereHas('bill.plotAndUnit', fn ($plotQuery) => $plotQuery->whereIn('id', $memberPlotIds)))
+                ->exists(),
+            'plot' => PlotAndUnit::whereKey($data['id'])
+                ->when($isCollector, fn ($query) => $query->whereIn('road_id', $assignedRoadIds))
+                ->when($isMember, fn ($query) => $query->whereRaw('1 = 0'))
+                ->exists(),
+            'bulk_plot' => PlotAndUnit::where('import_batch_id', $data['id'])
+                ->when($isCollector, fn ($query) => $query->whereIn('road_id', $assignedRoadIds))
+                ->when($isMember, fn ($query) => $query->whereRaw('1 = 0'))
+                ->exists(),
         };
 
         if (! $exists) {
@@ -213,7 +314,11 @@ class HomeController extends Controller
     public function profile()
     {
         $user = auth()->user();
-        return view('admin.profile.profile', compact('user'));
+        $plots = $user->role === 'member' && filled($user->uid)
+            ? PlotAndUnit::with(['road', 'plotType'])->where('unique_id', $user->uid)->orderBy('holding_no')->get()
+            : collect();
+
+        return view('admin.profile.profile', compact('user', 'plots'));
     }
 
     public function updateProfile(Request $request)

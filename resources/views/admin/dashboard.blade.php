@@ -16,6 +16,44 @@
     <div class="stat-card"><div class="label">Bills This Month</div><div class="value">{{ number_format($monthBillCount) }}</div><div class="delta">Billed ৳{{ $money($monthBilled) }}</div></div>
   </div>
 
+  @if ($isCollector)
+  <div class="section-row">
+    <div class="section-title">
+      <span>My Collection Summary</span>
+      <small>Assigned roads only</small>
+    </div>
+    <div class="grid grid-5">
+      <div class="stat-card"><div class="label">Monthly Collection Target</div><div class="value"><span class="sym">৳</span>{{ $money($collectorSummary['monthly_target']) }}</div><div class="delta">Bills issued this month</div></div>
+      <div class="stat-card"><div class="label">Collected This Month</div><div class="value"><span class="sym">৳</span>{{ $money($collectorSummary['monthly_collected']) }}</div><div class="delta">Payments received this month</div></div>
+      <div class="stat-card due"><div class="label">Remaining Monthly Dues</div><div class="value"><span class="sym">৳</span>{{ $money($collectorSummary['monthly_due']) }}</div><div class="delta">Outstanding on this month's bills</div></div>
+      <div class="stat-card gold"><div class="label">Lifetime Collection</div><div class="value"><span class="sym">৳</span>{{ $money($collectorSummary['lifetime_collected']) }}</div><div class="delta">Payments from assigned roads</div></div>
+      <div class="stat-card due"><div class="label">Lifetime Outstanding Dues</div><div class="value"><span class="sym">৳</span>{{ $money($collectorSummary['lifetime_due']) }}</div><div class="delta">Current balance on all bills</div></div>
+    </div>
+  </div>
+  @endif
+
+  @if (auth()->user()?->role === 'admin')
+  <div class="section-row">
+    <div class="section-title">
+      <span>Billing Summary</span>
+      <form method="GET" action="{{ route('admin.home') }}" class="d-flex align-items-center gap-2">
+        <label for="dashboardSummaryPeriod" class="small mb-0">Period</label>
+        <select class="form-select form-select-sm" name="summary_period" id="dashboardSummaryPeriod" onchange="this.form.submit()">
+          <option value="week" @selected($dashboardPeriod === 'week')>This week</option>
+          <option value="month" @selected($dashboardPeriod === 'month')>This month</option>
+          <option value="year" @selected($dashboardPeriod === 'year')>This year</option>
+          <option value="total" @selected($dashboardPeriod === 'total')>All time</option>
+        </select>
+      </form>
+    </div>
+    <div class="grid grid-3">
+      <div class="stat-card"><div class="label">Total Amount</div><div class="value"><span class="sym">৳</span>{{ $money($dashboardSummary['total']) }}</div></div>
+      <div class="stat-card due"><div class="label">Due Amount</div><div class="value"><span class="sym">৳</span>{{ $money($dashboardSummary['due']) }}</div></div>
+      <div class="stat-card gold"><div class="label">Paid Amount</div><div class="value"><span class="sym">৳</span>{{ $money($dashboardSummary['paid']) }}</div></div>
+    </div>
+  </div>
+  @endif
+
   <div class="section-row grid grid-2">
     <div class="card">
       <div class="card-head"><h3>Billing &amp; Collection Trend</h3><span class="hint">Last six months</span></div>
@@ -53,7 +91,7 @@
       <div class="table-wrap"><table class="ledger text-nowrap w-100"><thead><tr><th>Bill / Holding</th><th>Month</th><th class="num">Amount</th><th>Status</th></tr></thead><tbody>
         @forelse($recentBills as $bill)<tr>
           <td><div>{{ $bill->bill_number }}</div><span class="hint small">Holding {{ $bill->plotAndUnit->holding_no ?? '—' }} · Road {{ $bill->plotAndUnit->road->number ?? '—' }}</span></td>
-          <td>{{ \Carbon\Carbon::createFromFormat('Y-m', $bill->billing_month)->format('M Y') }}</td><td class="num">৳{{ $money($bill->net_amount) }}</td>
+          <td>{{ \Carbon\Carbon::hasFormat($bill->billing_month, 'Y-m') ? \Carbon\Carbon::createFromFormat('Y-m', $bill->billing_month)->format('M Y') : '—' }}</td><td class="num">৳{{ $money($bill->net_amount) }}</td>
           <td><span class="badge {{ $bill->status === 'Paid' ? 'green' : ($bill->status === 'Partial' ? 'gold' : 'red') }}"><i class="dot"></i>{{ $bill->status }}</span></td>
         </tr>@empty<tr><td colspan="4" class="text-center hint py-3">No bills recorded yet.</td></tr>@endforelse
       </tbody></table></div>
