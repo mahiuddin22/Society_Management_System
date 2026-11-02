@@ -262,7 +262,7 @@
                                     <select class="form-select" name="draft_id" id="draftSMS">
                                         <option value="">Start from a draft…</option>
                                         @foreach ($drafts as $draft)
-                                        <option value="{{$draft->id}}">{{$draft->type}}</option>
+                                        <option value="{{$draft->id}}" data-message="{{ $draft->message }}">{{$draft->type}}</option>
                                         @endforeach
                                     </select>
 
@@ -746,6 +746,7 @@
     function customSms() {
         document.getElementById('CustomSmsArea').style.display = 'block';
         document.getElementById('customSMS').required = true;
+        document.getElementById('customSMS').value = '';
 
         document.getElementById('draftSmsBox').style.display = 'none';
         document.getElementById('draftSMS').required = false;
@@ -754,14 +755,24 @@
     }
 
     function draftSms() {
-        document.getElementById('CustomSmsArea').style.display = 'none';
+        document.getElementById('CustomSmsArea').style.display = 'block';
         document.getElementById('customSMS').required = false;
 
         document.getElementById('draftSmsBox').style.display = 'block';
         document.getElementById('draftSMS').required = true;
+        showSelectedDraftMessage();
 
         updateSmsCount();
     }
+
+    function showSelectedDraftMessage() {
+        const draftSelect = document.getElementById('draftSMS');
+        const selectedOption = draftSelect.options[draftSelect.selectedIndex];
+        document.getElementById('customSMS').value = selectedOption?.dataset.message || '';
+        updateSmsCount();
+    }
+
+    document.getElementById('draftSMS').addEventListener('change', showSelectedDraftMessage);
 
     function getRecipientCount() {
         return document.querySelectorAll(
