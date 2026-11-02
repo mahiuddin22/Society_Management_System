@@ -98,7 +98,7 @@ class HomeController extends Controller
         if (auth()->user()?->role === 'admin') {
             $period = $request->query('summary_period', 'month');
             $dashboardPeriod = in_array($period, ['week', 'month', 'year', 'total'], true) ? $period : 'month';
-            $billQuery = Bill::query();
+            $dashboardBillQuery = Bill::query();
 
             if ($dashboardPeriod !== 'total') {
                 $start = match ($dashboardPeriod) {
@@ -106,10 +106,10 @@ class HomeController extends Controller
                     'year' => now()->startOfYear(),
                     default => now()->startOfMonth(),
                 };
-                $billQuery->whereBetween('created_at', [$start, now()]);
+                $dashboardBillQuery->whereBetween('created_at', [$start, now()]);
             }
 
-            $summary = $billQuery->selectRaw(
+            $summary = $dashboardBillQuery->selectRaw(
                 'COALESCE(SUM(net_amount), 0) as total_amount, '
                 .'COALESCE(SUM(CASE WHEN net_amount > paid_amount THEN net_amount - paid_amount ELSE 0 END), 0) as due_amount, '
                 .'COALESCE(SUM(paid_amount), 0) as paid_amount'
