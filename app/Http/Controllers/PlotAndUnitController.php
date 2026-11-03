@@ -213,6 +213,17 @@ class PlotAndUnitController extends Controller
                         'name'  => $validated['name'],
                         'password' => Hash::make(Str::random(10)),
                         'email' => $validated['email'] ?? null,
+                        'phone' => $validated['phone'],
+                        'uid' => 'UTR03'
+                            . '-'
+                            . $road->number
+                            . $validated['holding_no']
+                            . '-'
+                            . match (true) {
+                                ($validated['occupied_flat'] == 0 || $validated['occupied_flat'] == null) && $validated['plot_type'] == 2 => 'CONS',
+                                ($validated['occupied_flat'] == 0 || $validated['occupied_flat'] == null) && $validated['plot_type'] == 1 => 'EMT',
+                                default => $validated['flat_no'],
+                            },
                     ]
                 );
             });
