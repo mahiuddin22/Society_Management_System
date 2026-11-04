@@ -244,6 +244,10 @@ class PlotAndUnitController extends Controller
     public function destroy(int $id)
     {
         $plotAndUnit = PlotAndUnit::findOrFail($id);
+        $user = User::where('phone', $plotAndUnit->phone)->first();
+        if ($user) {
+            $user->delete();
+        }
         $plotAndUnit->delete();
         return redirect()->route('admin.plot-and-units.index')->with('success', 'Data deleted successfully.');
     }

@@ -36,6 +36,7 @@
                 <thead class="table-light">
                     <tr>
                         <th>SL</th>
+                        <th>UID</th>
                         <th>Role</th>
                         <th>Name</th>
                         <th>Username</th>
@@ -46,6 +47,7 @@
                     @foreach ($users as $user)
                     <tr>
                         <td>{{ $users->firstItem() + $loop->index }}</td>
+                        <td>{{ ucfirst($user->uid) }}</td>
                         <td>{{ ucfirst($user->role) }}</td>
                         <td>{{ $user->name }}</td>
                         <td>{{ $user->username }}</td>
