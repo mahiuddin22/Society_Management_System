@@ -8,12 +8,16 @@
     $paidRatio = $monthBilled > 0 ? min(1, $monthPaid / $monthBilled) : 0;
     $paidPercent = round($paidRatio * 100);
   @endphp
-  <div class="section-row grid grid-5">
-    <div class="stat-card"><div class="label">Today's Collections</div><div class="value"><span class="sym">৳</span>{{ $money($stats['today_collected']) }}</div><div class="delta">Payments recorded today</div></div>
-    <div class="stat-card"><div class="label">This Month Collected</div><div class="value"><span class="sym">৳</span>{{ $money($stats['month_collected']) }}</div><div class="delta">Payments recorded this month</div></div>
-    <div class="stat-card due"><div class="label">Outstanding Dues</div><div class="value"><span class="sym">৳</span>{{ $money($stats['outstanding']) }}</div><div class="delta">{{ number_format($stats['unpaid_bills']) }} bills with a balance</div></div>
-    <div class="stat-card gold"><div class="label">Active Plots / Units</div><div class="value">{{ number_format($stats['active_plots']) }}</div><div class="delta">Currently active records</div></div>
-    <div class="stat-card"><div class="label">Bills This Month</div><div class="value">{{ number_format($monthBillCount) }}</div><div class="delta">Billed ৳{{ $money($monthBilled) }}</div></div>
+  <div class="section-row row g-3">
+    <div class="col-md-3"><div class="stat-card"><div class="label">Today's Collections</div><div class="value"><span class="sym">৳</span>{{ $money($stats['today_collected']) }}</div><div class="delta">Payments recorded today</div></div></div>
+    <div class="col-md-3"><div class="stat-card"><div class="label">This Month Collected</div><div class="value"><span class="sym">৳</span>{{ $money($stats['month_collected']) }}</div><div class="delta">Payments recorded this month</div></div></div>
+    <div class="col-md-3"><div class="stat-card due"><div class="label">Outstanding Dues</div><div class="value"><span class="sym">৳</span>{{ $money($stats['outstanding']) }}</div><div class="delta">{{ number_format($stats['unpaid_bills']) }} bills with a balance</div></div></div>
+    @if (auth()->user()?->role === 'admin')
+    <div class="col-md-3"><div class="stat-card gold"><div class="label">Total Flats</div><div class="value">{{ number_format($totalFlats) }}</div><div class="delta">Flats listed across all plots / units</div></div></div>
+    @else
+    <div class="col-md-3"><div class="stat-card gold"><div class="label">Active Plots / Units</div><div class="value">{{ number_format($stats['active_plots']) }}</div><div class="delta">Currently active records</div></div></div>
+    <div class="col-md-3"><div class="stat-card"><div class="label">Bills This Month</div><div class="value">{{ number_format($monthBillCount) }}</div><div class="delta">Billed ৳{{ $money($monthBilled) }}</div></div></div>
+    @endif
   </div>
 
   @if ($isCollector)
@@ -46,10 +50,11 @@
         </select>
       </form>
     </div>
-    <div class="grid grid-3">
-      <div class="stat-card"><div class="label">Total Amount</div><div class="value"><span class="sym">৳</span>{{ $money($dashboardSummary['total']) }}</div></div>
-      <div class="stat-card due"><div class="label">Due Amount</div><div class="value"><span class="sym">৳</span>{{ $money($dashboardSummary['due']) }}</div></div>
-      <div class="stat-card gold"><div class="label">Paid Amount</div><div class="value"><span class="sym">৳</span>{{ $money($dashboardSummary['paid']) }}</div></div>
+    <div class="row g-3">
+      <div class="col-md-3"><div class="stat-card"><div class="label">Total Amount</div><div class="value"><span class="sym">৳</span>{{ $money($dashboardSummary['total']) }}</div></div></div>
+      <div class="col-md-3"><div class="stat-card due"><div class="label">Due Amount</div><div class="value"><span class="sym">৳</span>{{ $money($dashboardSummary['due']) }}</div></div></div>
+      <div class="col-md-3"><div class="stat-card gold"><div class="label">Paid Amount</div><div class="value"><span class="sym">৳</span>{{ $money($dashboardSummary['paid']) }}</div></div></div>
+      <div class="col-md-3"><div class="stat-card"><div class="label">Bills This Month</div><div class="value"><span class="sym">৳</span>{{ $money($monthBilled) }}</div></div></div>
     </div>
   </div>
   @endif

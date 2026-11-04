@@ -55,6 +55,17 @@ class HomeController extends Controller
             'unpaid_bills' => (clone $billQuery)->whereIn('status', ['Unpaid', 'Partial', 'Overdue'])->count(),
         ];
 
+        $totalFlats = 0;
+        if (auth()->user()?->role === 'admin') {
+            $totalFlats = PlotAndUnit::query()->pluck('flat_numbers')->sum(function ($flatNumbers) {
+                if (! filled($flatNumbers)) {
+                    return 0;
+                }
+
+                return collect(explode(',', $flatNumbers))->filter(fn ($flat) => trim($flat) !== '')->count();
+            });
+        }
+
         $months = collect(range(5, 0))->map(function ($offset) {
             $date = now()->startOfMonth()->subMonths($offset);
             return ['key' => $date->format('Y-m'), 'label' => $date->format('M')];
@@ -130,7 +141,7 @@ class HomeController extends Controller
         return view('admin.dashboard', compact(
             'stats', 'chartMonths', 'monthBilled', 'monthPaid', 'monthDue', 'monthBillCount',
             'recentBills', 'recentCollections', 'recentPlots', 'dashboardSummary', 'dashboardPeriod',
-            'collectorSummary', 'isCollector'
+            'collectorSummary', 'isCollector', 'totalFlats'
         ));
     }
 
