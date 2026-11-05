@@ -40,6 +40,86 @@
         </div>
     </div>
 
+    <div class="card mb-3">
+        <div class="card-head">
+            <div>
+                <h3 class="mb-1">12-Month Collection Performance</h3>
+                <span class="hint">{{ $performanceMonths->first()['label'] }} – {{ $performanceMonths->last()['label'] }} · Payments are credited to the month of the bill, including later payments.</span>
+            </div>
+        </div>
+
+        <div class="row g-3 px-3 pb-3">
+            <div class="col-12 col-md-3">
+                <div class="stat-card h-100">
+                    <div class="label">Total Target</div>
+                    <div class="value"><span class="sym">৳</span>{{ number_format($performanceSummary['target'], 2) }}</div>
+                    <div class="delta">Across the last 12 billing months</div>
+                </div>
+            </div>
+            <div class="col-12 col-md-3">
+                <div class="stat-card gold h-100">
+                    <div class="label">Collected</div>
+                    <div class="value"><span class="sym">৳</span>{{ number_format($performanceSummary['collected'], 2) }}</div>
+                    <div class="delta">Payments against those monthly bills</div>
+                </div>
+            </div>
+            <div class="col-12 col-md-3">
+                <div class="stat-card due h-100">
+                    <div class="label">Remaining Due</div>
+                    <div class="value"><span class="sym">৳</span>{{ number_format($performanceSummary['due'], 2) }}</div>
+                    <div class="delta">Uncollected from the 12-month target</div>
+                </div>
+            </div>
+            <div class="col-12 col-md-3">
+                <div class="stat-card h-100">
+                    <div class="label">Overall Performance</div>
+                    <div class="value">{{ number_format($performanceSummary['rate'], 1) }}%</div>
+                    <div class="progress mt-2" role="progressbar" aria-label="Overall collection performance" aria-valuenow="{{ round($performanceSummary['rate']) }}" aria-valuemin="0" aria-valuemax="100" style="height:7px;">
+                        <div class="progress-bar bg-success" style="width:{{ $performanceSummary['rate'] }}%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-wrap">
+            <table class="ledger text-nowrap">
+                <thead>
+                    <tr>
+                        <th>Billing Month</th>
+                        <th>Target</th>
+                        <th>Collected</th>
+                        <th>Remaining Due</th>
+                        <th>Performance</th>
+                        <th>Time to Collect Full Target</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($performanceMonths as $month)
+                    <tr>
+                        <td>{{ $month['label'] }}</td>
+                        <td>৳{{ number_format($month['target'], 2) }}</td>
+                        <td>৳{{ number_format($month['collected'], 2) }}</td>
+                        <td>৳{{ number_format($month['due'], 2) }}</td>
+                        <td>
+                            @if($month['target'] > 0)
+                            <div class="d-flex align-items-center gap-2">
+                                <span>{{ number_format($month['performance'], 1) }}%</span>
+                                <div class="progress flex-grow-1" style="height:6px; min-width:55px; max-width:90px;">
+                                    <div class="progress-bar bg-success" style="width:{{ $month['performance'] }}%"></div>
+                                </div>
+                            </div>
+                            @else
+                            <span class="hint">—</span>
+                            @endif
+                        </td>
+                        <td>{{ $month['completion_status'] }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <div class="card">
         <div class="card-head flex-wrap gap-2">
             <div>

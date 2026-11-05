@@ -7,7 +7,9 @@ use App\Models\User;
 use App\Models\Payment;
 use App\Exports\ReportExport;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
+use Carbon\Carbon;
 
 class CollectorController extends Controller
 {
@@ -41,6 +43,81 @@ class CollectorController extends Controller
         if (! in_array(auth()->user()->role, ['admin', 'collector'], true)) {
             abort(403);
         }
+
+        $currentMonth = now()->startOfMonth();
+        $firstMonth = $currentMonth->copy()->subMonths(11);
+        $firstMonthKey = $firstMonth->format('Y-m');
+        $currentMonthKey = $currentMonth->format('Y-m');
+        $roadIds = $collector->assignedRoads->pluck('id');
+
+        $monthlyTargets = DB::table('bills')
+            ->join('plot_and_units', 'plot_and_units.id', '=', 'bills.plot_and_unit_id')
+            ->whereIn('plot_and_units.road_id', $roadIds)
+            ->whereBetween('bills.billing_month', [$firstMonthKey, $currentMonthKey])
+            ->select('bills.billing_month')
+            ->selectRaw('SUM(bills.net_amount) as target_amount')
+            ->groupBy('bills.billing_month')
+            ->pluck('target_amount', 'billing_month');
+
+        $paymentsByMonth = DB::table('payments')
+            ->join('bills', 'bills.id', '=', 'payments.bill_id')
+            ->join('plot_and_units', 'plot_and_units.id', '=', 'bills.plot_and_unit_id')
+            ->whereIn('plot_and_units.road_id', $roadIds)
+            ->whereBetween('bills.billing_month', [$firstMonthKey, $currentMonthKey])
+            ->whereDate('payments.payment_date', '<=', now()->toDateString())
+            ->select('bills.billing_month')
+            ->selectRaw('DATE(payments.payment_date) as paid_on, SUM(payments.amount) as collected_amount')
+            ->groupBy('bills.billing_month', DB::raw('DATE(payments.payment_date)'))
+            ->orderBy('paid_on')
+            ->get()
+            ->groupBy('billing_month');
+
+        $performanceMonths = collect(range(0, 11))->map(function ($offset) use ($firstMonth, $monthlyTargets, $paymentsByMonth, $currentMonthKey) {
+            $month = $firstMonth->copy()->addMonths($offset);
+            $monthKey = $month->format('Y-m');
+            $target = (float) ($monthlyTargets[$monthKey] ?? 0);
+            $dailyPayments = $paymentsByMonth->get($monthKey, collect());
+            $collected = (float) $dailyPayments->sum('collected_amount');
+            $due = max(0, $target - $collected);
+            $completionDate = null;
+
+            if ($target > 0) {
+                $runningTotal = 0;
+                foreach ($dailyPayments as $dailyPayment) {
+                    $runningTotal += (float) $dailyPayment->collected_amount;
+                    if ($runningTotal >= $target) {
+                        $completionDate = Carbon::parse($dailyPayment->paid_on);
+                        break;
+                    }
+                }
+            }
+
+            $daysToComplete = $completionDate
+                ? $month->copy()->startOfMonth()->diffInDays($completionDate) + 1
+                : null;
+
+            return [
+                'key' => $monthKey,
+                'label' => $month->format('M Y'),
+                'target' => $target,
+                'collected' => $collected,
+                'due' => $due,
+                'performance' => $target > 0 ? min(100, ($collected / $target) * 100) : 0,
+                'days_to_complete' => $daysToComplete,
+                'completion_status' => $target <= 0
+                    ? 'No bills'
+                    : ($daysToComplete !== null ? $daysToComplete . ' days' : ($monthKey === $currentMonthKey ? 'In progress' : 'Not completed')),
+            ];
+        });
+
+        $performanceSummary = [
+            'target' => (float) $performanceMonths->sum('target'),
+            'collected' => (float) $performanceMonths->sum('collected'),
+            'due' => (float) $performanceMonths->sum('due'),
+        ];
+        $performanceSummary['rate'] = $performanceSummary['target'] > 0
+            ? min(100, ($performanceSummary['collected'] / $performanceSummary['target']) * 100)
+            : 0;
 
         $request = request();
         $request->validate(['month' => ['nullable', 'date_format:Y-m']]);
@@ -82,7 +159,9 @@ class CollectorController extends Controller
         $totalAmount = (clone $query)->sum('amount');
         $payments = $query->latest('payment_date')->latest('id')->paginate(20)->withQueryString();
 
-        return view('admin.collectors.payment_history', compact('collector', 'payments', 'totalAmount'));
+        return view('admin.collectors.payment_history', compact(
+            'collector', 'payments', 'totalAmount', 'performanceMonths', 'performanceSummary'
+        ));
     }
 
     // public function edit($id)
