@@ -22,7 +22,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const titles = {
                 'plot-management': 'Plot Management Report',
                 'bill-collections': 'Bill Collections Report',
-                'bulk-sms': 'SMS History Report'
+                'bulk-sms': 'SMS History Report',
+                'payment-history': 'Collector Payment History'
             };
             const reportKey = pdfUrl.pathname.split('/').filter(Boolean).pop();
             const title = titles[reportKey] || 'Report';

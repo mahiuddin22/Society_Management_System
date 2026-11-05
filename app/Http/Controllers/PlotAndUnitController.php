@@ -24,6 +24,12 @@ class PlotAndUnitController extends Controller
     {
         $query = PlotAndUnit::with(['road', 'plotType'])->orderByDesc('id');
 
+        if (auth()->user()?->role === 'collector') {
+            $query->whereHas('road', function ($roadQuery) {
+                $roadQuery->where('collector_id', auth()->id());
+            });
+        }
+
         // 1. Keyword Search: Holding No, Contact Name, Phone, or UID
         if ($request->filled('search')) {
             $search = trim($request->search);
@@ -62,7 +68,11 @@ class PlotAndUnitController extends Controller
 
         // Auxiliary data for filter dropdowns & metric cards
         $plotTypes = PlotType::withCount('plotAndUnits')->get();
-        $roads     = Road::orderBy('number')->get();
+        $roadsQuery = Road::orderBy('number');
+        if (auth()->user()?->role === 'collector') {
+            $roadsQuery->where('collector_id', auth()->id());
+        }
+        $roads = $roadsQuery->get();
 
         $pageTitle = 'Plot Management';
 
@@ -237,7 +247,13 @@ class PlotAndUnitController extends Controller
 
     public function show(int $id)
     {
-        $plotAndUnit = PlotAndUnit::with(['road', 'plotType'])->findOrFail($id);
+        $plotAndUnit = PlotAndUnit::with(['road', 'plotType'])
+            ->when(auth()->user()?->role === 'collector', function ($query) {
+                $query->whereHas('road', function ($roadQuery) {
+                    $roadQuery->where('collector_id', auth()->id());
+                });
+            })
+            ->findOrFail($id);
         return view('admin.plot_and_units.view', compact('plotAndUnit'));
     }
 

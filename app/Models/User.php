@@ -46,4 +46,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function assignedRoads()
+    {
+        return $this->hasMany(Road::class, 'collector_id');
+    }
 }

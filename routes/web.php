@@ -224,6 +224,7 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
     // Collectors
     Route::controller(CollectorController::class)->prefix('collectors')->name('collectors.')->group(function () {
         Route::get('/', 'index')->name('index');
+        Route::get('/{id}/payment-history', 'paymentHistory')->name('payment-history');
         Route::get('/receipt/{id}', 'receipt')->name('receipt');
         Route::get('{id}/edit', 'edit')->name('edit');
         Route::put('{id}', 'update')->name('update');
