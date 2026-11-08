@@ -326,9 +326,12 @@
                                 <!-- Action -->
                                 <div class="border-top pt-4">
 
-                                    <button type="submit" class="btn btn-primary btn-lg w-100 d-flex align-items-center justify-content-center">
+                                    <button type="submit" id="sendSmsButton" class="btn btn-primary btn-lg w-100 d-flex align-items-center justify-content-center">
                                         <i class="bi bi-send me-2"></i> <span>Send Message</span>
                                     </button>
+                                    <div id="smsBalanceWarning" class="alert alert-warning mt-3 mb-0 py-2 small text-center" role="alert" style="display:none;">
+                                        Insufficient SMS balance for this message.
+                                    </div>
 
                                     <div class="text-center mt-2">
                                         <small class="text-body-secondary">
@@ -742,6 +745,7 @@
 <script>
     let smsLimit = 160;
     let smsRate = 0.35;
+    const smsBalance = @json((float) ($amount ?? 0));
 
     function customSms() {
         document.getElementById('CustomSmsArea').style.display = 'block';
@@ -775,6 +779,10 @@
     document.getElementById('draftSMS').addEventListener('change', showSelectedDraftMessage);
 
     function getRecipientCount() {
+        if (document.getElementById('customMember').checked) {
+            return 1;
+        }
+
         return document.querySelectorAll(
             '.recipient-checkbox:checked'
         ).length;
@@ -815,6 +823,12 @@
 
         document.getElementById('smsTotalCostBs').textContent =
             '৳' + totalCost.toFixed(2);
+
+        const sendButton = document.getElementById('sendSmsButton');
+        const balanceWarning = document.getElementById('smsBalanceWarning');
+        const insufficientBalance = totalCost > smsBalance;
+        sendButton.disabled = insufficientBalance;
+        balanceWarning.style.display = insufficientBalance ? 'block' : 'none';
     }
 
     document.getElementById('customSMS').addEventListener('input', function() {
@@ -1022,7 +1036,11 @@
         existingMember.addEventListener('change', updateMemberType);
         customMember.addEventListener('change', updateMemberType);
 
+        existingMember.addEventListener('change', updateSmsCount);
+        customMember.addEventListener('change', updateSmsCount);
+
         updateMemberType();
+        updateSmsCount();
 
     });
 </script>
