@@ -43,7 +43,7 @@
         </div>
         <div class="mt-4">
           <label class="form-label fw-semibold" for="missing_flat_note">Important note</label>
-          <textarea id="missing_flat_note" name="missing_flat_note" class="input w-100" rows="4" maxlength="5000" placeholder="Write an important note about the missing flats">{{ old('missing_flat_note', !empty($editing) ? $plots->first()->missing_flat_note : '') }}</textarea>
+          <textarea id="missing_flat_note" name="missing_flat_note" class="input w-100" rows="4" maxlength="5000" placeholder="Write an important note about the missing flats">{{ old('missing_flat_note', !empty($editing) ? ($plots->first()->missingFlats->first(fn ($flat) => filled($flat->note))?->note ?? '') : '') }}</textarea>
           @error('missing_flat_note')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
         </div>
       </div>

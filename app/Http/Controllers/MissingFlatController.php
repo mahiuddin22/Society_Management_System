@@ -77,10 +77,12 @@ class MissingFlatController extends Controller
             }
 
             foreach ($flatNumbers as $flatNumber) {
-                MissingFlat::create(['plot_and_unit_id' => $plot->id, 'flat_number' => $flatNumber]);
+                MissingFlat::create([
+                    'plot_and_unit_id' => $plot->id,
+                    'flat_number' => $flatNumber,
+                    'note' => $validated['missing_flat_note'] ?? null,
+                ]);
             }
-            $plot->missing_flat_note = $validated['missing_flat_note'] ?? null;
-            $plot->save();
         });
 
         return redirect()->route('admin.missing-flats.index')->with('success', 'Missing flat numbers added successfully.');
@@ -115,10 +117,12 @@ class MissingFlatController extends Controller
             }
             MissingFlat::where('plot_and_unit_id', $lockedPlot->id)->delete();
             foreach ($flatNumbers as $flatNumber) {
-                MissingFlat::create(['plot_and_unit_id' => $lockedPlot->id, 'flat_number' => $flatNumber]);
+                MissingFlat::create([
+                    'plot_and_unit_id' => $lockedPlot->id,
+                    'flat_number' => $flatNumber,
+                    'note' => $validated['missing_flat_note'] ?? null,
+                ]);
             }
-            $lockedPlot->missing_flat_note = $validated['missing_flat_note'] ?? null;
-            $lockedPlot->save();
         });
 
         return redirect()->route('admin.missing-flats.index')->with('success', 'Missing flat units updated successfully.');

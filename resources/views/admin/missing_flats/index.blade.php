@@ -54,9 +54,10 @@
                   <span class="hint small">Not listed yet</span>
                 @endforelse
               </td>
-              <td class="small" style="white-space:pre-wrap">{{ $plot->missing_flat_note ?: '—' }}</td>
+              @php $plotNote = $plot->missingFlats->first(fn ($flat) => filled($flat->note))?->note; @endphp
+              <td class="small" style="white-space:pre-wrap">{{ $plotNote ?: '—' }}</td>
               <td class="text-end">
-                @php $hasDetails = $plot->missingFlats->isNotEmpty() || filled($plot->missing_flat_note); @endphp
+                @php $hasDetails = $plot->missingFlats->isNotEmpty(); @endphp
                 <a class="btn btn-sm btn-ghost" href="{{ $hasDetails ? route('admin.missing-flats.edit', $plot) : route('admin.missing-flats.create', ['plot' => $plot->id]) }}" title="{{ $hasDetails ? 'Edit missing unit numbers and note' : 'Add missing unit numbers and note' }}" aria-label="{{ $hasDetails ? 'Edit missing unit numbers and note' : 'Add missing unit numbers and note' }}"><i class="bi {{ $hasDetails ? 'bi-pencil-square' : 'bi-plus-lg' }}"></i></a>
               </td>
             </tr>
