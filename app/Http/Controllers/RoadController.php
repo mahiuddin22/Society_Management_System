@@ -18,8 +18,17 @@ class RoadController extends Controller
 
     public function store(Request $request)
     {
+        $request->merge(['number' => trim((string) $request->input('number'))]);
         $request->validate([
-            'number'  => 'required|string|max:21|unique:roads,number',
+            'number' => [
+                'required', 'string', 'max:21', 'unique:roads,number',
+                function ($attribute, $value, $fail) {
+                    if (ctype_digit($value) && Road::whereRaw('number REGEXP ?', ['^[0-9]+$'])
+                        ->whereRaw('CAST(number AS UNSIGNED) = ?', [(int) $value])->exists()) {
+                        $fail('This road number already exists. Leading zeros do not make a different road number.');
+                    }
+                },
+            ],
         ]);
 
         Road::create([
@@ -37,9 +46,18 @@ class RoadController extends Controller
 
     public function update(Request $request, $id)
     {
-
+        $request->merge(['number' => trim((string) $request->input('number'))]);
         $request->validate([
-            'number' => 'required|string|max:21|unique:roads,number,' . $id,
+            'number' => [
+                'required', 'string', 'max:21', 'unique:roads,number,' . $id,
+                function ($attribute, $value, $fail) use ($id) {
+                    if (ctype_digit($value) && Road::where('id', '<>', $id)
+                        ->whereRaw('number REGEXP ?', ['^[0-9]+$'])
+                        ->whereRaw('CAST(number AS UNSIGNED) = ?', [(int) $value])->exists()) {
+                        $fail('This road number already exists. Leading zeros do not make a different road number.');
+                    }
+                },
+            ],
         ]);
 
         Road::findOrFail($id)->update([
