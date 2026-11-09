@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\MissingFlat;
 use App\Models\PlotAndUnit;
+use App\Exports\ReportExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MissingFlatController extends Controller
 {
@@ -22,7 +24,24 @@ class MissingFlatController extends Controller
             $query->where(fn ($q) => $q->where('holding_no', 'like', "%{$search}%")
                 ->orWhere('building_name', 'like', "%{$search}%"));
         }
-        $plots = $query->orderBy('road_id')->orderBy('holding_no')->paginate(30)->withQueryString();
+        $query->orderBy('road_id')->orderBy('holding_no');
+        $export = strtolower((string) $request->query('export'));
+        if (in_array($export, ['csv', 'xlsx'], true)) {
+            $rows = (clone $query)->get()->map(fn ($plot) => [
+                $plot->road?->number,
+                $plot->holding_no,
+                $plot->building_name,
+                $plot->total_flat ?? 0,
+                $plot->occupied_flat ?? 0,
+                max(0, (int) $plot->total_flat - (int) $plot->occupied_flat),
+                $plot->missingFlats->pluck('flat_number')->implode(', '),
+                $plot->missingFlats->first(fn ($flat) => filled($flat->note))?->note,
+            ])->all();
+            $headings = ['Road', 'Holding', 'Building', 'Total Flats', 'Occupied', 'Missing', 'Missing Unit Numbers', 'Important Note'];
+            $format = $export === 'csv' ? \Maatwebsite\Excel\Excel::CSV : \Maatwebsite\Excel\Excel::XLSX;
+            return Excel::download(new ReportExport($headings, $rows), 'missing-flats.'.($export === 'csv' ? 'csv' : 'xlsx'), $format);
+        }
+        $plots = $query->paginate(30)->withQueryString();
         $roads = $this->visiblePlots()->with('road')->get()->pluck('road')->filter()->unique('id')->sortBy('number');
 
         return view('admin.missing_flats.index', compact('plots', 'roads'));

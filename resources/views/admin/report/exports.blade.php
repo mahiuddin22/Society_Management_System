@@ -14,16 +14,22 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const reportTable = document.querySelector('.panel.active .ledger');
             if (!reportTable) throw new Error('Could not find the report table.');
-            const headings = Array.from(reportTable.querySelectorAll('thead th'), (cell) => cell.innerText.trim());
+            const headingCells = Array.from(reportTable.querySelectorAll('thead th'));
+            const exportIndexes = headingCells.map((cell, index) => cell.hasAttribute('data-export-ignore') ? -1 : index).filter((index) => index >= 0);
+            const headings = exportIndexes.map((index) => headingCells[index].innerText.trim());
             const rows = Array.from(reportTable.querySelectorAll('tbody tr'))
-                .filter((row) => row.querySelectorAll('td').length === headings.length)
-                .map((row) => Array.from(row.querySelectorAll('td'), (cell) => cell.innerText.trim()));
+                .filter((row) => row.querySelectorAll('td').length === headingCells.length)
+                .map((row) => {
+                    const cells = Array.from(row.querySelectorAll('td'));
+                    return exportIndexes.map((index) => cells[index]?.innerText.trim() || '');
+                });
             if (!rows.length) throw new Error('There are no report rows to export.');
             const titles = {
                 'plot-management': 'Plot Management Report',
                 'bill-collections': 'Bill Collections Report',
                 'bulk-sms': 'SMS History Report',
-                'payment-history': 'Collector Payment History'
+                'payment-history': 'Collector Payment History',
+                'missing-flats': 'Missing Flats Report'
             };
             const reportKey = pdfUrl.pathname.split('/').filter(Boolean).pop();
             const title = titles[reportKey] || 'Report';

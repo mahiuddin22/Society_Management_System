@@ -34,10 +34,13 @@
     </div>
   </div>
 
+  <div class="d-flex justify-content-end">
+    @include('admin.report.exports')
+  </div>
   <div class="card p-0 overflow-hidden">
     <div class="table-responsive">
-      <table class="table align-middle mb-0">
-        <thead><tr><th>Road</th><th>Holding / Building</th><th class="text-center">Total Flats</th><th class="text-center">Occupied</th><th class="text-center">Missing</th><th>Missing Unit Numbers</th><th style="min-width:220px">Important Note</th><th class="text-end">Action</th></tr></thead>
+      <table class="table align-middle mb-0 ledger">
+        <thead><tr><th>Road</th><th>Holding / Building</th><th class="text-center">Total Flats</th><th class="text-center">Occupied</th><th class="text-center">Missing</th><th>Missing Unit Numbers</th><th style="min-width:220px">Important Note</th><th class="text-end" data-export-ignore>Action</th></tr></thead>
         <tbody>
           @forelse($plots as $plot)
             @php $missingCount = max(0, (int)$plot->total_flat - (int)$plot->occupied_flat); @endphp
@@ -56,7 +59,7 @@
               </td>
               @php $plotNote = $plot->missingFlats->first(fn ($flat) => filled($flat->note))?->note; @endphp
               <td class="small" style="white-space:pre-wrap">{{ $plotNote ?: '—' }}</td>
-              <td class="text-end">
+              <td class="text-end" data-export-ignore>
                 @php $hasDetails = $plot->missingFlats->isNotEmpty(); @endphp
                 <a class="btn btn-sm btn-ghost" href="{{ $hasDetails ? route('admin.missing-flats.edit', $plot) : route('admin.missing-flats.create', ['plot' => $plot->id]) }}" title="{{ $hasDetails ? 'Edit missing unit numbers and note' : 'Add missing unit numbers and note' }}" aria-label="{{ $hasDetails ? 'Edit missing unit numbers and note' : 'Add missing unit numbers and note' }}"><i class="bi {{ $hasDetails ? 'bi-pencil-square' : 'bi-plus-lg' }}"></i></a>
               </td>
