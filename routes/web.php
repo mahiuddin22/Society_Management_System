@@ -8,6 +8,7 @@ use App\Http\Controllers\BulkSmsController;
 use App\Http\Controllers\DraftController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\MissingFlatController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PermissionsController;
 use App\Http\Controllers\PlotAndUnitController;
@@ -164,6 +165,14 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
     });
 
     // Plot and Units
+    Route::controller(MissingFlatController::class)->prefix('missing-flats')->name('missing-flats.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('create', 'create')->name('create');
+        Route::post('/', 'store')->name('store');
+        Route::get('{plot}/edit', 'edit')->name('edit');
+        Route::put('{plot}', 'update')->name('update');
+    });
+
     Route::controller(PlotAndUnitController::class)->prefix('plot-and-units')->name('plot-and-units.')->group(function () {
 
         Route::get('bulk-upload', 'bulkUpload')->name('bulk-upload');

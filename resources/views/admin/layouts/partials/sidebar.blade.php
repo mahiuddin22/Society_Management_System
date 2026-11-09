@@ -39,6 +39,10 @@
                 </svg>
                 Plot
             </a>
+            <a class="nav-item {{ request()->routeIs('admin.missing-flats.*') ? 'active' : '' }}" href="{{ route('admin.missing-flats.index') }}">
+                <i class="bi bi-building-exclamation"></i>
+                Missing Flat
+            </a>
             @endif
 
         </div>

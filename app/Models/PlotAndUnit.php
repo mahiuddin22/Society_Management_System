@@ -25,4 +25,9 @@ class PlotAndUnit extends Model
     {
         return $this->hasMany(Bill::class);
     }
+
+    public function missingFlats(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(MissingFlat::class);
+    }
 }
