@@ -137,9 +137,6 @@
                 @endif
             </form>
         </div>
-        <div class="px-3">
-            @include('admin.report.exports')
-        </div>
         <div class="table-wrap">
             <table class="ledger text-nowrap">
                 <thead>

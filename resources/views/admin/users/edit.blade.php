@@ -43,7 +43,15 @@
                 <div class="col-md-6">
                     <label for="password" class="form-label">Password</label>
                     <input type="password" id="password" name="password" class="form-control" placeholder="Leave blank to keep current password" minlength="6" />
-                    <div class="invalid-feedback">Password must be at least 6 characters.</div>
+                    <div id="editPasswordRules" class="small mt-2" style="display:none;">
+                        <div class="password-rule text-danger" data-rule="length"><i class="bi bi-x-circle me-1"></i>At least 6 characters</div>
+                        <div class="password-rule text-danger" data-rule="uppercase"><i class="bi bi-x-circle me-1"></i>At least one uppercase letter</div>
+                        <div class="password-rule text-danger" data-rule="number"><i class="bi bi-x-circle me-1"></i>At least one number</div>
+                        <div class="password-rule text-danger" data-rule="special"><i class="bi bi-x-circle me-1"></i>At least one special character</div>
+                    </div>
+                    @error('password')
+                    <div class="text-danger small mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="col-md-6">
@@ -82,13 +90,42 @@
 
         const password = document.getElementById('password');
         const passwordConfirmation = document.getElementById('password_confirmation');
+        const passwordRules = document.getElementById('editPasswordRules');
+
+        function updatePasswordRules() {
+            const value = password.value;
+            passwordRules.style.display = value.length ? 'block' : 'none';
+
+            const satisfiedRules = {
+                length: value.length >= 6,
+                uppercase: /[A-Z]/.test(value),
+                number: /[0-9]/.test(value),
+                special: /[^A-Za-z0-9\s]/.test(value)
+            };
+
+            passwordRules.querySelectorAll('.password-rule').forEach(function(rule) {
+                const isSatisfied = satisfiedRules[rule.dataset.rule];
+                rule.classList.toggle('text-success', isSatisfied);
+                rule.classList.toggle('text-danger', !isSatisfied);
+                rule.querySelector('i').className = isSatisfied
+                    ? 'bi bi-check-circle-fill me-1'
+                    : 'bi bi-x-circle me-1';
+            });
+        }
 
         function validateField(field) {
 
             if (field === password) {
+                updatePasswordRules();
 
                 if (password.value && password.value.length < 6) {
                     password.setCustomValidity('Password must be at least 6 characters.');
+                } else if (password.value && !/[A-Z]/.test(password.value)) {
+                    password.setCustomValidity('Password must include at least one uppercase letter.');
+                } else if (password.value && !/[0-9]/.test(password.value)) {
+                    password.setCustomValidity('Password must include at least one number.');
+                } else if (password.value && !/[^A-Za-z0-9\s]/.test(password.value)) {
+                    password.setCustomValidity('Password must include at least one special character.');
                 } else {
                     password.setCustomValidity('');
                 }
@@ -99,10 +136,10 @@
 
                 if (!password.value && !passwordConfirmation.value) {
                     passwordConfirmation.setCustomValidity('');
-                } else if (passwordConfirmation.value.length < 6) {
-                    passwordConfirmation.setCustomValidity('Password must be at least 6 characters.');
                 } else if (passwordConfirmation.value !== password.value) {
                     passwordConfirmation.setCustomValidity('Passwords do not match.');
+                } else if (passwordConfirmation.value.length < 6) {
+                    passwordConfirmation.setCustomValidity('Password must be at least 6 characters.');
                 } else {
                     passwordConfirmation.setCustomValidity('');
                 }
@@ -134,6 +171,8 @@
             });
 
         });
+
+        updatePasswordRules();
 
         password.addEventListener('input', function() {
             validateField(password);

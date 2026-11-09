@@ -62,6 +62,26 @@
         color: #0dcaf0;
         font-weight: 600;
     }
+
+    .road-option-assigned {
+        border-color: #dc3545;
+        background-color: #fff1f2;
+        cursor: not-allowed;
+    }
+
+    .road-option-assigned:hover {
+        border-color: #dc3545;
+        background-color: #fff1f2;
+    }
+
+    .road-option-assigned .road-icon {
+        background-color: #f8d7da;
+        color: #b02a37;
+    }
+
+    .road-option-assigned .road-name {
+        color: #b02a37;
+    }
 </style>
 <div class="card shadow-sm border-0">
     <div class="card-header bg-white p-3 p-md-4">
@@ -81,11 +101,12 @@
             <div class="row g-3">
 
                 @foreach($roads as $road)
+                @php($assignedToOtherCollector = $road->collector_id && $road->collector_id != $collector->id)
                 <div class="col-md-6 col-lg-4">
-                    <label for="road{{ $road->id }}" class="road-option">
+                    <label for="road{{ $road->id }}" class="road-option {{ $assignedToOtherCollector ? 'road-option-assigned' : '' }}">
 
                         <input class="form-check-input road-checkbox" type="checkbox" name="roads[]" value="{{ $road->id }}"
-                            id="road{{ $road->id }}" {{ $road->collector_id == $collector->id ? 'checked' : '' }}>
+                            id="road{{ $road->id }}" {{ $road->collector_id == $collector->id ? 'checked' : '' }} {{ $assignedToOtherCollector ? 'disabled' : '' }}>
 
                         <span class="road-icon">
                             <i class="bi bi-signpost-2"></i>
@@ -94,6 +115,10 @@
                         <span class="road-name">
                             Road-{{ $road->number }}
                         </span>
+
+                        @if($assignedToOtherCollector)
+                        <span class="badge text-bg-danger ms-auto">Assigned</span>
+                        @endif
 
                     </label>
                 </div>

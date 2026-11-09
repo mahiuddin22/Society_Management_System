@@ -24,8 +24,14 @@ class UserController extends Controller
             // 'email'                 => 'required|string|email|max:255|unique:users',
             'username'              => 'required|string|max:255|unique:users',
             'phone'              => 'required|string|max:255|unique:users',
-            'password'              => 'required|string|min:6|confirmed',
+            'password'              => ['required', 'string', 'min:6', 'regex:/^(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9\s]).*$/', 'confirmed'],
             'password_confirmation' => 'required|string|min:6',
+        ], [
+            'password.required' => 'Please enter a password.',
+            'password.min' => 'Password must be at least 6 characters.',
+            'password.regex' => 'Password must include at least one uppercase letter, one number, and one special character.',
+            'password.confirmed' => 'Passwords do not match.',
+            'password_confirmation.required' => 'Please confirm your password.',
         ]);
 
         User::create([
@@ -57,7 +63,11 @@ class UserController extends Controller
             // 'email' => 'email|max:255|unique:users,email,' . $user->id,
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
             'phone' => 'required|string|max:255|unique:users,phone,' . $user->id,
-            'password' => 'nullable|string|min:6|confirmed',
+            'password' => ['nullable', 'string', 'min:6', 'regex:/^(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9\s]).*$/', 'confirmed'],
+        ], [
+            'password.min' => 'Password must be at least 6 characters.',
+            'password.regex' => 'Password must include at least one uppercase letter, one number, and one special character.',
+            'password.confirmed' => 'Passwords do not match.',
         ]);
 
         $user->update([

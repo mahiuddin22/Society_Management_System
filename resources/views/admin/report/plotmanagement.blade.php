@@ -15,7 +15,7 @@
           @forelse($rows as $row)
           <tr><td>{{ $row->created_at?->format('Y-m-d') }}</td><td>{{ $row->holding_no }}</td><td>{{ $row->building_name ?: '—' }}</td><td>{{ $row->road?->number }}</td><td>{{ $row->plotType?->name }}</td><td>{{ $row->name }}</td><td>{{ $row->phone }}</td><td>{{ $row->collection_type ?: '—' }}</td><td>{{ $row->status }}</td></tr>
           @empty
-          <tr><td colspan="9" class="text-center">No plots found for this date range.</td></tr>
+          <tr><td colspan="9" class="text-center">No plots found.</td></tr>
           @endforelse
         </tbody>
       </table>

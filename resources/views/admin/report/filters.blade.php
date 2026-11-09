@@ -1,6 +1,8 @@
 <form method="GET" class="row g-2 align-items-end mb-3 bg-white p-3 rounded shadow-sm">
+@unless(request()->routeIs('admin.report.plotmanagement'))
 <div class="col-6 col-md-2"><label class="form-label">From date *</label><input class="form-control" type="date" name="date_from" required value="{{ $filters['from'] }}"></div>
 <div class="col-6 col-md-2"><label class="form-label">To date *</label><input class="form-control" type="date" name="date_to" required value="{{ $filters['to'] }}"></div>
+@endunless
 @if(request()->routeIs('admin.report.plotmanagement'))
 <div class="col-6 col-md-2"><label class="form-label">Road</label><select class="form-select" name="road_id"><option value="">All roads</option>@foreach($roads as $road)<option value="{{ $road->id }}" @selected(request('road_id')==$road->id)>Road {{ $road->number }}</option>@endforeach</select></div>
 <div class="col-6 col-md-2"><label class="form-label">Plot type</label><select class="form-select" name="plot_type_id"><option value="">All types</option>@foreach($plotTypes as $type)<option value="{{ $type->id }}" @selected(request('plot_type_id')==$type->id)>{{ $type->name }}</option>@endforeach</select></div>

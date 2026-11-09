@@ -373,7 +373,7 @@
             <th>Type</th>
             <th>Occupancy</th>
             <th>Resident / Contact</th>
-            <th class="num">Net Fee</th>
+            <th class="num">Net Fee / Rate</th>
             <th>Status</th>
             <th class="text-end pe-3">Actions</th>
           </tr>

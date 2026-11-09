@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class SettingController extends Controller
 {
@@ -28,7 +29,9 @@ class SettingController extends Controller
             'name'              => 'required',
             'email'             => 'required',
             'contact'           => 'required',
-            'address'           => 'required'
+            'address'           => 'required',
+            'login_background_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'login_panel_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
         // Get existing record (IMPORTANT: no truncate)
@@ -52,6 +55,22 @@ class SettingController extends Controller
             $file->move(public_path('uploads/settings'), $filename);
 
             $content->logo = $filename;
+        }
+
+        foreach (['login_background_image', 'login_panel_image'] as $imageField) {
+            if (! $request->hasFile($imageField)) {
+                continue;
+            }
+
+            $file = $request->file($imageField);
+            $filename = $imageField . '_' . Str::uuid() . '.' . $file->extension();
+            $file->move(public_path('uploads/settings'), $filename);
+
+            if (! empty($content->{$imageField})) {
+                File::delete(public_path('uploads/settings/' . basename($content->{$imageField})));
+            }
+
+            $content->{$imageField} = $filename;
         }
 
         // Assign values manually (classic style)

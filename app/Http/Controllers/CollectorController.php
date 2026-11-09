@@ -206,6 +206,9 @@ class CollectorController extends Controller
 
         if ($request->filled('roads')) {
             Road::whereIn('id', $request->roads)
+                ->where(function ($query) use ($collector) {
+                    $query->whereNull('collector_id')->orWhere('collector_id', $collector->id);
+                })
                 ->update(['collector_id' => $collector->id]);
         }
 

@@ -40,55 +40,192 @@
             box-sizing: border-box;
         }
 
-        /* 100% Viewport-fitted without scrolling on mobile */
+        /* Full-height login layout with room to scroll on short screens */
         html, body {
             height: 100%;
-            height: 100dvh;
             margin: 0;
             padding: 0;
-            overflow: hidden;
+            min-height: 100dvh;
+            overflow-x: hidden;
         }
 
         body {
+            position: relative;
+            isolation: isolate;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--paper-bg);
-            background-image: 
-                radial-gradient(circle at 15% 15%, rgba(23, 56, 34, 0.04) 0%, transparent 40%),
-                radial-gradient(circle at 85% 85%, rgba(23, 56, 34, 0.05) 0%, transparent 45%);
+            background-color: #f1f5f2;
+            background-image:
+                radial-gradient(circle at 12% 15%, rgba(42, 97, 60, 0.10), transparent 30%),
+                radial-gradient(circle at 90% 85%, rgba(23, 56, 34, 0.08), transparent 32%);
             color: var(--ink-900);
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 14px;
+            padding: clamp(14px, 4vh, 32px) 14px;
+        }
+
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        body::before {
+            z-index: -2;
+            inset: -12px;
+            background: url("{{ !empty($siteSettings?->login_background_image) ? asset('uploads/settings/'.$siteSettings->login_background_image) : asset('assets/images/4.jpg') }}") center / cover no-repeat;
+            filter: blur(8px) saturate(.82);
+            transform: scale(1.02);
+        }
+
+        body::after {
+            z-index: -1;
+            background: rgba(255, 255, 255, .76);
         }
 
         .login-card {
             width: 100%;
-            max-width: 380px;
+            max-width: 1000px;
+            min-height: 610px;
+            display: grid;
+            grid-template-columns: minmax(0, 1.08fr) minmax(390px, 0.92fr);
             background: var(--card-bg);
             border: 1px solid var(--line);
-            border-radius: var(--radius-m);
-            box-shadow: 
-                0 4px 6px -1px rgba(23, 56, 34, 0.03),
-                0 14px 28px -4px rgba(23, 56, 34, 0.08);
-            padding: 22px 24px;
+            border-radius: 20px;
+            box-shadow: 0 28px 80px -32px rgba(14, 46, 26, 0.34), 0 10px 28px rgba(23, 56, 34, 0.08);
+            overflow: hidden;
+        }
+
+        .login-visual {
+            position: relative;
+            isolation: isolate;
+            min-height: 610px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 44px;
+            color: #fff;
+            background: #173822;
+            overflow: hidden;
+        }
+
+        .login-visual::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            background-image:
+                linear-gradient(145deg, rgba(9, 31, 18, 0.84) 0%, rgba(19, 61, 35, 0.55) 48%, rgba(8, 30, 17, 0.78) 100%),
+                url("{{ !empty($siteSettings?->login_panel_image) ? asset('uploads/settings/'.$siteSettings->login_panel_image) : asset('assets/images/2.jpg') }}");
+            background-position: center;
+            background-size: cover;
+            filter: saturate(1.3);
+            transform: scale(1.02);
+        }
+
+        .brand-lockup {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .brand-lockup-name {
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: .01em;
+            line-height: 1.3;
+        }
+
+        .brand-lockup-caption {
+            margin-top: 3px;
+            color: rgba(255, 255, 255, .72);
+            font-size: 11px;
+            letter-spacing: .11em;
+            text-transform: uppercase;
+        }
+
+        .visual-copy {
+            max-width: 440px;
+            padding: 34px 0;
+        }
+
+        .visual-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 18px;
+            color: #d8e9dc;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+        }
+
+        .visual-eyebrow::before {
+            content: "";
+            width: 24px;
+            height: 1px;
+            background: #d8e9dc;
+        }
+
+        .visual-copy h2 {
+            margin: 0 0 14px;
+            color: #fff;
+            font-family: 'Newsreader', Georgia, serif;
+            font-size: clamp(32px, 4vw, 46px);
+            font-weight: 500;
+            line-height: 1.08;
+            letter-spacing: -.025em;
+        }
+
+        .visual-copy p {
+            max-width: 370px;
+            margin: 0;
+            color: rgba(255, 255, 255, .78);
+            font-size: 14px;
+            line-height: 1.75;
+        }
+
+        .visual-footer {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: rgba(255, 255, 255, .82);
+            font-size: 12px;
+        }
+
+        .login-form-panel {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 52px 54px;
+            background: #fff;
+            min-width: 0;
+        }
+
+        .login-form-heading {
+            margin-bottom: 30px;
         }
 
         /* Brand Crest Badge */
         .brand-crest {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--forest-800) 0%, var(--forest-900) 100%);
+            width: 46px;
+            height: 46px;
+            background: rgba(255, 255, 255, .13);
             color: #ffffff;
-            border-radius: 9px;
+            border: 1px solid rgba(255, 255, 255, .26);
+            border-radius: 12px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-family: 'Newsreader', serif;
-            font-size: 16px;
-            font-weight: 600;
-            box-shadow: 0 2px 6px rgba(23, 56, 34, 0.2);
-            margin-bottom: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: .03em;
+            box-shadow: 0 5px 15px rgba(3, 19, 10, .18);
+            flex-shrink: 0;
         }
 
         .brand-title {
@@ -101,27 +238,90 @@
         }
 
         .brand-subtitle {
-            font-size: 11.5px;
+            font-size: 13px;
             color: var(--ink-500);
-            margin-bottom: 14px;
+            margin-bottom: 0;
+        }
+
+        .login-kicker {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--forest-700);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+        }
+
+        .login-form-heading .brand-title {
+            margin-bottom: 7px;
+            font-family: 'Inter', sans-serif;
+            font-size: 30px;
+            font-weight: 700;
+            letter-spacing: -.04em;
+        }
+
+        @media (max-width: 767.98px) {
+            html, body {
+                height: auto;
+                min-height: 100%;
+            }
+
+            body {
+                min-height: 100dvh;
+                padding: 16px;
+            }
+
+            .login-card {
+                max-width: 480px;
+                min-height: 0;
+                grid-template-columns: 1fr;
+            }
+
+            .login-visual {
+                min-height: 230px;
+                padding: 26px;
+            }
+
+            .visual-copy {
+                padding: 24px 0 4px;
+            }
+
+            .visual-copy h2 {
+                max-width: 360px;
+                font-size: 30px;
+            }
+
+            .visual-copy p,
+            .visual-footer {
+                display: none;
+            }
+
+            .login-form-panel {
+                padding: 30px 26px 28px;
+            }
+
+            .login-form-heading {
+                margin-bottom: 22px;
+            }
         }
 
         /* Inputs */
         .form-label {
-            font-size: 11.5px;
+            font-size: 12px;
             font-weight: 600;
             color: var(--ink-700);
-            margin-bottom: 4px;
+            margin-bottom: 7px;
         }
 
         .form-control {
-            height: 38px;
-            font-size: 13px;
-            border-radius: var(--radius-s);
+            height: 46px;
+            font-size: 14px;
+            border-radius: 9px;
             border: 1px solid var(--line-strong);
             background-color: var(--card-bg);
             color: var(--ink-900);
-            padding: 5px 12px;
+            padding: 8px 13px;
             transition: border-color .15s ease, box-shadow .15s ease;
         }
 
@@ -142,7 +342,7 @@
         }
 
         .input-group-password .form-control {
-            padding-right: 38px;
+            padding-right: 44px;
         }
 
         /* Fix: Suppress Bootstrap's red (!) icon specifically on password so it won't collide with the eye */
@@ -154,8 +354,8 @@
             position: absolute;
             right: 0;
             top: 0;
-            height: 38px;
-            width: 38px;
+            height: 46px;
+            width: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -179,12 +379,12 @@
 
         /* Primary Action Button */
         .btn-forest {
-            height: 38px;
+            height: 46px;
             background-color: var(--forest-800);
             color: #ffffff;
             border: 1px solid var(--forest-900);
             border-radius: var(--radius-s);
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 600;
             display: inline-flex;
             align-items: center;
@@ -199,8 +399,8 @@
         }
 
         .form-check-input {
-            width: 14px;
-            height: 14px;
+            width: 16px;
+            height: 16px;
             margin-top: 0.12em;
             cursor: pointer;
         }
@@ -249,7 +449,7 @@
         .input-group-password input.form-control.is-invalid,
         .was-validated .input-group-password input.form-control:invalid {
             background-image: none !important;
-            padding-right: 42px !important;
+            padding-right: 48px !important;
         }
 
         /* Give the password toggle button the error color when the input is invalid */
@@ -263,15 +463,31 @@
 <body>
 
     <div class="login-card">
-        
-        <!-- Header -->
-        <div class="text-center">
-            <div class="brand-crest">
-                <span>U3</span>
+
+        <aside class="login-visual">
+            <div class="brand-lockup">
+                <div class="brand-crest"><span>U3</span></div>
+                <div>
+                    <div class="brand-lockup-name">Uttara Sector 3</div>
+                    <div class="brand-lockup-caption">Welfare Society</div>
+                </div>
             </div>
-            <h1 class="brand-title">Welcome Back</h1>
-            <p class="brand-subtitle">Uttara Sector 3 Welfare Society &bull; Office</p>
-        </div>
+
+            <div class="visual-copy">
+                <span class="visual-eyebrow">Office Portal</span>
+                <h2>Serving our community, together.</h2>
+                <p>Manage society services and community operations through one secure office portal.</p>
+            </div>
+
+            <div class="visual-footer"><i class="bi bi-shield-lock-fill"></i><span>Secure access for authorized staff</span></div>
+        </aside>
+
+        <main class="login-form-panel">
+            <div class="login-form-heading">
+                <span class="login-kicker">Staff sign in</span>
+                <h1 class="brand-title">Welcome back</h1>
+                <p class="brand-subtitle">Sign in with your office account to continue.</p>
+            </div>
 
         @foreach ($errors->all() as $error)
         <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center py-2 px-3 mb-2" 
@@ -359,6 +575,7 @@
             </div>
         </form>
 
+        </main>
     </div>
 
     <!-- Bootstrap JS -->

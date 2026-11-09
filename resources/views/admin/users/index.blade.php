@@ -131,12 +131,23 @@
                         <div class="col-md-6">
                             <label for="password" class="form-label">Password</label>
                             <input type="password" id="password" name="password" class="form-control" placeholder="Password" minlength="6" required />
-                            <div class="invalid-feedback">Password must be at least 6 characters.</div>
+                            <div id="passwordRules" class="small mt-2">
+                                <div class="password-rule text-danger" data-rule="length"><i class="bi bi-x-circle me-1"></i>At least 6 characters</div>
+                                <div class="password-rule text-danger" data-rule="uppercase"><i class="bi bi-x-circle me-1"></i>At least one uppercase letter</div>
+                                <div class="password-rule text-danger" data-rule="number"><i class="bi bi-x-circle me-1"></i>At least one number</div>
+                                <div class="password-rule text-danger" data-rule="special"><i class="bi bi-x-circle me-1"></i>At least one special character</div>
+                            </div>
+                            @error('password')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="col-md-6">
                             <label for="password_confirmation" class="form-label">Confirm Password</label>
                             <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" placeholder="Confirm Password" minlength="6" required />
                             <div class="invalid-feedback">Passwords must match.</div>
+                            @error('password_confirmation')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -164,6 +175,9 @@
 
             field.addEventListener('input', function() {
                 validateField(field);
+                if (field.id === 'password') {
+                    validateField(document.getElementById('password_confirmation'));
+                }
             });
 
             field.addEventListener('change', function() {
@@ -178,11 +192,25 @@
 
         function validateField(field) {
 
+            if (field.id === 'password') {
+                updatePasswordRules(field.value);
+
+                if (field.value.length < 6) {
+                    field.setCustomValidity('Password must be at least 6 characters.');
+                } else if (!/[A-Z]/.test(field.value)) {
+                    field.setCustomValidity('Password must include at least one uppercase letter.');
+                } else if (!/[0-9]/.test(field.value)) {
+                    field.setCustomValidity('Password must include at least one number.');
+                } else if (!/[^A-Za-z0-9\s]/.test(field.value)) {
+                    field.setCustomValidity('Password must include at least one special character.');
+                } else {
+                    field.setCustomValidity('');
+                }
+            }
+
             if (field.id === 'password_confirmation') {
                 if (!field.value) {
                     field.setCustomValidity('Please confirm your password.');
-                } else if (field.value.length < 6) {
-                    field.setCustomValidity('Password must be at least 6 characters.');
                 } else if (field.value !== document.getElementById('password').value) {
                     field.setCustomValidity('Passwords do not match.');
                 } else {
@@ -199,10 +227,30 @@
             }
         }
 
+        function updatePasswordRules(value) {
+            const satisfiedRules = {
+                length: value.length >= 6,
+                uppercase: /[A-Z]/.test(value),
+                number: /[0-9]/.test(value),
+                special: /[^A-Za-z0-9\s]/.test(value)
+            };
+
+            document.querySelectorAll('#passwordRules .password-rule').forEach(function(rule) {
+                const isSatisfied = satisfiedRules[rule.dataset.rule];
+                rule.classList.toggle('text-success', isSatisfied);
+                rule.classList.toggle('text-danger', !isSatisfied);
+                rule.querySelector('i').className = isSatisfied
+                    ? 'bi bi-check-circle-fill me-1'
+                    : 'bi bi-x-circle me-1';
+            });
+        }
+
         form.addEventListener('submit', function(event) {
 
             const password = document.getElementById('password');
             const passwordConfirmation = document.getElementById('password_confirmation');
+
+            validateField(password);
 
             if (password.value !== passwordConfirmation.value) {
                 passwordConfirmation.setCustomValidity('Passwords do not match.');
@@ -219,6 +267,10 @@
                 });
             }
         });
+
+        @if ($errors->has('password') || $errors->has('password_confirmation'))
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('createModal')).show();
+        @endif
 
     });
 </script>

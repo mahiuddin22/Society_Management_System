@@ -17,15 +17,14 @@ class ReportController extends Controller
 {
     public function plotManagement(Request $request)
     {
-        $filters = $this->dateFilters($request, 'created_at');
-        $query = PlotAndUnit::with(['road', 'plotType'])->whereBetween('created_at', [$filters['from'].' 00:00:00', $filters['to'].' 23:59:59']);
+        $query = PlotAndUnit::with(['road', 'plotType']);
         foreach (['status', 'collection_type'] as $filter) if ($request->filled($filter)) $query->where($filter, $request->input($filter));
         if ($request->filled('road_id')) $query->where('road_id', $request->road_id);
         if ($request->filled('plot_type_id')) $query->where('plot_type_id', $request->plot_type_id);
         if ($request->filled('search')) { $s=trim($request->search); $query->where(fn($q)=>$q->where('holding_no','like',"%$s%")->orWhere('name','like',"%$s%")->orWhere('phone','like',"%$s%")); }
         $rows = $query->latest('created_at')->get();
         if ($response = $this->export($request, 'plotmanagement', 'Plot Management Report', ['Date','Holding','Building','Road','Plot type','Contact','Phone','Collection type','Status'], $rows->map(fn($p)=>[$p->created_at?->format('Y-m-d'),$p->holding_no,$p->building_name,$p->road?->number,$p->plotType?->name,$p->name,$p->phone,$p->collection_type,$p->status])->all())) return $response;
-        return view('admin.report.plotmanagement', ['rows'=>$query->paginate(30)->withQueryString(),'filters'=>$filters,'roads'=>Road::orderBy('number')->get(),'plotTypes'=>PlotType::orderBy('name')->get()]);
+        return view('admin.report.plotmanagement', ['rows'=>$query->paginate(30)->withQueryString(),'roads'=>Road::orderBy('number')->get(),'plotTypes'=>PlotType::orderBy('name')->get()]);
     }
 
     public function billCollections(Request $request)

@@ -37,6 +37,30 @@
 
                         <div class="row g-4 align-items-start">
 
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold" for="login_background_image">Login Page Background Image</label>
+                                <div id="login-background-upload-area" class="border rounded p-2 d-flex align-items-center justify-content-center bg-light" style="height: 180px; cursor: pointer;">
+                                    <img id="login-background-preview" src="{{ !empty($settings->login_background_image) ? asset('uploads/settings/'.$settings->login_background_image) : asset('assets/images/4.jpg') }}" alt="Login page background preview" style="width: 100%; height: 100%; object-fit: cover; border-radius: .375rem;">
+                                </div>
+                                <input type="file" name="login_background_image" id="login_background_image" class="d-none @error('login_background_image') is-invalid @enderror" accept="image/jpeg,image/png,image/webp">
+                                @error('login_background_image')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted d-block mt-2">Used as the softly blurred image behind the login card. Click to replace.</small>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold" for="login_panel_image">Login Panel Image</label>
+                                <div id="login-panel-upload-area" class="border rounded p-2 d-flex align-items-center justify-content-center bg-light" style="height: 180px; cursor: pointer;">
+                                    <img id="login-panel-preview" src="{{ !empty($settings->login_panel_image) ? asset('uploads/settings/'.$settings->login_panel_image) : asset('assets/images/2.jpg') }}" alt="Login panel image preview" style="width: 100%; height: 100%; object-fit: cover; border-radius: .375rem;">
+                                </div>
+                                <input type="file" name="login_panel_image" id="login_panel_image" class="d-none @error('login_panel_image') is-invalid @enderror" accept="image/jpeg,image/png,image/webp">
+                                @error('login_panel_image')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted d-block mt-2">Used in the image panel beside the sign-in form. Click to replace.</small>
+                            </div>
+
                             <div class="col-md-3">
                                 <label class="form-label fw-semibold">Logo Preview</label>
 
@@ -222,22 +246,29 @@
 @endsection
 @push('scripts')
 <script>
-    document.getElementById('logo-upload-area').addEventListener('click', function() {
-        document.getElementById('logo').click();
-    });
+    [
+        { area: 'logo-upload-area', input: 'logo', preview: 'logo-preview' },
+        { area: 'login-background-upload-area', input: 'login_background_image', preview: 'login-background-preview' },
+        { area: 'login-panel-upload-area', input: 'login_panel_image', preview: 'login-panel-preview' }
+    ].forEach(function(imageField) {
+        const area = document.getElementById(imageField.area);
+        const input = document.getElementById(imageField.input);
+        const preview = document.getElementById(imageField.preview);
 
-    document.getElementById('logo').addEventListener('change', function(event) {
-        const file = event.target.files[0];
+        area.addEventListener('click', function() {
+            input.click();
+        });
 
-        if (file) {
+        input.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
             const reader = new FileReader();
-
             reader.onload = function(e) {
-                document.getElementById('logo-preview').src = e.target.result;
+                preview.src = e.target.result;
             };
-
             reader.readAsDataURL(file);
-        }
+        });
     });
 </script>
 @endpush
