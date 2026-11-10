@@ -133,9 +133,7 @@
                             @endif
 
                             @if(hasPermission('permissions', 'move'))
-                            <span class="text-muted ms-2 cursor-move"
-                                title="Reorder Menu"
-                                style="cursor:move;">
+                            <span class="text-muted ms-2 cursor-move" title="Reorder Menu" style="cursor:move;">
                                 <i class="bi bi-grip-vertical fs-5"></i>
                             </span>
                             @endif
