@@ -48,7 +48,7 @@
                 <tbody>
                     @foreach ($activities as $activity)
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $activities->firstItem() + $loop->index }}</td>
                         <td>{{ $activity->name }}</td>
                         <td>{{ $activity->activity_key }}</td>
                         @if(hasPermission('permissions', 'edit') || hasPermission('permissions', 'delete'))
@@ -76,7 +76,7 @@
                     @endforeach
                     <!-- Additional rows -->
                 </tbody>
-                {{ $activities->links() }}
+                {{ $activities->links('pagination::bootstrap-5') }}
             </table>
         </div>
     </div>

@@ -140,6 +140,9 @@
     </div>
     @endforelse
   </div>
+  <div class="mt-3 d-flex justify-content-center">
+    {{ $plot_types->links('pagination::bootstrap-5') }}
+  </div>
 
 </section>
 @endsection

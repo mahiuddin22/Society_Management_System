@@ -76,7 +76,7 @@
                     <tr data-id="{{ $permission->id }}"
                         class="{{ $permission->menu_type == 'main_menu' ? 'table-success' : '' }}">
 
-                        <td class="align-middle">{{ $loop->iteration }}</td>
+                        <td class="align-middle">{{ $permissions->firstItem() + $loop->index }}</td>
 
                         <td class="align-middle fw-bold">
                             {{ $permission->name }}
@@ -144,7 +144,7 @@
                     </tr>
                     @endforeach
                 </tbody>
-                {{ $permissions->links() }}
+                {{ $permissions->links('pagination::bootstrap-5') }}
             </table>
         </div>
     </div>

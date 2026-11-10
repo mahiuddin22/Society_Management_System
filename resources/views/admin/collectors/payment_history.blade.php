@@ -141,6 +141,7 @@
             <table class="ledger text-nowrap">
                 <thead>
                     <tr>
+                        <th>SL</th>
                         <th>Date</th>
                         <th>Receipt</th>
                         <th>Bill</th>
@@ -156,6 +157,7 @@
                 <tbody>
                     @forelse($payments as $payment)
                     <tr>
+                        <td>{{ $payments->firstItem() + $loop->index }}</td>
                         <td>{{ $payment->payment_date?->format('Y-m-d') ?? '—' }}</td>
                         <td>{{ $payment->payment_number ?? '—' }}</td>
                         <td>{{ $payment->bill?->bill_number ?? '—' }}</td>
@@ -168,7 +170,7 @@
                         <td>৳{{ number_format((float) $payment->amount, 2) }}</td>
                     </tr>
                     @empty
-                    <tr><td colspan="10" class="text-center py-4">No payment records found for the collector’s assigned roads.</td></tr>
+                    <tr><td colspan="11" class="text-center py-4">No payment records found for the collector’s assigned roads.</td></tr>
                     @endforelse
                 </tbody>
             </table>

@@ -142,7 +142,7 @@ class BulkSmsController extends Controller
             $sms_histories = $sms_histories->whereBetween('created_at', [$request->from_date, $request->to_date]);
         }
 
-        $sms_histories = $sms_histories->paginate(10);
+        $sms_histories = $sms_histories->paginate(10)->withQueryString();
 
         return view('admin.bulk_sms.sms_history', compact('sms_histories'));
     }

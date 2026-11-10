@@ -40,11 +40,12 @@
   <div class="card p-0 overflow-hidden">
     <div class="table-responsive">
       <table class="table align-middle mb-0 ledger">
-        <thead><tr><th>Road</th><th>Holding / Building</th><th class="text-center">Total Flats</th><th class="text-center">Occupied</th><th class="text-center">Missing</th><th>Missing Unit Numbers</th><th style="min-width:220px">Important Note</th><th class="text-end" data-export-ignore>Action</th></tr></thead>
+        <thead><tr><th>SL</th><th>Road</th><th>Holding / Building</th><th class="text-center">Total Flats</th><th class="text-center">Occupied</th><th class="text-center">Missing</th><th>Missing Unit Numbers</th><th style="min-width:220px">Important Note</th><th class="text-end" data-export-ignore>Action</th></tr></thead>
         <tbody>
           @forelse($plots as $plot)
             @php $missingCount = max(0, (int)$plot->total_flat - (int)$plot->occupied_flat); @endphp
             <tr>
+              <td>{{ $plots->firstItem() + $loop->index }}</td>
               <td>Road {{ $plot->road?->number ?? '—' }}</td>
               <td><strong>{{ $plot->holding_no }}</strong>@if($plot->building_name)<div class="hint small">{{ $plot->building_name }}</div>@endif</td>
               <td class="text-center">{{ $plot->total_flat ?? 0 }}</td>
@@ -65,12 +66,12 @@
               </td>
             </tr>
           @empty
-            <tr><td colspan="8" class="text-center py-5 hint">No missing flats found. Plot counts are calculated from total flats minus occupied flats.</td></tr>
+            <tr><td colspan="9" class="text-center py-5 hint">No missing flats found. Plot counts are calculated from total flats minus occupied flats.</td></tr>
           @endforelse
         </tbody>
       </table>
     </div>
-    @if($plots->hasPages())<div class="p-3">{{ $plots->links() }}</div>@endif
+    @if($plots->hasPages())<div class="p-3">{{ $plots->links('pagination::bootstrap-5') }}</div>@endif
   </div>
 </section>
 @endsection

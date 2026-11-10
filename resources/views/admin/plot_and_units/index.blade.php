@@ -369,6 +369,7 @@
       <table class="ledger text-nowrap w-100">
         <thead>
           <tr>
+            <th>SL</th>
             <th>Holding &amp; Road</th>
             <th>Type</th>
             <th>Occupancy</th>
@@ -381,6 +382,7 @@
         <tbody>
           @forelse($plotAndUnits as $unit)
           <tr>
+            <td>{{ $plotAndUnits->firstItem() + $loop->index }}</td>
             {{-- Holding & Road --}}
             <td>
               <div class="fw-medium text-dark">Holding - {{ $unit->holding_no }}</div>
@@ -458,7 +460,7 @@
           </tr>
           @empty
           <tr>
-            <td colspan="7" class="text-center py-5 text-muted">
+            <td colspan="8" class="text-center py-5 text-muted">
               <div class="empty-note">No building or unit records found matching your query.</div>
             </td>
           </tr>
@@ -474,7 +476,7 @@
         Showing <span class="fw-semibold text-dark">{{ $plotAndUnits->firstItem() }}</span> to <span class="fw-semibold text-dark">{{ $plotAndUnits->lastItem() }}</span> of <span class="fw-semibold text-dark">{{ $plotAndUnits->total() }}</span> results
       </div>
       <div>
-        {{ $plotAndUnits->onEachSide(1)->links('pagination::bootstrap-4') }}
+        {{ $plotAndUnits->onEachSide(1)->links('pagination::bootstrap-5') }}
       </div>
     </div>
     @endif

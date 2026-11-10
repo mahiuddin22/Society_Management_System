@@ -49,6 +49,7 @@
     <table class="ledger text-nowrap w-100">
       <thead>
         <tr>
+          <th>SL</th>
           <th>Bill / Date</th>
           <th>Resident / Contact</th>
           <th>Road / Holding</th>
@@ -63,6 +64,7 @@
       <tbody>
         @forelse($bills as $bill)
         <tr>
+          <td>{{ $bills->firstItem() + $loop->index }}</td>
           <!-- 1. Bill / Date -->
           <td>
             <div class="fw-bold font-monospace" style="color: var(--forest-900);">{{ $bill->bill_number }}</div>
@@ -130,13 +132,14 @@
         </tr>
         @empty
         <tr>
-          <td colspan="7" class="text-center py-5 text-muted">
+          <td colspan="8" class="text-center py-5 text-muted">
             <div class="empty-note">No billing records found for this criteria.</div>
           </td>
         </tr>
         @endforelse
       </tbody>
     </table>
+    {{ $bills->links('pagination::bootstrap-5') }}
   </div>
 </section>
 @endsection

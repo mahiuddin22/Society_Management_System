@@ -40,6 +40,7 @@
 
       <thead>
         <tr>
+          <th>SL</th>
           <th>Type</th>
           <th>Message</th>
           <th>Language</th>
@@ -55,6 +56,7 @@
         @forelse($drafts as $draft)
 
         <tr>
+          <td>{{ $drafts->firstItem() + $loop->index }}</td>
 
           <td>{{ $draft->type }}</td>
 
@@ -93,7 +95,7 @@
         @empty
 
         <tr>
-          <td colspan="7" class="text-center">
+          <td colspan="8" class="text-center">
             No drafts found.
           </td>
         </tr>

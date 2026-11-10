@@ -361,6 +361,7 @@
       <table class="ledger text-nowrap w-100">
         <thead>
           <tr>
+            <th>SL</th>
             <th>Receipt &amp; Date</th>
             <th>Resident / Contact</th>
             <th>Bill Ref</th>
@@ -375,6 +376,7 @@
         <tbody>
           @forelse($payments as $payment)
           <tr>
+            <td>{{ $payments->firstItem() + $loop->index }}</td>
             {{-- 1. Receipt & Date --}}
             <td>
               <div class="fw-bold font-monospace" style="color: var(--forest-900);">{{ $payment->payment_number }}</div>
@@ -442,7 +444,7 @@
           </tr>
           @empty
           <tr>
-            <td colspan="7" class="text-center py-5 text-muted">
+            <td colspan="{{ hasPermission('collections','download') ? 8 : 7 }}" class="text-center py-5 text-muted">
               <div class="empty-note">No payment transactions found matching your filter criteria.</div>
             </td>
           </tr>
@@ -463,27 +465,7 @@
           Page <span class="fw-semibold text-dark">{{ $payments->currentPage() }}</span> of <span class="fw-semibold text-dark">{{ $payments->lastPage() }}</span>
         </span>
 
-        <div class="btn-group">
-          @if ($payments->onFirstPage())
-            <button class="btn btn-ghost btn-sm px-2 py-1 border" disabled style="opacity: 0.5; font-size: 12px;">
-              &lsaquo; Prev
-            </button>
-          @else
-            <a href="{{ $payments->previousPageUrl() }}" class="btn btn-ghost btn-sm px-2 py-1 border text-dark" style="font-size: 12px;">
-              &lsaquo; Prev
-            </a>
-          @endif
-
-          @if ($payments->hasMorePages())
-            <a href="{{ $payments->nextPageUrl() }}" class="btn btn-ghost btn-sm px-2 py-1 border text-dark" style="font-size: 12px;">
-              Next &rsaquo;
-            </a>
-          @else
-            <button class="btn btn-ghost btn-sm px-2 py-1 border" disabled style="opacity: 0.5; font-size: 12px;">
-              Next &rsaquo;
-            </button>
-          @endif
-        </div>
+        {{ $payments->onEachSide(1)->links('pagination::bootstrap-5') }}
       </div>
     </div>
     @endif

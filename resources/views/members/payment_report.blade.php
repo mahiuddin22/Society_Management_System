@@ -49,6 +49,7 @@
     <table class="ledger text-nowrap w-100">
       <thead>
         <tr>
+          <th>SL</th>
           <th>Bill / Date</th>
           <th>Resident / Contact</th>
           <th>Road / Holding</th>
@@ -60,6 +61,7 @@
       <tbody>
         @forelse($bills as $bill)
         <tr>
+          <td>{{ $bills->firstItem() + $loop->index }}</td>
           <!-- 1. Bill / Date -->
           <td>
             <div class="fw-bold font-monospace" style="color: var(--forest-900);">{{ $bill->bill_number }}</div>
@@ -101,7 +103,7 @@
             @else
             <span class="badge red"><i class="dot"></i>Unpaid</span>
             @endif
-          </td>.
+          </td>
           
         </tr>
         @empty
@@ -113,6 +115,7 @@
         @endforelse
       </tbody>
     </table>
+    {{ $bills->links('pagination::bootstrap-5') }}
   </div>
 </section>
 @endsection

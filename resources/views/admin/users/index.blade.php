@@ -84,7 +84,7 @@
                 Showing <span class="fw-semibold text-dark">{{ $users->firstItem() }}</span> to <span class="fw-semibold text-dark">{{ $users->lastItem() }}</span> of <span class="fw-semibold text-dark">{{ $users->total() }}</span> results
             </div>
             <div>
-                {{ $users->onEachSide(1)->links('pagination::bootstrap-4') }}
+                {{ $users->onEachSide(1)->links('pagination::bootstrap-5') }}
             </div>
         </div>
         @endif

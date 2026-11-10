@@ -64,6 +64,7 @@
 
             <thead>
                 <tr>
+                    <th>SL</th>
                     <th>SMS Type</th>
                     <th>Mobile No</th>
                     <th>Message</th>
@@ -78,6 +79,7 @@
                 @forelse($sms_histories as $item)
 
                 <tr>
+                    <td>{{ $sms_histories->firstItem() + $loop->index }}</td>
 
                     <td>{{ $item->sms_type }}</td>
                     <td>{{ $item->phone_no ?? '-' }}</td>
@@ -105,7 +107,7 @@
                 @empty
 
                 <tr>
-                    <td colspan="5" class="text-center">
+                    <td colspan="7" class="text-center">
                         No SMS history found.
                     </td>
                 </tr>
@@ -116,50 +118,9 @@
 
         </table>
 
-        @if(($allsms['last_page'] ?? 1) > 1)
-
         <div class="mt-3 d-flex justify-content-end">
-
-            <nav>
-                <ul class="pagination">
-
-                    @if($allsms['current_page'] > 1)
-
-                    <li class="page-item">
-                        <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => $allsms['current_page'] - 1]) }}">
-                            Previous
-                        </a>
-                    </li>
-
-                    @endif
-
-                    @for($page = 1; $page <= $allsms['last_page']; $page++)
-
-                        <li class="page-item {{ $page == $allsms['current_page'] ? 'active' : '' }}">
-
-                        <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => $page]) }}">
-                            {{ $page }}
-                        </a>
-
-                        </li>
-
-                        @endfor
-
-                        @if($allsms['current_page'] < $allsms['last_page'])
-
-                            <li class="page-item">
-                            <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => $allsms['current_page'] + 1]) }}">
-                                Next
-                            </a>
-                            </li>
-
-                            @endif
-                </ul>
-            </nav>
-
+            {{ $sms_histories->links('pagination::bootstrap-5') }}
         </div>
-
-        @endif
 
     </div>
 

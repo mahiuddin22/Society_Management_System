@@ -23,7 +23,7 @@ class PlotTypeController extends Controller
             $plot_types->where('status', $status);
         }
 
-        $plot_types = $plot_types->get();
+        $plot_types = $plot_types->paginate(30)->withQueryString();
         return view('admin.plot_types.index', compact('plot_types'));
     }
 

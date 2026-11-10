@@ -743,6 +743,7 @@
       <table class="ledger text-nowrap w-100">
         <thead>
           <tr>
+            <th>SL</th>
             <th>Bill / Date</th>
             <th>Resident / Contact</th>
             <th>Road / Holding</th>
@@ -757,6 +758,7 @@
         <tbody>
           @forelse($bills as $bill)
           <tr>
+            <td>{{ $bills->firstItem() + $loop->index }}</td>
             <!-- 1. Bill / Date -->
             <td>
               <div class="fw-bold font-monospace" style="color: var(--forest-900);">{{ $bill->bill_number }}</div>
@@ -818,7 +820,7 @@
           </tr>
           @empty
           <tr>
-            <td colspan="7" class="text-center py-5 text-muted">
+            <td colspan="{{ hasPermission('bill_generator','collect') ? 8 : 7 }}" class="text-center py-5 text-muted">
               <div class="empty-note">No billing records found for this criteria.</div>
             </td>
           </tr>
@@ -833,7 +835,7 @@
         Showing <span class="fw-semibold text-dark">{{ $bills->firstItem() }}</span> to <span class="fw-semibold text-dark">{{ $bills->lastItem() }}</span> of <span class="fw-semibold text-dark">{{ $bills->total() }}</span> results
       </div>
       <div>
-        {{ $bills->onEachSide(1)->links('pagination::bootstrap-4') }}
+        {{ $bills->onEachSide(1)->links('pagination::bootstrap-5') }}
       </div>
     </div>
     @endif

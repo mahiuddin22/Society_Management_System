@@ -131,7 +131,6 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
         Route::delete('{id}/destroy', 'destroy')->name('destroy');
     });
 
-
     // Roles
     Route::controller(RoleController::class)->prefix('roles')->name('roles.')->group(function () {
         Route::get('/', 'index')->name('index');

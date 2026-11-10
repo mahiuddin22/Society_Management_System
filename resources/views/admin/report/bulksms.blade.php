@@ -6,8 +6,8 @@
   <div class="card">
     <div class="card-head"><h3>SMS History</h3><span class="hint">{{ $rows->count() }} of {{ $rows->total() }} messages shown</span></div>
     <div class="table-wrap"><table class="ledger text-nowrap">
-      <thead><tr><th>Sent at</th><th>Phone</th><th>Type</th><th>Language</th><th>Message</th><th>Sending method</th><th>Scheduled at</th><th>Status</th></tr></thead>
-      <tbody>@forelse($rows as $row)<tr><td>{{ $row->created_at?->format('Y-m-d H:i') }}</td><td>{{ $row->phone_no }}</td><td>{{ ucfirst($row->sms_type) }}</td><td>{{ ucfirst($row->language) }}</td><td>{{ $row->sms_type==='draft' ? ($row->draftsms?->message ?? 'Draft unavailable') : $row->custom_sms }}</td><td>{{ str_replace('_',' ',ucfirst($row->sending_method)) }}</td><td>{{ $row->schedule_time ?: '—' }}</td><td>{{ ucfirst($row->status) }}</td></tr>@empty<tr><td colspan="8" class="text-center">No SMS history found for this date range.</td></tr>@endforelse</tbody>
+      <thead><tr><th>SL</th><th>Sent at</th><th>Phone</th><th>Type</th><th>Language</th><th>Message</th><th>Sending method</th><th>Scheduled at</th><th>Status</th></tr></thead>
+      <tbody>@forelse($rows as $row)<tr><td>{{ $rows->firstItem() + $loop->index }}</td><td>{{ $row->created_at?->format('Y-m-d H:i') }}</td><td>{{ $row->phone_no }}</td><td>{{ ucfirst($row->sms_type) }}</td><td>{{ ucfirst($row->language) }}</td><td>{{ $row->sms_type==='draft' ? ($row->draftsms?->message ?? 'Draft unavailable') : $row->custom_sms }}</td><td>{{ str_replace('_',' ',ucfirst($row->sending_method)) }}</td><td>{{ $row->schedule_time ?: '—' }}</td><td>{{ ucfirst($row->status) }}</td></tr>@empty<tr><td colspan="9" class="text-center">No SMS history found for this date range.</td></tr>@endforelse</tbody>
     </table>{{ $rows->links('pagination::bootstrap-5') }}</div>
   </div>
 </section>
