@@ -104,7 +104,7 @@
             <span class="badge red"><i class="dot"></i>Unpaid</span>
             @endif
           </td>
-          
+
         </tr>
         @empty
         <tr>
