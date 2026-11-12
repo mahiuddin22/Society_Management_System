@@ -221,7 +221,7 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
         Route::get('/draft-sms', 'DraftSMS')->name('draftsms');
         Route::get('/sms-history', 'SMSHistory')->name('smshistory');
     });
-    
+
     // Report Managements
     Route::controller(ReportController::class)->prefix('report')->name('report.')->group(function () {
         Route::get('/plot-management', 'plotManagement')->name('plotmanagement');
