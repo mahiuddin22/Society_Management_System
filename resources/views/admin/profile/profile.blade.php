@@ -8,9 +8,13 @@
                 <div class="p-4 p-lg-5 border-bottom" style="background: var(--paper-50); border-top: 3px solid var(--forest-700);">
                     <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
                         <div class="d-flex align-items-center gap-3">
-                            <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 text-white fw-bold" style="width: 58px; height: 58px; background: var(--forest-700); font-family: var(--font-display); font-size: 22px;">
-                                {{ \Illuminate\Support\Str::upper(\Illuminate\Support\Str::substr($user->name, 0, 1)) }}
-                            </div>
+                            @if ($user->profile_image && file_exists(public_path($user->profile_image)))
+                                <img src="{{ asset($user->profile_image) }}" alt="{{ $user->name }}" class="rounded-circle flex-shrink-0" style="width: 58px; height: 58px; object-fit: cover;">
+                            @else
+                                <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 text-white fw-bold" style="width: 58px; height: 58px; background: var(--forest-700); font-family: var(--font-display); font-size: 22px;">
+                                    {{ \Illuminate\Support\Str::upper(\Illuminate\Support\Str::substr($user->name, 0, 1)) }}
+                                </div>
+                            @endif
                             <div>
                                 <span class="hint small text-uppercase fw-semibold">Account Profile</span>
                                 <h2 class="m-0 mt-1" style="font-family: var(--font-display); font-size: 25px; color: var(--ink-900);">{{ $user->name }}</h2>
@@ -158,12 +162,18 @@
                                     <span class="hint small">Update your account details</span>
                                 </div>
                             </div>
-                            <form action="{{ route('admin.profile.update') }}" method="POST">
+                            <form action="{{ route('admin.profile.update') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 @method('PUT')
                                 <div class="mb-3">
                                     <label for="name" class="form-label">Full Name</label>
                                     <input type="text" name="name" class="form-control" id="name" value="{{ auth()->user()->name }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="profile_image" class="form-label">Profile Image</label>
+                                    <input type="file" name="profile_image" class="form-control" id="profile_image" accept="image/jpeg,image/png,image/webp">
+                                    <div class="form-text">JPG, PNG, or WebP; maximum 2 MB.</div>
+                                    @error('profile_image')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="mb-3">
                                     <div class="row">

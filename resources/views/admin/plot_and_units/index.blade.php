@@ -370,6 +370,7 @@
         <thead>
           <tr>
             <th>SL</th>
+            <th>Image</th>
             <th>Holding &amp; Road</th>
             <th>Type</th>
             <th>Occupancy</th>
@@ -383,6 +384,9 @@
           @forelse($plotAndUnits as $unit)
           <tr>
             <td>{{ $plotAndUnits->firstItem() + $loop->index }}</td>
+            <td class="text-center">
+              <img src="{{ $unit->user?->profile_image && file_exists(public_path($unit->user->profile_image)) ? asset($unit->user->profile_image) : asset('assets/images/default-user.svg') }}" alt="{{ $unit->name }}" class="rounded-circle" style="width: 36px; height: 36px; object-fit: cover;">
+            </td>
             {{-- Holding & Road --}}
             <td>
               <div class="fw-medium text-dark">Holding - {{ $unit->holding_no }}</div>

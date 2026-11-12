@@ -50,6 +50,7 @@
       <thead>
         <tr>
           <th>SL</th>
+          <th>Image</th>
           <th>Bill / Date</th>
           <th>Resident / Contact</th>
           <th>Road / Holding</th>
@@ -65,6 +66,9 @@
         @forelse($bills as $bill)
         <tr>
           <td>{{ $bills->firstItem() + $loop->index }}</td>
+          <td class="text-center">
+              <img src="{{ $bill->plotAndUnit?->user?->profile_image && file_exists(public_path($bill->plotAndUnit->user->profile_image)) ? asset($bill->plotAndUnit->user->profile_image) : asset('assets/images/default-user.svg') }}" alt="{{ $bill->plotAndUnit?->name }}" class="rounded-circle" style="width: 36px; height: 36px; object-fit: cover;">
+          </td>
           <!-- 1. Bill / Date -->
           <td>
             <div class="fw-bold font-monospace" style="color: var(--forest-900);">{{ $bill->bill_number }}</div>

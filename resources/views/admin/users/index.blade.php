@@ -36,6 +36,7 @@
                 <thead class="table-light">
                     <tr>
                         <th>SL</th>
+                        <th>Image</th>
                         <th>UID</th>
                         <th>Role</th>
                         <th>Name</th>
@@ -47,6 +48,9 @@
                     @foreach ($users as $user)
                     <tr>
                         <td>{{ $users->firstItem() + $loop->index }}</td>
+                        <td class="text-center">
+                            <img src="{{ $user->profile_image && file_exists(public_path($user->profile_image)) ? asset($user->profile_image) : asset('assets/images/default-user.svg') }}" alt="{{ $user->name }}" class="rounded-circle" style="width: 36px; height: 36px; object-fit: cover;">
+                        </td>
                         <td>{{ ucfirst($user->uid) }}</td>
                         <td>{{ ucfirst($user->role) }}</td>
                         <td>{{ $user->name }}</td>

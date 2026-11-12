@@ -16,6 +16,11 @@ class PlotAndUnit extends Model
         return $this->belongsTo(Road::class);
     }
 
+    public function user()
+    {
+        return $this->hasOne(User::class, 'uid', 'unique_id');
+    }
+
     public function plotType()
     {
         return $this->belongsTo(PlotType::class);

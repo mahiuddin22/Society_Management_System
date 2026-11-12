@@ -22,7 +22,7 @@ class PlotAndUnitController extends Controller
 {
     public function index(Request $request)
     {
-        $query = PlotAndUnit::with(['road', 'plotType'])->orderByDesc('id');
+        $query = PlotAndUnit::with(['road', 'plotType', 'user'])->orderByDesc('id');
 
         if (auth()->user()?->role === 'collector') {
             $query->whereHas('road', function ($roadQuery) {

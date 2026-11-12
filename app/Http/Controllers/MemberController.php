@@ -13,11 +13,11 @@ class MemberController extends Controller
     public function mypayments()
     {
         if (auth()->user()->role == 'admin') {
-            $bills = Bill::paginate(30);
+            $bills = Bill::with('plotAndUnit.user')->paginate(30);
         } else {
             $bills = Bill::whereHas('plotAndUnit', function ($query) {
                 $query->where('unique_id', auth()->user()->uid);
-            })->paginate(30);
+            })->with('plotAndUnit.user')->paginate(30);
         }
 
         return view('members.index', compact('bills'));

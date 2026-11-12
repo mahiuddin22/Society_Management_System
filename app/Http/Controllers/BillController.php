@@ -22,7 +22,7 @@ class BillController extends Controller
 
     public function index(Request $request)
     {
-        $query = Bill::with(['plotAndUnit.road', 'plotAndUnit.plotType', 'payments'])->latest('billing_month');
+        $query = Bill::with(['plotAndUnit.road', 'plotAndUnit.plotType', 'plotAndUnit.user', 'payments'])->latest('billing_month');
 
         if (Auth::user()->role !== 'admin') {
             $roadIds = Road::where('collector_id', Auth::id())->pluck('id');

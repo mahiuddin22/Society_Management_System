@@ -51,6 +51,7 @@
         <thead>
           <tr>
             <th>SL</th>
+            <th>Image</th>
             <th>Member ID</th>
             <th>Road</th>
             <th>Holding No.</th>
@@ -76,6 +77,9 @@
           @forelse($data as $collection)
           <tr>
             <td>{{ $data->firstItem() + $loop->iteration  - 1}}</td>
+            <td class="text-center">
+                <img src="{{ $collection->user?->profile_image && file_exists(public_path($collection->user->profile_image)) ? asset($collection->user->profile_image) : asset('assets/images/default-user.svg') }}" alt="{{ $collection->name }}" class="rounded-circle" style="width: 36px; height: 36px; object-fit: cover;">
+            </td>
             <td>{{ $collection->unique_id}}</td>
             <td>{{ $collection->unit_road->name}}</td>
             <td>{{ $collection->holding_no }}</td>

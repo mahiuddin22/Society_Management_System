@@ -362,6 +362,7 @@
         <thead>
           <tr>
             <th>SL</th>
+            <th>Image</th>
             <th>Receipt &amp; Date</th>
             <th>Resident / Contact</th>
             <th>Bill Ref</th>
@@ -377,6 +378,9 @@
           @forelse($payments as $payment)
           <tr>
             <td>{{ $payments->firstItem() + $loop->index }}</td>
+            <td class="text-center">
+                <img src="{{ $payment->bill?->plotAndUnit?->user?->profile_image && file_exists(public_path($payment->bill->plotAndUnit->user->profile_image)) ? asset($payment->bill->plotAndUnit->user->profile_image) : asset('assets/images/default-user.svg') }}" alt="{{ $payment->bill?->plotAndUnit?->name }}" class="rounded-circle" style="width: 36px; height: 36px; object-fit: cover;">
+            </td>
             {{-- 1. Receipt & Date --}}
             <td>
               <div class="fw-bold font-monospace" style="color: var(--forest-900);">{{ $payment->payment_number }}</div>

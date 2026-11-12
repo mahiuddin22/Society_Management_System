@@ -9,6 +9,7 @@ use App\Models\Road;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class HomeController extends Controller
 {
@@ -339,7 +340,22 @@ class HomeController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email,' . $user->id],
             'phone' => ['required', 'string', 'max:255'],
+            'profile_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ]);
+
+        if ($request->hasFile('profile_image')) {
+            $directory = public_path('uploads/users');
+            File::ensureDirectoryExists($directory);
+
+            if ($user->profile_image && str_starts_with($user->profile_image, 'uploads/users/') && is_file(public_path($user->profile_image))) {
+                @unlink(public_path($user->profile_image));
+            }
+
+            $extension = $request->file('profile_image')->extension();
+            $filename = $user->id . '.' . $extension;
+            $request->file('profile_image')->move($directory, $filename);
+            $data['profile_image'] = 'uploads/users/' . $filename;
+        }
 
         $user->update($data);
         return redirect()->back()->with('success', 'Profile updated successfully.');

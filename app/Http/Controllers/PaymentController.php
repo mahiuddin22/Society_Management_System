@@ -11,7 +11,7 @@ class PaymentController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Payment::with(['bill.plotAndUnit.road', 'collector'])->latest('payment_date')->latest('id');
+        $query = Payment::with(['bill.plotAndUnit.road', 'bill.plotAndUnit.user', 'collector'])->latest('payment_date')->latest('id');
 
         // Filter: Payment Method
         if ($request->filled('method')) {

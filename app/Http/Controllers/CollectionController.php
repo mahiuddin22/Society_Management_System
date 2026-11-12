@@ -18,7 +18,7 @@ class CollectionController extends Controller
         $filter_holding_no  = $request->filter_holding_no;
         $filter_road        = $request->filter_road;
 
-        $data = PlotAndUnit::orderBy('id', 'desc');
+        $data = PlotAndUnit::with('user')->orderBy('id', 'desc');
 
         if (auth()->user()->role == 'collector') {
             $roadIds = Road::where('collector_id', auth()->id())->pluck('id');

@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class PlotAndUnitsSeeder extends Seeder
 {
@@ -19,7 +21,7 @@ class PlotAndUnitsSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('plot_and_units')->insert([
+        $plots = [
             // ==================== 1. Empty Plot (1-ta: ID 1 | Fee: 0.00) ====================
             [
                 'plot_type_id'    => 1, // Empty Plot
@@ -239,6 +241,25 @@ class PlotAndUnitsSeeder extends Seeder
                 'created_at'      => now(),
                 'updated_at'      => now(),
             ],
-        ]);
+        ];
+
+        DB::table('plot_and_units')->insert($plots);
+
+        foreach ($plots as $plot) {
+            DB::table('users')->updateOrInsert(
+                ['phone' => $plot['phone']],
+                [
+                    'uid' => $plot['unique_id'],
+                    'role' => 'member',
+                    'name' => $plot['name'],
+                    'email' => $plot['email'],
+                    'phone' => $plot['phone'],
+                    'profile_image' => 'assets/images/default-user.svg',
+                    'password' => Hash::make(Str::random(40)),
+                    'created_at' => $plot['created_at'],
+                    'updated_at' => $plot['updated_at'],
+                ]
+            );
+        }
     }
 }
