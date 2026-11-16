@@ -23,7 +23,7 @@ class ReportController extends Controller
         if ($request->filled('plot_type_id')) $query->where('plot_type_id', $request->plot_type_id);
         if ($request->filled('search')) { $s=trim($request->search); $query->where(fn($q)=>$q->where('holding_no','like',"%$s%")->orWhere('name','like',"%$s%")->orWhere('phone','like',"%$s%")); }
         $rows = $query->latest('updated_at')->get();
-        if ($response = $this->export($request, 'plotmanagement', 'Plot Management Report', ['Road','Holding','Last updated','Building','Plot type','Contact','Phone','Collection type','Status'], $rows->map(fn($p)=>[$p->road?->number,ctype_digit((string) $p->holding_no) ? str_pad((string) $p->holding_no, 2, '0', STR_PAD_LEFT) : $p->holding_no,$p->updated_at?->format('Y-m-d'),$p->building_name,$p->plotType?->name,$p->name,$p->phone,$p->collection_type,$p->status])->all())) return $response;
+        if ($response = $this->export($request, 'plotmanagement', 'Plot Management Report', ['Road','Holding','Last updated','Building','Plot type','Contact','Phone','Collection type','Status'], $rows->map(fn($p)=>[$p->road?->number,collect(explode(',', (string) $p->holding_no))->map(fn($holding)=>ctype_digit(trim($holding)) ? str_pad(trim($holding), 2, '0', STR_PAD_LEFT) : trim($holding))->implode(', '),$p->updated_at?->format('Y-m-d'),$p->building_name,$p->plotType?->name,$p->name,$p->phone,$p->collection_type,$p->status])->all())) return $response;
         return view('admin.report.plotmanagement', ['rows'=>$query->paginate(30)->withQueryString(),'roads'=>Road::orderBy('number')->get(),'plotTypes'=>PlotType::orderBy('name')->get()]);
     }
 
