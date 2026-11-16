@@ -15,7 +15,12 @@
           @forelse($rows as $row)
           @php
             $holdingNumbers = collect(explode(',', (string) $row->holding_no))
-                ->map(fn ($holding) => ctype_digit(trim($holding)) ? str_pad(trim($holding), 2, '0', STR_PAD_LEFT) : trim($holding))
+                ->map(function ($holding) {
+                    $holding = trim($holding);
+                    return preg_match('/^(\d+)(\/.*)?$/', $holding, $parts)
+                        ? str_pad($parts[1], 2, '0', STR_PAD_LEFT) . ($parts[2] ?? '')
+                        : $holding;
+                })
                 ->implode(', ');
           @endphp
           <tr><td>{{ $rows->firstItem() + $loop->index }}</td><td>{{ $row->road?->number }}</td><td>{{ $holdingNumbers }}</td><td>{{ $row->updated_at?->format('Y-m-d') }}</td><td>{{ $row->building_name ?: '—' }}</td><td>{{ $row->plotType?->name }}</td><td>{{ $row->name }}</td><td>{{ $row->phone }}</td><td>{{ $row->collection_type ?: '—' }}</td><td>{{ $row->status }}</td></tr>
