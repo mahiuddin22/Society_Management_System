@@ -103,6 +103,11 @@ $user = auth()->user();
         text-align: center;
         font-size: 12px;
     }
+
+    .notification-footer {
+        padding: 10px 12px;
+        background: var(--card);
+    }
     .icon-btn .badge {
         width: auto;
         min-width: 18px;
@@ -132,6 +137,12 @@ $user = auth()->user();
             <ul id="notificationList" class="notification-list list-unstyled mb-0" aria-live="polite">
                 <li class="notification-empty">Loading notifications…</li>
             </ul>
+            <div class="notification-footer border-top">
+                <a href="{{ route('admin.notifications.all') }}" class="btn btn-sm btn-light d-flex align-items-center justify-content-center gap-2 w-100 border-0 shadow-none">
+                    <i class="bi bi-list-ul" aria-hidden="true"></i>
+                    <span>View all notifications</span>
+                </a>
+            </div>
         </div>
     </div>
 

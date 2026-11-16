@@ -9,6 +9,7 @@ use App\Models\Road;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\File;
 
 class HomeController extends Controller
@@ -148,6 +149,59 @@ class HomeController extends Controller
 
     public function notifications()
     {
+        $latestItems = $this->buildNotificationItems(10);
+        $latestKeys = $latestItems->pluck('id');
+        $readKeys = DB::table('dashboard_notification_reads')
+            ->where('user_id', auth()->id())
+            ->whereIn('notification_key', $latestKeys)
+            ->pluck('notification_key')
+            ->all();
+
+        $notifications = $latestItems->map(function ($item) use ($readKeys) {
+            $item['unseen'] = ! in_array($item['id'], $readKeys, true);
+            return $item;
+        });
+
+        return response()->json([
+            'notifications' => $notifications,
+            'unseen_count' => $notifications->where('unseen', true)->count(),
+        ]);
+    }
+
+    public function allNotifications(Request $request)
+    {
+        $items = $this->buildNotificationItems();
+        $viewedAt = now();
+
+        foreach ($items->chunk(500) as $chunk) {
+            DB::table('dashboard_notification_reads')->insertOrIgnore(
+                $chunk->map(fn ($item) => [
+                    'user_id' => auth()->id(),
+                    'notification_key' => $item['id'],
+                    'viewed_at' => $viewedAt,
+                ])->all()
+            );
+        }
+
+        $notifications = $items->map(function ($item) {
+            $item['unseen'] = false;
+            return $item;
+        });
+        $perPage = 20;
+        $page = LengthAwarePaginator::resolveCurrentPage();
+        $paginatedNotifications = new LengthAwarePaginator(
+            $notifications->forPage($page, $perPage)->values(),
+            $notifications->count(),
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+
+        return view('admin.notifications.index', ['notifications' => $paginatedNotifications]);
+    }
+
+    private function buildNotificationItems(?int $limit = null)
+    {
         $items = collect();
         $role = auth()->user()?->role;
         $isCollector = $role === 'collector';
@@ -166,7 +220,7 @@ class HomeController extends Controller
             ->selectRaw('COUNT(*) as bill_count, COALESCE(SUM(net_amount - paid_amount), 0) as remaining_due')
             ->groupBy('billing_month')
             ->orderByDesc('latest_created_at')
-            ->take(10)
+            ->when($limit !== null, fn ($query) => $query->take($limit))
             ->get();
 
         foreach ($billMonths as $billMonth) {
@@ -190,7 +244,7 @@ class HomeController extends Controller
         $payments = Payment::with('bill.plotAndUnit')
             ->when($isCollector, fn ($query) => $query->whereHas('bill.plotAndUnit', fn ($plotQuery) => $plotQuery->whereIn('road_id', $assignedRoadIds)))
             ->when($isMember, fn ($query) => $query->whereHas('bill.plotAndUnit', fn ($plotQuery) => $plotQuery->whereIn('id', $memberPlotIds)))
-            ->latest()->take(10)->get();
+            ->latest()->when($limit !== null, fn ($query) => $query->take($limit))->get();
         foreach ($payments as $payment) {
             $items->push([
                 'id' => 'collection-' . $payment->id,
@@ -213,7 +267,7 @@ class HomeController extends Controller
                 ->selectRaw('MAX(created_at) as latest_created_at, COUNT(*) as plot_count')
                 ->groupBy('import_batch_id')
                 ->orderByDesc('latest_created_at')
-                ->take(10)
+                ->when($limit !== null, fn ($query) => $query->take($limit))
                 ->get();
 
             foreach ($bulkPlotBatches as $batch) {
@@ -232,7 +286,7 @@ class HomeController extends Controller
 
             $newPlots = PlotAndUnit::whereNull('import_batch_id')
                 ->when($isCollector, fn ($query) => $query->whereIn('road_id', $assignedRoadIds))
-                ->latest()->take(10)->get();
+                ->latest()->when($limit !== null, fn ($query) => $query->take($limit))->get();
             foreach ($newPlots as $plot) {
                 $items->push([
                     'id' => 'plot-' . $plot->id,
@@ -247,29 +301,8 @@ class HomeController extends Controller
             }
         }
 
-        $latestItems = $items->sortByDesc('timestamp')->take(10)->values();
-        $latestKeys = $latestItems->pluck('id');
-        $staleReadRows = DB::table('dashboard_notification_reads')->where('user_id', auth()->id());
-        if ($latestKeys->isNotEmpty()) {
-            $staleReadRows->whereNotIn('notification_key', $latestKeys);
-        }
-        $staleReadRows->delete();
-
-        $readKeys = DB::table('dashboard_notification_reads')
-            ->where('user_id', auth()->id())
-            ->whereIn('notification_key', $latestKeys)
-            ->pluck('notification_key')
-            ->all();
-
-        $notifications = $latestItems->map(function ($item) use ($readKeys) {
-            $item['unseen'] = ! in_array($item['id'], $readKeys, true);
-            return $item;
-        });
-
-        return response()->json([
-            'notifications' => $notifications,
-            'unseen_count' => $notifications->where('unseen', true)->count(),
-        ]);
+        $sortedItems = $items->sortByDesc('timestamp')->values();
+        return $limit === null ? $sortedItems : $sortedItems->take($limit)->values();
     }
 
     public function markNotificationRead(Request $request)

@@ -90,6 +90,7 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
     Route::controller(HomeController::class)->group(function () {
         Route::get('dashboard', 'index')->name('home');
         Route::get('notifications', 'notifications')->name('notifications');
+        Route::get('notifications/all', 'allNotifications')->name('notifications.all');
         Route::post('notifications/read', 'markNotificationRead')->name('notifications.read');
         Route::get('settings', 'settings')->name('settings');
         Route::get('profile', 'profile')->name('profile');
