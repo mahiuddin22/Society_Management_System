@@ -148,7 +148,7 @@
 
                                 <span class="badge rounded-pill bg-light text-success border px-3 py-2">
                                     <i class="bi bi-cloud-check me-1"></i> Draft autosaved
-                                </span>
+                                </span> 
                             </div>
                         </div>
 

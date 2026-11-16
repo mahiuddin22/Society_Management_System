@@ -5,12 +5,12 @@
     <meta charset="UTF-8">
     <title>Login &bull; Uttara Sector 3 Welfare Society</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    
+
     <!-- Google Fonts: Inter & Newsreader -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
-    
+
     <!-- Bootstrap 5 CDN & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
@@ -22,16 +22,16 @@
             --forest-700: #1e492c;
             --forest-600: #2a613c;
             --forest-100: #e2ede5;
-            --forest-50:  #f0f6f2;
-            
+            --forest-50: #f0f6f2;
+
             --ink-900: #1a1e1b;
             --ink-700: #414a44;
             --ink-500: #6d7469;
-            --line:    #e4e8e3;
+            --line: #e4e8e3;
             --line-strong: #c8cec6;
-            
+
             --paper-bg: #f8faf8;
-            --card-bg:  #ffffff;
+            --card-bg: #ffffff;
             --radius-m: 12px;
             --radius-s: 7px;
         }
@@ -41,7 +41,8 @@
         }
 
         /* Full-height login layout with room to scroll on short screens */
-        html, body {
+        html,
+        body {
             height: 100%;
             margin: 0;
             padding: 0;
@@ -116,9 +117,8 @@
             position: absolute;
             inset: 0;
             z-index: -1;
-            background-image:
-                linear-gradient(145deg, rgba(9, 31, 18, 0.84) 0%, rgba(19, 61, 35, 0.55) 48%, rgba(8, 30, 17, 0.78) 100%),
-                url("{{ !empty($siteSettings?->login_panel_image) ? asset('uploads/settings/'.$siteSettings->login_panel_image) : asset('assets/images/2.jpg') }}");
+            background-image: linear-gradient(145deg, rgba(9, 31, 18, 0.38) 0%, rgba(19, 61, 35, 0.18) 48%, rgba(8, 30, 17, 0.38) 100%),
+            url("{{ !empty($siteSettings?->login_panel_image) ? asset('uploads/settings/'.$siteSettings->login_panel_image) : asset('assets/images/2.jpg') }}");
             background-position: center;
             background-size: cover;
             filter: saturate(1.3);
@@ -211,12 +211,13 @@
 
         /* Brand Crest Badge */
         .brand-crest {
-            width: 46px;
-            height: 46px;
-            background: rgba(255, 255, 255, .13);
-            color: #ffffff;
+            width: clamp(54px, 9vw, 116px);
+            height: 58px;
+            padding: 5px 8px;
+            background: #ffffff;
+            color: #245338;
             border: 1px solid rgba(255, 255, 255, .26);
-            border-radius: 12px;
+            border-radius: 14px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -226,6 +227,13 @@
             letter-spacing: .03em;
             box-shadow: 0 5px 15px rgba(3, 19, 10, .18);
             flex-shrink: 0;
+        }
+
+        .brand-crest img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
         .brand-title {
@@ -262,7 +270,9 @@
         }
 
         @media (max-width: 767.98px) {
-            html, body {
+
+            html,
+            body {
                 height: auto;
                 min-height: 100%;
             }
@@ -373,7 +383,7 @@
         }
 
         /* Turn toggle red when invalid */
-        .form-control.is-invalid ~ .password-toggle-btn {
+        .form-control.is-invalid~.password-toggle-btn {
             color: #dc3545;
         }
 
@@ -453,8 +463,8 @@
         }
 
         /* Give the password toggle button the error color when the input is invalid */
-        .input-group-password input.is-invalid ~ .password-toggle-btn,
-        .was-validated .input-group-password input:invalid ~ .password-toggle-btn {
+        .input-group-password input.is-invalid~.password-toggle-btn,
+        .was-validated .input-group-password input:invalid~.password-toggle-btn {
             color: #dc3545 !important;
         }
     </style>
@@ -464,23 +474,7 @@
 
     <div class="login-card">
 
-        <aside class="login-visual">
-            <div class="brand-lockup">
-                <div class="brand-crest"><span>U3</span></div>
-                <div>
-                    <div class="brand-lockup-name">Uttara Sector 3</div>
-                    <div class="brand-lockup-caption">Welfare Society</div>
-                </div>
-            </div>
-
-            <div class="visual-copy">
-                <span class="visual-eyebrow">Office Portal</span>
-                <h2>Serving our community, together.</h2>
-                <p>Manage society services and community operations through one secure office portal.</p>
-            </div>
-
-            <div class="visual-footer"><i class="bi bi-shield-lock-fill"></i><span>Secure access for authorized staff</span></div>
-        </aside>
+        <aside class="login-visual" aria-hidden="true"></aside>
 
         <main class="login-form-panel">
             <div class="login-form-heading">
@@ -489,91 +483,89 @@
                 <p class="brand-subtitle">Sign in with your office account to continue.</p>
             </div>
 
-        @foreach ($errors->all() as $error)
-        <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center py-2 px-3 mb-2" 
-            role="alert" 
-            style="font-size: 12px; line-height: 1.4;">
-            <i class="bi bi-exclamation-triangle-fill me-2 flex-shrink-0" style="font-size: 13px;"></i>
-            <div class="flex-grow-1 pe-3">
-                {{ $error }}
-            </div>
-            <button type="button" 
-                    class="btn-close position-relative p-0" 
-                    data-bs-dismiss="alert" 
+            @foreach ($errors->all() as $error)
+            <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center py-2 px-3 mb-2"
+                role="alert"
+                style="font-size: 12px; line-height: 1.4;">
+                <i class="bi bi-exclamation-triangle-fill me-2 flex-shrink-0" style="font-size: 13px;"></i>
+                <div class="flex-grow-1 pe-3">
+                    {{ $error }}
+                </div>
+                <button type="button"
+                    class="btn-close position-relative p-0"
+                    data-bs-dismiss="alert"
                     aria-label="Close"
                     style="font-size: 9px; margin-left: auto;">
-            </button>
-        </div>
-        @endforeach
-
-        <!-- Form -->
-        <form class="needs-validation" novalidate method="POST" action="{{ route('login') }}">
-            @csrf
-
-            <!-- Username / Email -->
-            <div class="mb-2">
-                <label for="email" class="form-label">Username / Email</label>
-                <input 
-                    type="text" 
-                    class="form-control" 
-                    id="email" 
-                    name="email" 
-                    value="{{ old('email') }}"
-                    placeholder="admin@example.com" 
-                    autocomplete="username"
-                    required 
-                    autofocus
-                />
+                </button>
             </div>
+            @endforeach
 
-            <!-- Password -->
-            <div class="mb-2">
-                <div class="d-flex justify-content-between align-items-center mb-1">
-                    <label for="password" class="form-label mb-0">Password</label>
-                    @if (Route::has('password.request'))
+            <!-- Form -->
+            <form class="needs-validation" novalidate method="POST" action="{{ route('login') }}">
+                @csrf
+
+                <!-- Username / Email -->
+                <div class="mb-2">
+                    <label for="email" class="form-label">Username / Email</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="email"
+                        name="email"
+                        value="{{ old('email') }}"
+                        placeholder="admin@example.com"
+                        autocomplete="username"
+                        required
+                        autofocus />
+                </div>
+
+                <!-- Password -->
+                <div class="mb-2">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label for="password" class="form-label mb-0">Password</label>
+                        @if (Route::has('password.request'))
                         <a href="{{ route('password.request') }}" style="color: var(--forest-700); font-size: 11.5px; text-decoration: none;">
                             Forgot?
                         </a>
-                    @endif
+                        @endif
+                    </div>
+
+                    <div class="input-group-password">
+                        <input
+                            type="password"
+                            class="form-control @error('password') is-invalid @enderror"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required />
+                        <button type="button" class="password-toggle-btn" onclick="togglePassword()" title="Toggle password visibility">
+                            <i class="bi bi-eye" id="toggleIcon"></i>
+                        </button>
+                    </div>
+                    @error('password')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
                 </div>
 
-                <div class="input-group-password">
-                    <input 
-                        type="password" 
-                        class="form-control @error('password') is-invalid @enderror" 
-                        id="password" 
-                        name="password" 
-                        placeholder="Enter your password" 
-                        autocomplete="current-password"
-                        required 
-                    />
-                    <button type="button" class="password-toggle-btn" onclick="togglePassword()" title="Toggle password visibility">
-                        <i class="bi bi-eye" id="toggleIcon"></i>
+                <!-- Remember Me -->
+                <div class="mb-3 form-check d-flex align-items-center gap-2">
+                    <input type="checkbox" class="form-check-input" id="remember" name="remember" {{ old('remember') ? 'checked' : '' }}>
+                    <label class="form-check-label mb-0" for="remember">Keep me signed in</label>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="d-grid mb-1">
+                    <button type="submit" class="btn btn-forest">
+                        <span>Sign In</span>
+                        <i class="bi bi-arrow-right-short" style="font-size: 16px;"></i>
                     </button>
                 </div>
-                @error('password')
-                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                @enderror
-            </div>
 
-            <!-- Remember Me -->
-            <div class="mb-3 form-check d-flex align-items-center gap-2">
-                <input type="checkbox" class="form-check-input" id="remember" name="remember" {{ old('remember') ? 'checked' : '' }}>
-                <label class="form-check-label mb-0" for="remember">Keep me signed in</label>
-            </div>
-
-            <!-- Submit Button -->
-            <div class="d-grid mb-1">
-                <button type="submit" class="btn btn-forest">
-                    <span>Sign In</span>
-                    <i class="bi bi-arrow-right-short" style="font-size: 16px;"></i>
-                </button>
-            </div>
-
-            <div class="login-footer-hint">
-                Need access? <a href="mailto:support@sector3welfare.org">Contact Admin</a>
-            </div>
-        </form>
+                <div class="login-footer-hint">
+                    Need access? <a href="mailto:support@sector3welfare.org">Contact Admin</a>
+                </div>
+            </form>
 
         </main>
     </div>

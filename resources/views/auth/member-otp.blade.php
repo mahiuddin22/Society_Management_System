@@ -82,17 +82,18 @@
             position: absolute;
             inset: 0;
             z-index: -1;
-            background: linear-gradient(145deg, rgba(9, 31, 18, .84), rgba(19, 61, 35, .55) 48%, rgba(8, 30, 17, .78)), url("{{ !empty($siteSettings?->login_panel_image) ? asset('uploads/settings/'.$siteSettings->login_panel_image) : asset('assets/images/2.jpg') }}") center / cover no-repeat;
+            background: linear-gradient(145deg, rgba(9, 31, 18, .38), rgba(19, 61, 35, .18) 48%, rgba(8, 30, 17, .38)), url("{{ !empty($siteSettings?->login_panel_image) ? asset('uploads/settings/'.$siteSettings->login_panel_image) : asset('assets/images/2.jpg') }}") center / cover no-repeat;
             filter: saturate(1.3);
             transform: scale(1.02);
         }
 
         .brand-lockup { display: flex; align-items: center; gap: 13px; }
         .brand-crest {
-            width: 46px; height: 46px; display: inline-flex; align-items: center; justify-content: center;
-            border: 1px solid rgba(255,255,255,.26); border-radius: 12px; background: rgba(255,255,255,.13);
-            color: #fff; font-size: 15px; font-weight: 700; letter-spacing: .03em; flex-shrink: 0;
+            width: clamp(54px, 9vw, 116px); height: 58px; padding: 5px 8px; display: inline-flex; align-items: center; justify-content: center;
+            border: 1px solid rgba(255,255,255,.26); border-radius: 14px; background: #fff;
+            color: #245338; font-size: 15px; font-weight: 700; letter-spacing: .03em; flex-shrink: 0;
         }
+        .brand-crest img { display: block; width: 100%; height: 100%; object-fit: contain; }
         .brand-lockup-name { font-size: 14px; font-weight: 700; line-height: 1.3; }
         .brand-lockup-caption { margin-top: 3px; color: rgba(255,255,255,.72); font-size: 11px; letter-spacing: .11em; text-transform: uppercase; }
         .visual-copy { max-width: 440px; padding: 34px 0; }
@@ -177,18 +178,7 @@
 <body class="min-vh-100 d-flex align-items-center justify-content-center p-3">
 
     <div class="login-card">
-        <aside class="login-visual">
-            <div class="brand-lockup">
-                <div class="brand-crest">U3</div>
-                <div><div class="brand-lockup-name">Uttara Sector 3</div><div class="brand-lockup-caption">Welfare Society</div></div>
-            </div>
-            <div class="visual-copy">
-                <span class="visual-eyebrow">Member Portal</span>
-                <h2>Connected to the community you call home.</h2>
-                <p>Access your society services and payment information through a secure member portal.</p>
-            </div>
-            <div class="visual-footer"><i class="bi bi-shield-lock-fill"></i><span>Secure sign-in with your registered number</span></div>
-        </aside>
+        <aside class="login-visual" aria-hidden="true"></aside>
 
         <main class="login-form-panel">
         <!-- Header -->
