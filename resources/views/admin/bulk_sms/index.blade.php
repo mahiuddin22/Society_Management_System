@@ -298,6 +298,16 @@
 
                                     <div class="border rounded-3 overflow-hidden">
 
+                                        <div id="smsPersonalizationTags" class="px-3 py-2 bg-light border-bottom">
+                                            <div class="d-flex align-items-center flex-wrap gap-2">
+                                                <span class="small fw-semibold text-body-secondary me-1">Insert tag:</span>
+                                                <button type="button" class="btn btn-sm btn-outline-primary sms-template-tag" data-sms-tag="{name}">{name}</button>
+                                                <button type="button" class="btn btn-sm btn-outline-primary sms-template-tag" data-sms-tag="{amount}">{amount}</button>
+                                                <button type="button" class="btn btn-sm btn-outline-primary sms-template-tag" data-sms-tag="{due_month}">{due_month}</button>
+                                            </div>
+                                            <small class="text-body-secondary d-block mt-2">Tags are filled for each selected existing recipient. Amount uses the latest unpaid balance (or property total); due month uses that bill's month.</small>
+                                        </div>
+
                                         <textarea id="customSMS" name="custom_sms"
                                             class="form-control border-0 rounded-0 shadow-none" rows="7"
                                             placeholder="Type your SMS message here..."></textarea>
@@ -835,6 +845,17 @@
         updateSmsCount();
     });
 
+    document.querySelectorAll('.sms-template-tag').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const textarea = document.getElementById('customSMS');
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            textarea.setRangeText(this.dataset.smsTag, start, end, 'end');
+            textarea.focus();
+            textarea.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+    });
+
     document.querySelectorAll('input[name="language"]').forEach(function(radio) {
 
         radio.addEventListener('change', function() {
@@ -1027,9 +1048,15 @@
             if (existingMember.checked) {
                 existingMemberArea.style.display = 'block';
                 customMemberArea.style.display = 'none';
+                document.getElementById('smsPersonalizationTags').style.display = 'block';
             } else {
                 existingMemberArea.style.display = 'none';
                 customMemberArea.style.display = 'block';
+                document.getElementById('smsPersonalizationTags').style.display = 'none';
+
+                const message = document.getElementById('customSMS');
+                message.value = message.value.replace(/\{(?:name|amount|due_month)\}/g, '');
+                message.dispatchEvent(new Event('input', { bubbles: true }));
             }
         }
 

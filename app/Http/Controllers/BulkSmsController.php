@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Jobs\SendBulkSmsJob;
 use App\Models\Bulksms;
+use App\Models\Bill;
 use App\Models\Draft;
 use App\Models\PlotAndUnit;
 use Carbon\Carbon;
@@ -68,6 +69,11 @@ class BulkSmsController extends Controller
         }
 
         $message = $request->sms_type === 'custom' ? $request->custom_sms : $draft->message;
+
+        if ($request->member_type === 'custom_member') {
+            $message = preg_replace('/\{(?:name|amount|due_month)\}/', '', $message);
+        }
+
         if ($request->member_type === 'custom_member') {
             $phone_no = preg_replace('/\D+/', '', $phoneNumbers[0]);
 
@@ -107,22 +113,37 @@ class BulkSmsController extends Controller
                 'sms_type'       => $request->sms_type,
                 'draft_id'       => $request->draft_id,
                 'language'       => strtolower($request->language),
-                'custom_sms'     => $request->custom_sms,
+                'custom_sms'     => $message,
                 'sending_method' => $request->sending_method,
                 'schedule_time'  => $request->sending_method == 'scheduled_message'
                     ? Carbon::parse($request->schedule_time) : null,
                 'status'         => $status_code == 0 ? 'sent' : 'canceled',
             ]);
         } else {
-            foreach ($phoneNumbers as $phone_no) {
+            $latestOutstandingBills = Bill::whereIn('plot_and_unit_id', $recipients->pluck('id'))
+                ->whereColumn('net_amount', '>', 'paid_amount')
+                ->orderByDesc('billing_month')
+                ->get()
+                ->unique('plot_and_unit_id')
+                ->keyBy('plot_and_unit_id');
+
+            foreach ($recipients as $recipient) {
+                $bill = $latestOutstandingBills->get($recipient->id);
+                $messageForRecipient = strtr($message, [
+                    '{name}' => $recipient->name ?? '',
+                    '{amount}' => number_format((float) ($bill?->due_balance ?? $recipient->total_amount ?? 0), 2, '.', ''),
+                    '{due_month}' => $bill?->billing_month
+                        ? Carbon::parse($bill->billing_month)->format('F Y')
+                        : 'N/A',
+                ]);
                 $sms_type = $request->sms_type;
                 $draft_id = $request->draft_id;
                 $language = strtolower($request->language);
-                $custom_sms = $request->custom_sms;
+                $custom_sms = $messageForRecipient;
                 $sending_method = $request->sending_method;
                 $schedule_time = $request->schedule_time;
 
-                SendBulkSmsJob::dispatch($phone_no, $message, $sms_type, $draft_id, $language, $custom_sms, $sending_method, $schedule_time);
+                SendBulkSmsJob::dispatch($recipient->phone, $messageForRecipient, $sms_type, $draft_id, $language, $custom_sms, $sending_method, $schedule_time);
             }
         }
 
