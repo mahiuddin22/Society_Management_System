@@ -10,7 +10,7 @@
     <div class="card-head"><h3>Plot Management</h3><span class="hint">{{ $rows->count() }} of {{ $rows->total() }} plots shown</span></div>
     <div class="table-wrap">
       <table class="ledger text-nowrap">
-        <thead><tr><th>SL</th><th>Road</th><th>Holding</th><th>Last updated</th><th>Building</th><th>Plot type</th><th>Contact</th><th>Phone</th><th>Collection</th><th>Status</th></tr></thead>
+        <thead><tr><th>SL</th><th>Last updated</th><th>Road</th><th>Holding</th><th>Building</th><th>Plot type</th><th>Contact</th><th>Phone</th><th>Collection</th><th>Status</th></tr></thead>
         <tbody>
           @forelse($rows as $row)
           @php
@@ -23,7 +23,7 @@
                 })
                 ->implode(', ');
           @endphp
-          <tr><td>{{ $rows->firstItem() + $loop->index }}</td><td>{{ $row->road?->number }}</td><td>{{ $holdingNumbers }}</td><td>{{ $row->updated_at?->format('Y-m-d') }}</td><td>{{ $row->building_name ?: '—' }}</td><td>{{ $row->plotType?->name }}</td><td>{{ $row->name }}</td><td>{{ $row->phone }}</td><td>{{ $row->collection_type ?: '—' }}</td><td>{{ $row->status }}</td></tr>
+          <tr><td>{{ $rows->firstItem() + $loop->index }}</td><td>{{ $row->updated_at?->format('Y-m-d') }}</td><td>{{ $row->road?->number }}</td><td>{{ $holdingNumbers }}</td><td>{{ $row->building_name ?: '—' }}</td><td>{{ $row->plotType?->name }}</td><td>{{ $row->name }}</td><td>{{ $row->phone }}</td><td>{{ $row->collection_type ?: '—' }}</td><td>{{ $row->status }}</td></tr>
           @empty
           <tr><td colspan="10" class="text-center">No plots found.</td></tr>
           @endforelse
