@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('plot_and_unit_id')->constrained('plot_and_units')->cascadeOnDelete();
             $table->string('flat_number', 30);
+            $table->text('note')->nullable();
             $table->timestamps();
             $table->unique(['plot_and_unit_id', 'flat_number']);
         });

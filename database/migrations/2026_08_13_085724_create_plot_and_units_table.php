@@ -38,6 +38,7 @@ return new class extends Migration
             $table->unsignedSmallInteger('total_flat')->default(0)->nullable();
             $table->unsignedSmallInteger('occupied_flat')->default(0)->nullable();
             $table->string('flat_numbers')->nullable()->comment('Comma-separated flat tags e.g. 2A,2B,3A,3C');
+            $table->uuid('import_batch_id')->nullable()->index();
 
             // Collection Information
             $table->enum('collection_type', [

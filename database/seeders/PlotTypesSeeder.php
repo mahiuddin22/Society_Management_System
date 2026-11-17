@@ -7,11 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 class PlotTypesSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     * Populates the plot_types table with initial data.
-     */
-    public function run()
+    public function run(): void
     {
         DB::table('plot_types')->insert([
             [
@@ -21,6 +17,8 @@ class PlotTypesSeeder extends Seeder
                 'description' => 'Vacant ground awaiting building development',
                 'fees' => 0,
                 'status' => 'Active',
+                'created_at' => null,
+                'updated_at' => null,
             ],
             [
                 'id' => 2,
@@ -29,6 +27,8 @@ class PlotTypesSeeder extends Seeder
                 'description' => 'Ongoing site development in progress',
                 'fees' => 1500,
                 'status' => 'Active',
+                'created_at' => null,
+                'updated_at' => null,
             ],
             [
                 'id' => 3,
@@ -37,6 +37,8 @@ class PlotTypesSeeder extends Seeder
                 'description' => 'Multi-unit residential society housing space',
                 'fees' => 250,
                 'status' => 'Active',
+                'created_at' => null,
+                'updated_at' => null,
             ],
             [
                 'id' => 4,
@@ -45,6 +47,8 @@ class PlotTypesSeeder extends Seeder
                 'description' => 'Private residence occupied by owner',
                 'fees' => 250,
                 'status' => 'Active',
+                'created_at' => null,
+                'updated_at' => null,
             ],
             [
                 'id' => 5,
@@ -53,7 +57,9 @@ class PlotTypesSeeder extends Seeder
                 'description' => 'Dedicated space for business operations',
                 'fees' => 1500,
                 'status' => 'Active',
-            ]
+                'created_at' => null,
+                'updated_at' => null,
+            ],
         ]);
     }
 }

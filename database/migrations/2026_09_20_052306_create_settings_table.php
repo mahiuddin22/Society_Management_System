@@ -16,6 +16,8 @@ return new class extends Migration
 
             $table->string('name');
             $table->string('logo');
+            $table->string('login_background_image')->nullable();
+            $table->string('login_panel_image')->nullable();
             $table->text('address');
             $table->string('contact');
             $table->string('email');

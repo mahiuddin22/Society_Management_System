@@ -2,14 +2,14 @@
 
 namespace Database\Seeders;
 
-use App\Models\Permission;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class PermissionSeeder extends Seeder
 {
     public function run(): void
     {
-        Permission::insert([
+        DB::table('permissions')->insert([
             [
                 'id' => 12,
                 'name' => 'Settings',
@@ -17,8 +17,8 @@ class PermissionSeeder extends Seeder
                 'menu_key' => null,
                 'order_no' => 28,
                 'activity_id' => null,
-                'created_at' => '2026-07-29 14:15:32',
-                'updated_at' => '2026-10-29 14:29:06',
+                'created_at' => '2026-07-29 08:15:32',
+                'updated_at' => '2026-10-29 08:29:06',
             ],
             [
                 'id' => 13,
@@ -27,8 +27,8 @@ class PermissionSeeder extends Seeder
                 'menu_key' => 'site_settings',
                 'order_no' => 30,
                 'activity_id' => '1',
-                'created_at' => '2026-07-29 14:16:34',
-                'updated_at' => '2026-10-29 14:29:06',
+                'created_at' => '2026-07-29 08:16:34',
+                'updated_at' => '2026-10-29 08:29:06',
             ],
             [
                 'id' => 17,
@@ -37,8 +37,8 @@ class PermissionSeeder extends Seeder
                 'menu_key' => 'permissions',
                 'order_no' => 24,
                 'activity_id' => '1,2,3,4,5,6',
-                'created_at' => '2026-07-29 16:02:41',
-                'updated_at' => '2026-10-29 14:29:06',
+                'created_at' => '2026-07-29 10:02:41',
+                'updated_at' => '2026-10-29 08:29:06',
             ],
             [
                 'id' => 19,
@@ -47,8 +47,8 @@ class PermissionSeeder extends Seeder
                 'menu_key' => 'activities',
                 'order_no' => 20,
                 'activity_id' => '1,2,3,4',
-                'created_at' => '2026-08-15 16:27:19',
-                'updated_at' => '2026-10-29 14:29:06',
+                'created_at' => '2026-08-15 10:27:19',
+                'updated_at' => '2026-10-29 08:29:06',
             ],
             [
                 'id' => 20,
@@ -57,8 +57,8 @@ class PermissionSeeder extends Seeder
                 'menu_key' => null,
                 'order_no' => 19,
                 'activity_id' => null,
-                'created_at' => '2026-08-15 16:30:35',
-                'updated_at' => '2026-10-29 14:29:06',
+                'created_at' => '2026-08-15 10:30:35',
+                'updated_at' => '2026-10-29 08:29:06',
             ],
             [
                 'id' => 21,
@@ -67,8 +67,8 @@ class PermissionSeeder extends Seeder
                 'menu_key' => 'roles',
                 'order_no' => 21,
                 'activity_id' => '1,2,3,4',
-                'created_at' => '2026-08-15 16:32:42',
-                'updated_at' => '2026-10-29 14:29:06',
+                'created_at' => '2026-08-15 10:32:42',
+                'updated_at' => '2026-10-29 08:29:06',
             ],
             [
                 'id' => 22,
@@ -77,8 +77,8 @@ class PermissionSeeder extends Seeder
                 'menu_key' => 'plot_types',
                 'order_no' => 29,
                 'activity_id' => '1,2,3,4,8',
-                'created_at' => '2026-08-17 13:00:57',
-                'updated_at' => '2026-10-29 14:29:06',
+                'created_at' => '2026-08-17 07:00:57',
+                'updated_at' => '2026-10-29 08:29:06',
             ],
             [
                 'id' => 23,
@@ -87,8 +87,8 @@ class PermissionSeeder extends Seeder
                 'menu_key' => null,
                 'order_no' => 1,
                 'activity_id' => null,
-                'created_at' => '2026-08-17 13:02:23',
-                'updated_at' => '2026-10-29 14:29:06',
+                'created_at' => '2026-08-17 07:02:23',
+                'updated_at' => '2026-10-29 08:29:06',
             ],
             [
                 'id' => 24,
@@ -97,8 +97,8 @@ class PermissionSeeder extends Seeder
                 'menu_key' => 'plot_and_units',
                 'order_no' => 2,
                 'activity_id' => '1,2,3,4,5',
-                'created_at' => '2026-08-17 13:03:04',
-                'updated_at' => '2026-10-29 14:29:06',
+                'created_at' => '2026-08-17 07:03:04',
+                'updated_at' => '2026-10-29 08:29:06',
             ],
             [
                 'id' => 25,
@@ -107,8 +107,8 @@ class PermissionSeeder extends Seeder
                 'menu_key' => null,
                 'order_no' => 7,
                 'activity_id' => null,
-                'created_at' => '2026-08-17 13:03:38',
-                'updated_at' => '2026-10-29 14:29:06',
+                'created_at' => '2026-08-17 07:03:38',
+                'updated_at' => '2026-10-29 08:29:06',
             ],
             [
                 'id' => 27,
@@ -117,8 +117,8 @@ class PermissionSeeder extends Seeder
                 'menu_key' => 'collections',
                 'order_no' => 9,
                 'activity_id' => '1,9',
-                'created_at' => '2026-08-18 14:38:56',
-                'updated_at' => '2026-10-29 14:29:06',
+                'created_at' => '2026-08-18 08:38:56',
+                'updated_at' => '2026-10-29 08:29:06',
             ],
             [
                 'id' => 28,
@@ -127,8 +127,8 @@ class PermissionSeeder extends Seeder
                 'menu_key' => 'users',
                 'order_no' => 23,
                 'activity_id' => '1,2,3,4',
-                'created_at' => '2026-09-01 11:23:24',
-                'updated_at' => '2026-10-29 14:29:06',
+                'created_at' => '2026-09-01 05:23:24',
+                'updated_at' => '2026-10-29 08:29:06',
             ],
             [
                 'id' => 29,
@@ -137,8 +137,8 @@ class PermissionSeeder extends Seeder
                 'menu_key' => 'roads',
                 'order_no' => 22,
                 'activity_id' => '1,2,3,4',
-                'created_at' => '2026-09-02 15:37:44',
-                'updated_at' => '2026-10-29 14:29:06',
+                'created_at' => '2026-09-02 09:37:44',
+                'updated_at' => '2026-10-29 08:29:06',
             ],
             [
                 'id' => 30,
@@ -147,8 +147,8 @@ class PermissionSeeder extends Seeder
                 'menu_key' => 'collectors',
                 'order_no' => 10,
                 'activity_id' => '1,3,4,10',
-                'created_at' => '2026-09-05 16:38:17',
-                'updated_at' => '2026-10-29 14:29:06',
+                'created_at' => '2026-09-05 10:38:17',
+                'updated_at' => '2026-10-29 08:29:06',
             ],
             [
                 'id' => 31,
@@ -157,8 +157,8 @@ class PermissionSeeder extends Seeder
                 'menu_key' => 'upload_members',
                 'order_no' => 3,
                 'activity_id' => '1',
-                'created_at' => '2026-09-15 14:49:18',
-                'updated_at' => '2026-10-29 14:29:06',
+                'created_at' => '2026-09-15 08:49:18',
+                'updated_at' => '2026-10-29 08:29:06',
             ],
             [
                 'id' => 32,
@@ -167,8 +167,8 @@ class PermissionSeeder extends Seeder
                 'menu_key' => null,
                 'order_no' => 4,
                 'activity_id' => null,
-                'created_at' => '2026-09-16 10:42:35',
-                'updated_at' => '2026-10-29 14:29:06',
+                'created_at' => '2026-09-16 04:42:35',
+                'updated_at' => '2026-10-29 08:29:06',
             ],
             [
                 'id' => 33,
@@ -177,8 +177,8 @@ class PermissionSeeder extends Seeder
                 'menu_key' => 'my_payments',
                 'order_no' => 5,
                 'activity_id' => '1,9,11',
-                'created_at' => '2026-09-16 10:46:21',
-                'updated_at' => '2026-10-29 14:29:06',
+                'created_at' => '2026-09-16 04:46:21',
+                'updated_at' => '2026-10-29 08:29:06',
             ],
             [
                 'id' => 36,
@@ -187,8 +187,8 @@ class PermissionSeeder extends Seeder
                 'menu_key' => 'payments_report',
                 'order_no' => 6,
                 'activity_id' => '1,9',
-                'created_at' => '2026-09-16 11:01:27',
-                'updated_at' => '2026-10-29 14:29:06',
+                'created_at' => '2026-09-16 05:01:27',
+                'updated_at' => '2026-10-29 08:29:06',
             ],
             [
                 'id' => 37,
@@ -197,8 +197,8 @@ class PermissionSeeder extends Seeder
                 'menu_key' => 'bill_generator',
                 'order_no' => 8,
                 'activity_id' => '1,2,12',
-                'created_at' => '2026-09-28 02:13:06',
-                'updated_at' => '2026-10-29 14:29:06',
+                'created_at' => '2026-09-27 20:13:06',
+                'updated_at' => '2026-10-29 08:29:06',
             ],
             [
                 'id' => 38,
@@ -207,8 +207,8 @@ class PermissionSeeder extends Seeder
                 'menu_key' => null,
                 'order_no' => 11,
                 'activity_id' => null,
-                'created_at' => '2026-09-28 02:14:27',
-                'updated_at' => '2026-10-29 14:29:06',
+                'created_at' => '2026-09-27 20:14:27',
+                'updated_at' => '2026-10-29 08:29:06',
             ],
             [
                 'id' => 39,
@@ -217,8 +217,8 @@ class PermissionSeeder extends Seeder
                 'menu_key' => 'bulk_sms',
                 'order_no' => 12,
                 'activity_id' => '1',
-                'created_at' => '2026-09-28 02:22:19',
-                'updated_at' => '2026-10-29 14:29:06',
+                'created_at' => '2026-09-27 20:22:19',
+                'updated_at' => '2026-10-29 08:29:06',
             ],
             [
                 'id' => 40,
@@ -227,8 +227,8 @@ class PermissionSeeder extends Seeder
                 'menu_key' => 'draft_sms',
                 'order_no' => 13,
                 'activity_id' => '1,2,3,4',
-                'created_at' => '2026-09-28 02:23:03',
-                'updated_at' => '2026-10-29 14:29:06',
+                'created_at' => '2026-09-27 20:23:03',
+                'updated_at' => '2026-10-29 08:29:06',
             ],
             [
                 'id' => 41,
@@ -237,8 +237,8 @@ class PermissionSeeder extends Seeder
                 'menu_key' => 'sms_history',
                 'order_no' => 14,
                 'activity_id' => '1,9',
-                'created_at' => '2026-09-28 02:40:41',
-                'updated_at' => '2026-10-29 14:29:06',
+                'created_at' => '2026-09-27 20:40:41',
+                'updated_at' => '2026-10-29 08:29:06',
             ],
             [
                 'id' => 42,
@@ -247,8 +247,8 @@ class PermissionSeeder extends Seeder
                 'menu_key' => null,
                 'order_no' => 25,
                 'activity_id' => null,
-                'created_at' => '2026-09-28 04:39:02',
-                'updated_at' => '2026-10-29 14:29:06',
+                'created_at' => '2026-09-27 22:39:02',
+                'updated_at' => '2026-10-29 08:29:06',
             ],
             [
                 'id' => 43,
@@ -257,8 +257,8 @@ class PermissionSeeder extends Seeder
                 'menu_key' => 'role_permission',
                 'order_no' => 26,
                 'activity_id' => '1',
-                'created_at' => '2026-09-28 04:39:36',
-                'updated_at' => '2026-10-29 14:29:06',
+                'created_at' => '2026-09-27 22:39:36',
+                'updated_at' => '2026-10-29 08:29:06',
             ],
             [
                 'id' => 44,
@@ -267,8 +267,8 @@ class PermissionSeeder extends Seeder
                 'menu_key' => 'user_permission',
                 'order_no' => 27,
                 'activity_id' => '1',
-                'created_at' => '2026-09-28 04:40:16',
-                'updated_at' => '2026-10-29 14:29:06',
+                'created_at' => '2026-09-27 22:40:16',
+                'updated_at' => '2026-10-29 08:29:06',
             ],
             [
                 'id' => 45,
@@ -277,8 +277,8 @@ class PermissionSeeder extends Seeder
                 'menu_key' => null,
                 'order_no' => 15,
                 'activity_id' => null,
-                'created_at' => '2026-10-29 14:25:48',
-                'updated_at' => '2026-10-29 14:29:06',
+                'created_at' => '2026-10-29 08:25:48',
+                'updated_at' => '2026-10-29 08:29:06',
             ],
             [
                 'id' => 46,
@@ -287,8 +287,8 @@ class PermissionSeeder extends Seeder
                 'menu_key' => 'plot_report',
                 'order_no' => 16,
                 'activity_id' => '1,9',
-                'created_at' => '2026-10-29 14:27:04',
-                'updated_at' => '2026-10-29 14:29:06',
+                'created_at' => '2026-10-29 08:27:04',
+                'updated_at' => '2026-10-29 08:29:06',
             ],
             [
                 'id' => 47,
@@ -297,8 +297,8 @@ class PermissionSeeder extends Seeder
                 'menu_key' => 'bulk_report',
                 'order_no' => 18,
                 'activity_id' => '1,9',
-                'created_at' => '2026-10-29 14:27:32',
-                'updated_at' => '2026-10-29 14:29:06',
+                'created_at' => '2026-10-29 08:27:32',
+                'updated_at' => '2026-10-29 08:29:06',
             ],
             [
                 'id' => 48,
@@ -307,8 +307,8 @@ class PermissionSeeder extends Seeder
                 'menu_key' => 'bill_report',
                 'order_no' => 17,
                 'activity_id' => '1,9',
-                'created_at' => '2026-10-29 14:28:04',
-                'updated_at' => '2026-10-29 14:29:06',
+                'created_at' => '2026-10-29 08:28:04',
+                'updated_at' => '2026-10-29 08:29:06',
             ],
         ]);
     }

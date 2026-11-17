@@ -7,18 +7,14 @@ use Illuminate\Support\Facades\DB;
 
 class PasswordResetTokensSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     * Populates the password_reset_tokens table with initial data.
-     */
-    public function run()
+    public function run(): void
     {
         DB::table('password_reset_tokens')->insert([
             [
                 'email' => 'admin@example.com',
                 'token' => '$2y$12$RQxDrG39UVwkTpI8kRbUruUHnb1gO9Tri4RXYNbDKMhcACx.2OaXy',
-                'created_at' => '2025-08-12 12:18:29'
-            ]
+                'created_at' => '2025-08-12 06:18:29',
+            ],
         ]);
     }
 }
