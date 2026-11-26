@@ -18,10 +18,23 @@ class BulkSmsController extends Controller
     {
         try {
             $balanceResponse = app(SmsGateway::class)->balance();
-            $balanceStatus = $balanceResponse['statusInfo']['statusCode'] ?? null;
-            $data['amount'] = (string) $balanceStatus === '0'
-                ? ($balanceResponse['statusInfo']['availablebalance'] ?? null)
-                : null;
+            $statusInfo = $balanceResponse['statusInfo'] ?? [];
+            $statusInfo = is_array($statusInfo) ? $statusInfo : [];
+            $balanceStatus = $statusInfo['statusCode'] ?? null;
+            $availableBalance = $statusInfo['availablebalance'] ?? null;
+
+            if ((string) $balanceStatus === '0' && $availableBalance !== null) {
+                $data['amount'] = $availableBalance;
+            } else {
+                Log::warning('SMS balance provider returned no usable balance', [
+                    'status_code' => $balanceStatus,
+                    'error_description' => $statusInfo['errordescription'] ?? null,
+                    'clienttransid' => $statusInfo['clienttransid'] ?? null,
+                    'response_keys' => array_keys($balanceResponse),
+                    'status_info_keys' => array_keys($statusInfo),
+                ]);
+                $data['amount'] = null;
+            }
         } catch (\Throwable $e) {
             Log::warning('Unable to retrieve SMS balance', ['error' => $e->getMessage()]);
             $data['amount'] = null;
