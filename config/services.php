@@ -2,6 +2,14 @@
 
 return [
 
+    'sms' => [
+        'url' => env('SMS_GATEWAY_URL', 'https://sms.covex.com.bd:2765/sendtext'),
+        'balance_url' => env('SMS_GATEWAY_BALANCE_URL', 'https://sms.covex.com.bd:2765/api/v3/balance'),
+        'apikey' => env('SMS_GATEWAY_API_KEY'),
+        'secretkey' => env('SMS_GATEWAY_SECRET_KEY'),
+        'caller_id' => env('SMS_GATEWAY_CALLER_ID', 'Uttara KS3'),
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Third Party Services

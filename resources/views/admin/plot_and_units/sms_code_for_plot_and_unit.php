@@ -5,43 +5,12 @@ $text = 'Dear ' . $validatedData['name']
 . ' BDT. for the month of ' . $issue_date
 . '. Please pay your dues on time. Thank you.';
 
-// Send SMS
-$ch = curl_init();
-
-$apiUrl = "http://103.230.63.50/bulksms/api";
-
-// Different request ID for every member
-$requesteid = time();
-
-$postData = http_build_query([
-'authUser' => 'Sector-03',
-'authAccess' => 'Sector@0309',
-'destination' => $number,
-'text' => $text,
-'requestId' => $requesteid,
-'contentType' => 1,
-]);
-
-curl_setopt($ch, CURLOPT_URL, $apiUrl);
-curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-$server_output = curl_exec($ch);
-
-if ($server_output === false) {
-\Log::error('SMS Error', [
-'number' => $number,
-'error' => curl_error($ch),
-]);
+// Use the configured SMS provider for collection reminders.
+try {
+    app(\App\Services\SmsGateway::class)->send($number, $text);
+} catch (\Throwable $e) {
+    \Log::error('Collection reminder SMS failed', [
+        'number' => $number,
+        'error' => $e->getMessage(),
+    ]);
 }
-
-curl_close($ch);
-
-// Debug
-\Log::info('SMS Response', [
-'name' => $$validatedData['name'],
-'number' => $number,
-'requestId' => $requesteid,
-'response' => $server_output,
-]);

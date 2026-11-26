@@ -82,25 +82,23 @@
         <div class="col-6 col-md-3">
             <div class="card stat-card p-3 h-100">
                 <div class="label">SMS Balance</div>
-                <div class="value"><span class="sym">৳</span>{{ $amount }}</div>
-                <div class="delta up">Auto top-up off</div>
+                <div class="value">{{ $amount !== null ? '৳' . number_format((float) $amount, 2) : 'Unavailable' }}</div>
+                <div class="delta">Current SMS gateway balance</div>
             </div>
         </div>
 
         <div class="col-6 col-md-3">
             <div class="card stat-card p-3 h-100">
                 <div class="label">SMS Credits Remaining</div>
-                <div class="value">{{ round($amount/0.35, 2) }}</div>
-                <div class="delta up">Expired in: {{ \Carbon\Carbon::parse($validity_period)->format('d-M-Y') }}</div>
+                <div class="value">{{ $amount !== null ? number_format((float) $amount / 0.35, 2) : 'Unavailable' }}</div>
+                <div class="delta">Estimated at ৳0.35 per SMS</div>
             </div>
         </div>
 
         <div class="col-6 col-md-3">
             <div class="card stat-card p-3 h-100">
                 <div class="label">Sent This Month</div>
-                <div class="value" id="totalSent">
-                    <div class="value" id="totalSent"><span class="loading-dots"><i></i><i></i><i></i></span></div>
-                </div>
+                <div class="value" id="totalSent">{{ $totalSent ?? 0 }}</div>
                 <div class="delta up">▲ Total sms sent in this {{ now()->format('F') }}</div>
             </div>
         </div>
@@ -688,15 +686,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
 
-        fetch('http://103.230.63.50/bulksms/api/sent-sms-this-month')
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('totalSent').textContent = data.this_month ?? 0;
-            })
-            .catch(error => {
-                document.getElementById('totalSent').textContent = '0';
-                console.error(error);
-            });
+        document.getElementById('totalSent').textContent = @json($totalSent ?? 0);
 
     });
 </script>

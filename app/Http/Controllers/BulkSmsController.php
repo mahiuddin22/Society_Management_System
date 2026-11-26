@@ -9,18 +9,24 @@ use App\Models\Draft;
 use App\Models\PlotAndUnit;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
+use App\Services\SmsGateway;
+use Illuminate\Support\Facades\Log;
 
 class BulkSmsController extends Controller
 {
     public function index(Request $request)
     {
-        $balanceapi                 = Http::get('http://103.230.63.50/bulksms/api/sms-amount');
-        $data['amount']             = $balanceapi->json('amount');
-        $data['validity_period']    = $balanceapi->json('validity_period');
-        // $balanceapi              = 100;
-        // $data['amount']          = 100;
-        // $data['validity_period'] = 12 - 12 - 2026;
+        try {
+            $balanceResponse = app(SmsGateway::class)->balance();
+            $balanceStatus = $balanceResponse['statusInfo']['statusCode'] ?? null;
+            $data['amount'] = (string) $balanceStatus === '0'
+                ? ($balanceResponse['statusInfo']['availablebalance'] ?? null)
+                : null;
+        } catch (\Throwable $e) {
+            Log::warning('Unable to retrieve SMS balance', ['error' => $e->getMessage()]);
+            $data['amount'] = null;
+        }
+        $data['totalSent']          = Bulksms::where('status', 'sent')->whereMonth('created_at', now()->month)->whereYear('created_at', now()->year)->count();
         $data['members']            = PlotAndUnit::where('status', 'Active')->get();
         $data['drafts']             = Draft::all();
 
@@ -75,39 +81,8 @@ class BulkSmsController extends Controller
         }
 
         if ($request->member_type === 'custom_member') {
-            $phone_no = preg_replace('/\D+/', '', $phoneNumbers[0]);
-
-            if (!str_starts_with($phone_no, '88')) {
-                $phone_no = '88' . $phone_no;
-            }
-
-            $number = $phone_no;
-            $text   = $message;
-            $mask   = 'HSIA';
-
-            $ch = curl_init();
-
-            $apiUrl         = "http://103.230.63.50/bulksms/api";
-            $requesteid     = $_SERVER['REQUEST_TIME'];
-            $contentType    = 1;
-
-            curl_setopt($ch, CURLOPT_URL, $apiUrl);
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt(
-                $ch,
-                CURLOPT_POSTFIELDS,
-                "authUser=HSIA&authAccess=HSIA@241#765&destination=" . $number .
-                    "&mask=" . $mask . "&text=" . urlencode($text) .
-                    "&requestId=" . $requesteid . "&contentType=" . $contentType
-            );
-
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-            $server_output = curl_exec($ch);
-
-            curl_close($ch);
-
-            $status_code = json_decode($server_output, true)['reply'][0]['statuscode'] ?? null;
+            $sent = app(SmsGateway::class)->send($phoneNumbers[0], $message);
+            $phone_no = $sent['phone'];
             Bulksms::create([
                 'phone_no'       => $phone_no,
                 'sms_type'       => $request->sms_type,
@@ -117,7 +92,7 @@ class BulkSmsController extends Controller
                 'sending_method' => $request->sending_method,
                 'schedule_time'  => $request->sending_method == 'scheduled_message'
                     ? Carbon::parse($request->schedule_time) : null,
-                'status'         => $status_code == 0 ? 'sent' : 'canceled',
+                'status'         => 'sent',
             ]);
         } else {
             $latestOutstandingBills = Bill::whereIn('plot_and_unit_id', $recipients->pluck('id'))

@@ -144,10 +144,13 @@ class BillingService
 
     public function sendSMS(Bill $bill, string $message): bool
     {
-        Bill::where('id', $bill->id)->update(['sms_sent' => true]);
-
-        \Log::info("Sending SMS for Bill ID {$bill->id}: {$message}");
-
-        return true;
+        try {
+            app(SmsGateway::class)->send((string) $bill->plotAndUnit?->phone, $message);
+            Bill::where('id', $bill->id)->update(['sms_sent' => true]);
+            return true;
+        } catch (\Throwable $e) {
+            \Log::error('Bill SMS failed', ['bill_id' => $bill->id, 'error' => $e->getMessage()]);
+            return false;
+        }
     }
 }

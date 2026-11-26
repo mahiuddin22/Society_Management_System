@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Bulksms;
+use App\Services\SmsGateway;
 use Illuminate\Console\Command;
 
 class SendScheduledSms extends Command
@@ -26,15 +27,15 @@ class SendScheduledSms extends Command
                 $sms = $bulkSms->draftsms->message;
             }
 
-            // Send SMS API here
-            // Example:
-            // $this->sendSms($bulkSms->mobile_no, $sms);
-
-            $bulkSms->update([
-                'status' => 'sent',
-            ]);
-
-            $this->info("SMS ID {$bulkSms->id} sent.");
+            try {
+                app(SmsGateway::class)->send($bulkSms->phone_no, $sms);
+                $bulkSms->update(['status' => 'sent']);
+                $this->info("SMS ID {$bulkSms->id} sent.");
+            } catch (\Throwable $e) {
+                \Log::error('Scheduled SMS failed', ['sms_id' => $bulkSms->id, 'error' => $e->getMessage()]);
+                $bulkSms->update(['status' => 'canceled']);
+                $this->error("SMS ID {$bulkSms->id} failed.");
+            }
         }
 
         return Command::SUCCESS;

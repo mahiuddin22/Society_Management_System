@@ -1,4 +1,5 @@
 <?php
+
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\CollectorController;
 use App\Http\Controllers\AjaxController;
@@ -41,29 +42,6 @@ Route::get('/clear-cache', function () {
     return 'Cache, optimized files and views cleared successfully.';
 });
 
-Route::get('testsms', function () {
-    //MSISDN with country code
-    $number = "8801610440622";
-    //Text Message
-    $text = 'This is a test message from Sector3 W.A';
-    $mask = 'HSIA';
-    //------------------ No change Needed -------------------
-    $ch = curl_init();
-    $apiUrl = "http://103.230.63.50/bulksms/api";
-    $requesteid = $_SERVER['REQUEST_TIME'];
-    $contentType = 1;
-    curl_setopt($ch, CURLOPT_URL, $apiUrl);
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, "authUser=HSIA&authAccess=HSIA@241#765&destination=" . $number . "&mask=" . $mask . "&text=" . urlencode($text) . "&requestId=" . $requesteid . " &contentType=" . $contentType);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    $server_output = curl_exec($ch);
-    curl_close($ch);
-    ////------------------ No change Needed -------------------
-    //
-    ////FOR DEBUG
-    var_dump($server_output);
-});
-
 Route::middleware('guest')->name('member.')->group(function () {
     Route::get('/member-login', [MemberOtpController::class, 'showPhoneForm'])->name('otp.phone');
     Route::post('/member-login/send-otp', [MemberOtpController::class, 'sendOtp'])->name('otp.send');
@@ -96,7 +74,6 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
         Route::get('profile', 'profile')->name('profile');
         Route::put('update-password', 'updatePassword')->name('password.update');
         Route::put('profile', 'updateProfile')->name('profile.update');
-
     });
 
     // Ajax Routes
@@ -264,16 +241,15 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
 
 Route::group(['middleware' => ['auth']], function () {
     // Payment Routes for bKash
-    Route::get('/bkash/payment', [App\Http\Controllers\BkashTokenizePaymentController::class,'index']);
-    Route::get('/bkash/create-payment', [App\Http\Controllers\BkashTokenizePaymentController::class,'createPayment'])->name('bkash-create-payment');
-    Route::get('/bkash/callback', [App\Http\Controllers\BkashTokenizePaymentController::class,'callBack'])->name('bkash-callBack');
+    Route::get('/bkash/payment', [App\Http\Controllers\BkashTokenizePaymentController::class, 'index']);
+    Route::get('/bkash/create-payment', [App\Http\Controllers\BkashTokenizePaymentController::class, 'createPayment'])->name('bkash-create-payment');
+    Route::get('/bkash/callback', [App\Http\Controllers\BkashTokenizePaymentController::class, 'callBack'])->name('bkash-callBack');
 
     // Those 3 routes will be taken in admin middleware
     //search payment
-    Route::get('/bkash/search/{trxID}', [App\Http\Controllers\BkashTokenizePaymentController::class,'searchTnx'])->name('bkash-serach');
+    Route::get('/bkash/search/{trxID}', [App\Http\Controllers\BkashTokenizePaymentController::class, 'searchTnx'])->name('bkash-serach');
 
     //refund payment routes
-    Route::get('/bkash/refund', [App\Http\Controllers\BkashTokenizePaymentController::class,'refund'])->name('bkash-refund');
-    Route::get('/bkash/refund/status', [App\Http\Controllers\BkashTokenizePaymentController::class,'refundStatus'])->name('bkash-refund-status');
-
+    Route::get('/bkash/refund', [App\Http\Controllers\BkashTokenizePaymentController::class, 'refund'])->name('bkash-refund');
+    Route::get('/bkash/refund/status', [App\Http\Controllers\BkashTokenizePaymentController::class, 'refundStatus'])->name('bkash-refund-status');
 });

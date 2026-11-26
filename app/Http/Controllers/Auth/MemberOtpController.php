@@ -7,8 +7,8 @@ use App\Models\MemberLoginOtp;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\RateLimiter;
+use App\Services\SmsGateway;
 
 class MemberOtpController extends Controller
 {
@@ -58,34 +58,12 @@ class MemberOtpController extends Controller
             $phone = '88' . $phone;
         }
 
-        $ch = curl_init();
-
-        curl_setopt($ch, CURLOPT_URL, 'http://103.230.63.50/bulksms/api');
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
-            'authUser' => 'HSIA',
-            'authAccess' => 'HSIA@241#765',
-            'destination' => $phone,
-            'mask' => 'HSIA',
-            'text' => "Your login OTP is {$otp}. It expires in 5 minutes.",
-            'requestId' => time() . $user->id,
-            'contentType' => 1,
-        ]));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 20);
-
-        $serverOutput = curl_exec($ch);
-        $curlError = curl_error($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-        curl_close($ch);
-
-        if ($serverOutput === false || $httpCode < 200 || $httpCode >= 300) {
+        try {
+            app(SmsGateway::class)->send($phone, "Your login OTP is {$otp}. It expires in 5 minutes.");
+        } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error('OTP SMS request failed', [
                 'user_id' => $user->id,
-                'http_code' => $httpCode,
-                'curl_error' => $curlError,
+                'error' => $e->getMessage(),
             ]);
 
             $otpRecord->delete();
@@ -154,34 +132,12 @@ class MemberOtpController extends Controller
             $phone = '88' . $phone;
         }
 
-        $ch = curl_init();
-
-        curl_setopt($ch, CURLOPT_URL, 'http://103.230.63.50/bulksms/api');
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
-            'authUser' => 'HSIA',
-            'authAccess' => 'HSIA@241#765',
-            'destination' => $phone,
-            'mask' => 'HSIA',
-            'text' => "Your login OTP is {$otp}. It expires in 5 minutes.",
-            'requestId' => time() . $user->id,
-            'contentType' => 1,
-        ]));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 20);
-
-        $serverOutput = curl_exec($ch);
-        $curlError = curl_error($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-        curl_close($ch);
-
-        if ($serverOutput === false || $httpCode < 200 || $httpCode >= 300) {
+        try {
+            app(SmsGateway::class)->send($phone, "Your login OTP is {$otp}. It expires in 5 minutes.");
+        } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error('OTP resend SMS request failed', [
                 'user_id' => $user->id,
-                'http_code' => $httpCode,
-                'curl_error' => $curlError,
+                'error' => $e->getMessage(),
             ]);
 
             $otpRecord->delete();
